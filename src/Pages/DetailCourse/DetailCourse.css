@@ -141,7 +141,7 @@
     position: relative;
 }
 
-.info-item.place{
+.info-item.add{
     margin-top: 16px;
 }
 
@@ -235,7 +235,7 @@
     color: #999;
 }
 
-/* 활성화된 저장 버튼 스타일 */
+/* 활성화된 저장 튼 스타일 */
 .modal-button.save.active {
     background: #D6EBFF;
     color: #376FA3;
@@ -338,6 +338,12 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
+    transition: height 0.3s ease;
+}
+
+/* !important를 추가하여 우선순위를 높여볼 수 있습니다 */
+.pin-line.extended {
+    height: 280px !important;
 }
 
 .place-replace {

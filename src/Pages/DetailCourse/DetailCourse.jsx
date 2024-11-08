@@ -1,5 +1,10 @@
 import './DetailCourse.css';
 import { useState } from 'react';
+import MeetingPlace from './components/MeetingPlace';
+import PlaceItem from './components/PlaceItem';
+import PlaceReplace from './components/PlaceReplace';
+import PlaceGroup from './components/PlaceGroup';
+import AddPlaceGuide from './components/AddPlaceGuide';
 
 const DetailCourse = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +21,50 @@ const DetailCourse = () => {
 
     const handleInputChange = (e) => {
         setCourseName(e.target.value);
+    };
+
+    const place1 = {
+        mainPlace: {
+            number: "1",
+            time: "PM 12시 30분",
+            title: "홍대 카페",
+            category: "카페",
+            operatingHours: "11:30~21:00"
+        },
+        alternativePlaces: [
+            {
+                number: "1",
+                time: "PM 12시 30분",
+                title: "다른 홍대 카페",
+                category: "카페",
+                operatingHours: "10:00~22:00"
+            },
+            {
+                number: "1",
+                time: "PM 12시 30분",
+                title: "다른 홍대 카페",
+                category: "카페",
+                operatingHours: "10:00~22:00"
+            },            {
+                number: "1",
+                time: "PM 12시 30분",
+                title: "다른 홍대 카페",
+                category: "카페",
+                operatingHours: "10:00~22:00"
+            }
+
+        ]
+    };
+
+    const place2 = {
+        mainPlace: {
+            number: "2",
+            time: "PM 2시 00분",
+            title: "연남동 식당",
+            category: "식당",
+            operatingHours: "11:00~21:00"
+        },
+        alternativePlaces: []
     };
 
     return (
@@ -60,85 +109,17 @@ const DetailCourse = () => {
             </section>
 
             <section className="info-section">
-                <div className="info-item">
-                    <div className="icon-circle">
-                        <img src='/detail-cir-meeting.svg' alt="meeting" />
-                    </div>
-                    <div className="info-content">
-                        <h3>어디서 만날 건가요?</h3>
-                        <p>같이 만나서 이동하기 편한 장소를 선택해 보세요</p>
-                    </div>
-                </div>
-
-                <div className='info-detail-container'>
-                    <div className="meeting-pin">
-                        <div className="pin-circle-meeting">
-                            <span>만날<br/>장소</span>
-                        </div>
-                        <div className="pin-line"></div>
-                    </div>
-                    <div className="info-detail">
-                        <div className="time-info">PM 12시 30분</div>
-                        <div className="place-info">
-                            <div className="place-title">홍대입구역 2번 출구</div>
-                            <div className="place-address">서울시 마포구 양화로 100 홍대입구역</div>
-                        </div>
-                    </div>
-                </div>
-                <div className='info-detail-container'>
-                    <div className="meeting-pin">
-                        <div className="pin-circle-place">
-                            <span>01</span>
-                        </div>
-                        <div className="pin-line"></div>
-                    </div>
-                        <div className="info-detail">
-                            <div className="time-info">PM 12시 30분</div>
-                            <div className="place-info">
-                                <div className="place-title">홍대 카페</div>
-                                <div className="place-basic-info">
-                                    <div className='place-tag'>카페</div>
-                                    <div className='place-time'>영업시간 | 11:30~21:00</div>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-                <div className='place-replace'>
-                    <img src='/detail-replace.svg' alt="replace" />
-                    <div>대안 장소 |</div> 
-                    <div className='place-replace-cnt'>N개의 대안 장소가 있어요</div> 
-                </div>
-                <div className='info-detail-container'>
-                    <div className="meeting-pin">
-                        <div className="pin-circle-place">
-                            <span>02</span>
-                        </div>
-                        <div className="pin-line"></div>
-                    </div>
-                        <div className="info-detail">
-                            <div className="time-info">PM 12시 30분</div>
-                            <div className="place-info">
-                                <div className="place-title">홍대 카페</div>
-                                <div className="place-basic-info">
-                                    <div className='place-tag'>카페</div>
-                                    <div className='place-time'>영업시간 | 11:30~21:00</div>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-                <div className='place-replace'>
-                    <img src='/detail-plus.svg' alt="replace" />
-                    <div>대안 장소를 추가해 보세요.</div> 
-                </div>
-                <div className="info-item place">
-                    <div className="icon-circle">
-                        <img src='/detail-cir-togo.svg' alt="place" />
-                    </div>
-                    <div className="info-content">
-                        <h3>어디를 갈 건가요?</h3>
-                        <p>장소를 등록해보세요.</p>
-                    </div>
-                </div>
+                
+                <MeetingPlace 
+                    time="PM 12시 30분"
+                    title="홍대입구역 2번 출구"
+                    address="서울시 마포구 양화로 100 홍대입구역"
+                />
+                
+                <PlaceGroup {...place1} />
+                <PlaceGroup {...place2} />
+                
+                <AddPlaceGuide />
             </section>
 
             {isModalOpen && (
