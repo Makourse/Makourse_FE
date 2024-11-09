@@ -1,6 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
+const ButtonContainer = styled.div`
+  width: 100%;
+  height: 3.375rem;
+  display: flex;
+  justify-content: center;
+`;
+
 const Button = styled.button`
   width: ${(props) => props.width || '80%'};
   height: 3.375rem;
@@ -16,8 +23,15 @@ const Button = styled.button`
 `;
 
 const MyButton = ({ text, bgColor, textColor, width }) => {
-  return <Button bgColor={bgColor} textColor={textColor} width={width}>{text}</Button>;
+  return (
+    <ButtonContainer>
+      <Button bgColor={bgColor} textColor={textColor} width={width}>
+        {text}
+      </Button>
+    </ButtonContainer>
+  );
 };
 
 export default MyButton;
+
 
