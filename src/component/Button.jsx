@@ -22,10 +22,10 @@ const Button = styled.button`
   color: ${(props) => props.textColor || '#376FA3'};
 `;
 
-const MyButton = ({ text, bgColor, textColor, width }) => {
+const MyButton = ({ text, bgColor, textColor, width, onClick }) => {
   return (
     <ButtonContainer>
-      <Button bgColor={bgColor} textColor={textColor} width={width}>
+      <Button bgColor={bgColor} textColor={textColor} width={width} onClick={onClick}>
         {text}
       </Button>
     </ButtonContainer>

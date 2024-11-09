@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import Button from '../../component/Button';
 import Header from '../../component/Header';
 
@@ -49,7 +50,7 @@ const Logo = styled.img`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);  /* 로고 중앙 위치 */
+  transform: translate(-50%, -50%);
 `;
 
 const Bgpurple = styled.img`
@@ -80,6 +81,11 @@ const TextContainer = styled.div`
 
 const Myplace = () => {
   const [places, setPlaces] = useState([]);
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    navigate('/myplace/save');
+  };
 
   return (
     <Container>
@@ -91,6 +97,11 @@ const Myplace = () => {
               <DescriptionText1>가고 싶었던 곳을 <br /> 저장하고 코스에 반영해요</DescriptionText1>
               <DescriptionText2>평소에 가고 싶은 곳이 있었다면 저장해 보아요.<br />자도에 나오지 않는 곳도 저장할 수 있어요.</DescriptionText2>
             </DescriptionContainer>
+            {/* places가 없을 때만 로고와 배경 이미지 렌더링 */}
+            <Logo src={logo} alt="logo" />
+            <TextContainer>아직 저장된 장소가 없어요</TextContainer>
+            <Bgpurple src={backgroundpurple} alt="purlplecircle" />
+            <Bgblue src={backgroundblue} alt="bluecircle" />
           </>
         ) : (
           <ul>
@@ -100,15 +111,10 @@ const Myplace = () => {
           </ul>
         )}
       </MyplaceContainer>
-        <Logo src={logo} alt="logo" />
-      <TextContainer>
-        아직 저장된 장소가 없어요
-      </TextContainer>
-      <Bgpurple src={backgroundpurple} alt='purlplecircle'/>
-      <Bgblue src={backgroundblue} alt='bluecircle'/>
-      <Button text="나만의 장소 저장하기" />
+      <Button text="나만의 장소 저장하기" onClick={handleButtonClick} />
     </Container>
   );
 };
 
 export default Myplace;
+
