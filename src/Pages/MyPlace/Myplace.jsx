@@ -79,6 +79,18 @@ const TextContainer = styled.div`
   white-space: nowrap;
 `;
 
+const PlaceContainer = styled.div`
+   width:90%;
+   padding:0.5rem;
+   border: 2px solid purple;
+   display: flex;
+`;
+const PlaceTextContainer= styled.div`
+   display: flex;
+   flex-direction: column;
+`;
+
+
 const Myplace = () => {
   const [places, setPlaces] = useState([
     { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역" },
@@ -111,10 +123,12 @@ const Myplace = () => {
         ) : (
           <>
             {places.map((place, index) => (
-              <div key={index}>
-                <strong>{place.name}</strong><br />
+              <PlaceContainer key={index}>
+                <PlaceTextContainer>
+                <strong>{place.name}</strong>
                 {place.address}
-              </div>
+                </PlaceTextContainer>
+              </PlaceContainer>
             ))}
           </>
         )}
