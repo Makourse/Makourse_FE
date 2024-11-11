@@ -7,6 +7,7 @@ import Header from '../../component/Header';
 import logo from '../../assets/logo1 2.svg';
 import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
 import backgroundpurple from '../../assets/bg_mypage3_bggra1_purple.svg';
+import myplaceimg from '../../assets/myplaceimg.svg';
 
 const Container = styled.div`
   display: flex;
@@ -80,24 +81,33 @@ const TextContainer = styled.div`
 `;
 
 const PlaceContainer = styled.div`
-   width:90%;
-   padding:0.5rem;
-   border: 2px solid purple;
+   width: 90%;
+   padding: 0.7rem;
+   border-bottom: 1px solid #F1F1F1;
    display: flex;
-`;
-const PlaceTextContainer= styled.div`
-   display: flex;
-   flex-direction: column;
+   align-items: center;
+   margin: 0.5rem 0;
 `;
 
+const PlaceTextContainer = styled.div`
+   display: flex;
+   flex-direction: column;
+   margin-left: 1rem;
+`;
+
+const PlaceImg = styled.img`
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+`;
 
 const Myplace = () => {
   const [places, setPlaces] = useState([
-    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역" },
-    { name: "서울숲", address: "서울시 성동구 뚝섬로 273 서울숲역" },
-    { name: "남산타워", address: "서울시 중구 남산동2가 105-1" },
-    { name: "경복궁", address: "서울시 종로구 사직로 161" }
-  ]); // 더미 데이터: 장소 이름과 주소
+    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", image: null },
+    { name: "서울숲", address: "서울시 성동구 뚝섬로 273 서울숲역", image: null },
+    { name: "남산타워", address: "서울시 중구 남산동2가 105-1", image: null },
+    { name: "경복궁", address: "서울시 종로구 사직로 161", image: null }
+  ]); // 더미 데이터: 장소 이름과 주소, 이미지
 
   const navigate = useNavigate();
 
@@ -124,9 +134,10 @@ const Myplace = () => {
           <>
             {places.map((place, index) => (
               <PlaceContainer key={index}>
+                <PlaceImg src={place.image || myplaceimg} alt="Place Image" />
                 <PlaceTextContainer>
-                <strong>{place.name}</strong>
-                {place.address}
+                  <strong>{place.name}</strong>
+                  {place.address}
                 </PlaceTextContainer>
               </PlaceContainer>
             ))}
@@ -139,5 +150,6 @@ const Myplace = () => {
 };
 
 export default Myplace;
+
 
 
