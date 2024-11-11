@@ -1,11 +1,11 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import styled from 'styled-components';
 import Button from '../../component/Button';
 import Header from '../../component/Header';
 
 import star from '../../assets/star.svg';
-import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
-import backgroundpurple from '../../assets/bg_mypage3_bggra1_purple.svg';
+import search from '../../assets/search.svg';
+import deletex from '../../assets/deletex.svg';
 
 const Container = styled.div`
   display: flex;
@@ -22,20 +22,44 @@ const MyplaceSaveContainer = styled.div`
   align-items: center;
 `;
 
-const Search = styled.input`
+const SearchBoxContainer = styled.div`
+  position: relative;
   width: 90%;
   height: 10%;
   margin-top: 1rem;
-  gap: 12px;
+`;
+
+const SearchBox = styled.input`
+  width: 100%;
+  height: 100%;
   border: 0.5px solid #999999;
   border-radius: 0.5rem;
-  //padding: 10px;
+  padding: 0 0.625rem;
   font-size: 1rem;
+  box-sizing: border-box;
   outline: none;
   ::placeholder {
-    color: #888;
+    color: #999999;
   }
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 입력창 아래 그림자 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+`;
+
+const SearchIcon = styled.img`
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8%;
+  cursor: pointer;
+`;
+
+const DeleteIcon = styled.img`
+  position: absolute;
+  right: 16%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8%;
+  cursor: pointer;
 `;
 
 const Logo = styled.img`
@@ -48,22 +72,6 @@ const Logo = styled.img`
   transform: translate(-50%, -50%);
 `;
 
-const Bgpurple = styled.img`
-  width: 60vw;
-  position: absolute;
-  top: 43%;
-  left: 0%;
-  transform: translate(-10%, -50%);
-`;
-
-const Bgblue = styled.img`
-  width: 60vw;
-  position: absolute;
-  top: 50%;
-  left: 40%;
-  transform: translate(0%, -50%);
-`;
-
 const TextContainer = styled.div`
   position: absolute;
   top: 65%;
@@ -74,16 +82,72 @@ const TextContainer = styled.div`
   white-space: nowrap;
 `;
 
+
 const MyplaceSave = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  
+  const allSuggestions = [
+    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역" },
+    { name: "서울숲", address: "서울시 성동구 뚝섬로 273 서울숲역" },
+    { name: "남산타워", address: "서울시 중구 남산동2가 105-1" },
+    { name: "경복궁", address: "서울시 종로구 사직로 161" },
+  ];
+
+  const decomposeSearchQuery = (query) => query.split('').map(char => char.toLowerCase());
+
+  // 검색어 변경 시 필터링
+  useEffect(() => {
+    if (searchQuery) {
+      const decomposedQuery = decomposeSearchQuery(searchQuery);
+      const filteredSuggestions = allSuggestions.filter((item) => {
+        const isMatch = decomposedQuery.every(char => 
+          item.name.toLowerCase().includes(char) || item.address.toLowerCase().includes(char)
+        );
+        return isMatch;
+      });
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+    }
+  }, [searchQuery]);
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setSuggestions([]);
+  };
+
   return (
     <Container>
       <Header title="나만의 장소" />
       <MyplaceSaveContainer>
-        <Search placeholder="검색어를 입력하세요." />
-        <Logo src={star} alt="star" />
-        <TextContainer>장소를 검색해보세요.</TextContainer>
-        <Bgpurple src={backgroundpurple} alt="purlplecircle" />
-        <Bgblue src={backgroundblue} alt="bluecircle" />
+        <SearchBoxContainer>
+          {searchQuery.length > 0 && (
+            <DeleteIcon src={deletex} alt="delete" onClick={handleClearSearch} />
+          )}
+          <SearchBox
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+            }}
+            placeholder="검색어를 입력하세요."
+          />
+          <SearchIcon src={search} alt="search" onClick={() => console.log("검색 아이콘 클릭됨")} />
+        </SearchBoxContainer>
+
+        {searchQuery.length > 0 ? (
+            <ul>
+            {suggestions.map((suggestion, index) => (
+              <li key={index}>{suggestion.name} - {suggestion.address}</li>
+            ))}
+          </ul>
+        ) : (
+          <Logo src={star} alt="star" />
+        )}
+
+        {searchQuery.length === 0 && (
+          <TextContainer>장소를 검색해보세요.</TextContainer>
+        )}
       </MyplaceSaveContainer>
       <Button text="저장하기" bgColor="#F1F1F1" />
     </Container>
@@ -91,3 +155,8 @@ const MyplaceSave = () => {
 };
 
 export default MyplaceSave;
+
+
+
+
+//input text기 deletex뚫고가지않게..
