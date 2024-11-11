@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import backIcon from '../assets/Ic_gnb_back.svg';
+import backIcon from '../assets/back.svg';
 
 const Container = styled.header`
   width: 100%;
@@ -17,14 +17,16 @@ const Container = styled.header`
 
 const BackButton = styled.button`
   width: 1.5rem;
-  height: 1.5rem; 
+  height: 1.5rem;
   background-image: url(${backIcon});
   background-size: contain;
   background-repeat: no-repeat;
+  background-color: transparent;
   border: none;
   position: absolute;
   left: 1rem;
 `;
+
 
 
 const Header = ({ title }) => {
