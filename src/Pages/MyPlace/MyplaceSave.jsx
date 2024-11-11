@@ -82,6 +82,18 @@ const TextContainer = styled.div`
   white-space: nowrap;
 `;
 
+const SuggestionContainer=styled.div`
+   display:flex;
+   flex-direction: column;
+   width: 90%;
+`;
+const Suggestion=styled.div`
+   padding: 0.7rem;
+   border-bottom: 1px solid #F1F1F1;
+   display: flex;
+   align-items: center;
+   margin: 0.5rem 0;
+`;
 
 const MyplaceSave = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -132,15 +144,19 @@ const MyplaceSave = () => {
             }}
             placeholder="검색어를 입력하세요."
           />
-          <SearchIcon src={search} alt="search" onClick={() => console.log("검색 아이콘 클릭됨")} />
+          <SearchIcon src={search} alt="search" />
         </SearchBoxContainer>
 
         {searchQuery.length > 0 ? (
-            <ul>
-            {suggestions.map((suggestion, index) => (
-              <li key={index}>{suggestion.name} - {suggestion.address}</li>
-            ))}
-          </ul>
+          <SuggestionContainer>
+          {suggestions.map((suggestion, index) => (
+            <Suggestion key={index}>
+              {suggestion.name} 
+              {suggestion.address}
+            </Suggestion>
+          ))}
+        </SuggestionContainer>
+
         ) : (
           <Logo src={star} alt="star" />
         )}
