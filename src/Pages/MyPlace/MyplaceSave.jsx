@@ -82,17 +82,27 @@ const TextContainer = styled.div`
   white-space: nowrap;
 `;
 
-const SuggestionContainer=styled.div`
-   display:flex;
-   flex-direction: column;
-   width: 90%;
+const SuggestionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 90%;
 `;
-const Suggestion=styled.div`
-   padding: 0.7rem;
-   border-bottom: 1px solid #F1F1F1;
-   display: flex;
-   align-items: center;
-   margin: 0.5rem 0;
+const Suggestion = styled.div`
+  padding: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #F1F1F1;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0.5rem 0;
+`;
+
+const HighlightedText = styled.span`
+  color: skyblue;
+`;
+
+const NormalText = styled.span`
+  color: black;
 `;
 
 const MyplaceSave = () => {
@@ -129,6 +139,19 @@ const MyplaceSave = () => {
     setSuggestions([]);
   };
 
+  // Highlight matching parts of the text
+  const highlightText = (text, query) => {
+    if (!query) return <NormalText>{text}</NormalText>;
+    const parts = text.split(new RegExp(`(${query})`, 'gi'));
+    return parts.map((part, index) =>
+      part.toLowerCase() === query.toLowerCase() ? (
+        <HighlightedText key={index}>{part}</HighlightedText>
+      ) : (
+        <NormalText key={index}>{part}</NormalText>
+      )
+    );
+  };
+
   return (
     <Container>
       <Header title="나만의 장소" />
@@ -149,14 +172,13 @@ const MyplaceSave = () => {
 
         {searchQuery.length > 0 ? (
           <SuggestionContainer>
-          {suggestions.map((suggestion, index) => (
-            <Suggestion key={index}>
-              {suggestion.name} 
-              {suggestion.address}
-            </Suggestion>
-          ))}
-        </SuggestionContainer>
-
+            {suggestions.map((suggestion, index) => (
+              <Suggestion key={index}>
+                <div>{highlightText(suggestion.name, searchQuery)}</div>
+                <div>{highlightText(suggestion.address, searchQuery)}</div>
+              </Suggestion>
+            ))}
+          </SuggestionContainer>
         ) : (
           <Logo src={star} alt="star" />
         )}
