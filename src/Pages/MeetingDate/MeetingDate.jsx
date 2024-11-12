@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../component/Button';
 import Header from '../../component/Header';
+import Calendar from './Calendar';
 
 import meetingdate from '../../assets/meetingdate.svg';
 import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
@@ -84,6 +85,7 @@ const CalendarBackground = styled.div`
     border-radius: 1.5rem;
     width: 100%;
     box-shadow: 0px -4px 8px 0px #0000000A;
+    z-index: 1;
 `;
 const Bgpurple = styled.img`
   width: 60vw;
@@ -160,9 +162,9 @@ const Meetingdate = () => {
                         <DescriptionTitle>선택해주세요.</DescriptionTitle>
                     </DescriptionContainer2>
                     <CalendarBackground>
+                        <Calendar/>
                     <Button text="저장하기" onClick={handleDateSelection} />
                     </CalendarBackground>
-
                     </>
                 )}
 
