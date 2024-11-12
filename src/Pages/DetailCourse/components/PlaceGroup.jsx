@@ -3,7 +3,7 @@ import PlaceItem from './PlaceItem';
 import PlaceReplace from './PlaceReplace';
 import '../styles/PlaceGroup.css';
 
-const PlaceGroup = ({ mainPlace, alternativePlaces = [] }) => {
+const PlaceGroup = ({ mainPlace, alternativePlaces = [], isEditing, selectAll, onSelect }) => {
     const [showAlternatives, setShowAlternatives] = useState(false);
 
     const handleToggleAlternatives = () => {
@@ -13,12 +13,11 @@ const PlaceGroup = ({ mainPlace, alternativePlaces = [] }) => {
     return (
         <div className="place-group">
             <PlaceItem 
-                number={mainPlace.number}
-                title={mainPlace.title}
-                time={mainPlace.time}
-                category={mainPlace.category}
-                operatingHours={mainPlace.operatingHours}
+                {...mainPlace}
                 showAlternatives={showAlternatives}
+                isEditing={isEditing}
+                selectAll={selectAll}
+                onSelect={onSelect}
             />
             
             {alternativePlaces.length > 0 ? (

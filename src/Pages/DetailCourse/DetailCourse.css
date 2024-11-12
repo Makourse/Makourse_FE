@@ -82,15 +82,15 @@
 }
 
 /* 구분선 추가 */
-.options-section::after {
+/* .options-section::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     height: 1px;
-    background-color: #F0F0F0;  /* 회색 구분선 */
-}
+    background-color: #F0F0F0;
+} */
 
 .option-card {
     flex: 1;
@@ -124,7 +124,11 @@
 }
 
 .info-section {
-    padding: 20px;
+    padding: 0 20px 20px 20px !important;
+}
+
+.info-section.editing {
+    padding-bottom: 80px !important;
 }
 
 .info-item {
@@ -177,12 +181,13 @@
 .modal-overlay {
     position: fixed;
     top: 0;
-    bottom: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
-    align-items: flex-end;
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
@@ -331,7 +336,7 @@
 
 .pin-line {
     width: 1px;
-    height: 150px;
+    height: 130px;
     background: #e3e3e3;
     position: absolute;
     top: 30px;
@@ -401,4 +406,167 @@
     font-weight: 500;
     line-height: 138%; /* 16.56px */
     letter-spacing: -0.3px;
+}
+
+.course-edit {
+    position: fixed;  /* 고정 위치 */
+    bottom: 24px;    /* 하단에서의 거리 */
+    right: 24px;     /* 오른쪽에서의 거리 */
+    z-index: 100;    /* 다른 요소들 위에 표시 */
+}
+
+.course-edit .edit-button {
+    display: inline-flex;
+    padding: 8px 12px 8px 10px;
+    align-items: center;
+    gap: 8px;
+    border-radius: 32px;
+    background: #FAFAFA;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04);
+    width: 120px;
+}
+
+.course-edit .edit-button span {
+    font-size: 14px;
+    color: #666;
+    writing-mode: horizontal-tb;
+}
+
+.course-edit .edit-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.edit-delete {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    width: 312px;
+    padding: 16px 0px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    background: #F1F1F1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.edit-delete p {
+    margin: 0;
+    color: #666;
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 138%;
+    letter-spacing: -0.4px;
+    transition: color 0.3s ease;
+}
+
+/* 선택된 아이템이 있을 때의 스타일 */
+.edit-delete.active {
+    background: #376FA3;
+}
+
+.edit-delete.active p {
+    color: #FFF;
+}
+
+/* 기존 modal-button 스타일에 추가 */
+.modal-button.delete {
+    background: rgba(241, 241, 241, 0.65);
+    color: #999;
+}
+
+.modal-button.delete.active {
+    background: #FF6B6B;
+    color: white;
+}
+
+/* 모달 스타일 수정 */
+.delete-modal {
+    position: relative;
+    display: inline-flex;
+    padding: 12px;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 14px;
+    background: #FAFAFA;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    width: 300px;
+}
+
+.delete-modal h2 {
+    display: flex;
+    padding: 12px 0px 16px 0px;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    align-self: stretch;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+}
+
+/* 줄바꿈을 위한 span 스타일 */
+.delete-modal-main {
+    color: var(--kakao-logo, #000);
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 138%; /* 22.08px */
+    letter-spacing: -0.4px;
+}
+
+.delete-modal-sub {
+    color: var(--kakao-logo, #878787);
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 138%; /* 16.56px */
+    letter-spacing: -0.3px;
+}
+
+.delete-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.delete-modal-button {
+    display: flex;
+    width: 132px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.delete-modal-button.cancel {
+    background: #F1F1F1;
+    color: #666;
+}
+
+.delete-modal-button.delete {
+    background: #D6EBFF;
+    color: #376FA3;
 }

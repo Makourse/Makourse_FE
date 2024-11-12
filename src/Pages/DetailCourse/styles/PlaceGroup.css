@@ -132,3 +132,11 @@
     min-width: min-content;
     padding-bottom: 8px;
 }
+
+.info-detail-container {
+    cursor: pointer;
+}
+
+.info-detail-container.selected .info-detail {
+    background-color: rgba(209, 234, 255, 0.65);
+}
