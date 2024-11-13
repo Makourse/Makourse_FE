@@ -3,10 +3,13 @@ import styled from 'styled-components';
 import Button from '../../component/Button';
 import Header from '../../component/Header';
 import Calendar from './Calendar';
+//import Time from './Time';
 
 import meetingdate from '../../assets/meetingdate.svg';
 import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
 import backgroundpurple from '../../assets/bg_mypage3_bggra1_purple.svg';
+import blurstar from '../../assets/blurstar.svg';
+import heart from '../../assets/heart.svg';
 
 const Container = styled.div`
     display: flex;
@@ -79,30 +82,74 @@ const Descriptiontext = styled.div`
     font-weight: 400;
 `;
 
+const CalendarContainer = styled.div`
+    display: flex;
+    flex-grow: 1;
+
+`;
+const TimeContainer = styled.div`
+    display: flex;
+    flex-grow: 1;
+
+`;
 const CalendarBackground = styled.div`
     background-color: #FAFAFA;
-    flex-grow: 1;
     border-radius: 1.5rem;
     width: 100%;
     box-shadow: 0px -4px 8px 0px #0000000A;
     z-index: 1;
+    //border:2px solid red;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:space-around;
+`;
+const TimeBackground = styled.div`
+    background-color: #FAFAFA;
+    border-radius: 1.5rem;
+    width: 100vw;
+    box-shadow: 0px -4px 8px 0px #0000000A;
+    z-index: 1;
+    //border:2px solid red;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:space-around;
 `;
 const Bgpurple = styled.img`
-  width: 60vw;
-  position: absolute;
-  top: 43%;
-  left: 0%;
-  transform: translate(-10%, -50%);
+    width: 60vw;
+    position: absolute;
+    top: 43%;
+    left: 0%;
+    transform: translate(-10%, -50%);
 `;
 
 const Bgblue = styled.img`
-  width: 60vw;
-  position: absolute;
-  top: 50%;
-  left: 40%;
-  transform: translate(0%, -50%);
+    width: 60vw;
+    position: absolute;
+    top: 50%;
+    left: 40%;
+    transform: translate(0%, -50%);
 `;
 
+const Blurstar = styled.img`
+    width: 30vw;
+    position: absolute;
+    top: 35%;
+    left: 0%;
+    transform: translate(0%, -50%);
+    z-index: 2;
+`;
+
+const Heart = styled.img`
+    width: 37vw;
+    position: absolute;
+    top:33%;
+    left: 63.5%;
+    transform: translate(0%, -50%);
+`;
 
 const dates = [
     { id: 1, title: '첫 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
@@ -112,6 +159,7 @@ const dates = [
 
 const Meetingdate = () => {
     const [viewState, setViewState] = useState('initial'); // initial, selectDate, selectTime 상태를 관리
+    const [isDateSelected, setIsDateSelected] = useState(false); // 날짜 선택 상태 추가
 
     const handleDateClick = (id) => {
         setViewState('selectDate'); // 날짜 선택 화면으로 전환
@@ -161,18 +209,38 @@ const Meetingdate = () => {
                         <DescriptionTitle>날짜를</DescriptionTitle>
                         <DescriptionTitle>선택해주세요.</DescriptionTitle>
                     </DescriptionContainer2>
+                    <CalendarContainer>
                     <CalendarBackground>
-                        <Calendar/>
-                    <Button text="저장하기" onClick={handleDateSelection} />
+                        <Calendar onDateClick={() => setIsDateSelected(true)} />
+                        <Button 
+                            text="저장하기" 
+                            bgColor={isDateSelected ? "#D6EBFF" : "#F1F1F1"} 
+                            textColor={isDateSelected ? "#376FA3" : "#666666"} 
+                            onClick={isDateSelected ? handleDateSelection : null} 
+                            disabled={!isDateSelected}
+                        />
                     </CalendarBackground>
+                    </CalendarContainer>
                     </>
                 )}
 
                 {viewState === 'selectTime' && (
-                    <div>
-                        <p>시간을 드래그로 조절하세요.</p>
+                    <>
+                        <DescriptionContainer2>
+                            <Bgpurple src={backgroundpurple} alt="purlplecircle" />
+                            <Bgblue src={backgroundblue} alt="bluecircle" />
+                            <Blurstar src={blurstar} alt="blurstar"/>
+                            <Heart src={heart} alt="heart"/>
+                            <DescriptionTitle>시간을</DescriptionTitle>
+                            <DescriptionTitle>선택해주세요.</DescriptionTitle>
+                        </DescriptionContainer2>
+                        <TimeContainer>
+                            <TimeBackground>
+
+                            </TimeBackground>
+                        </TimeContainer>
                         <Button text="시간 저장" onClick={handleTimeSave} />
-                    </div>
+                    </>
                 )}
             </MeetingDateContainer>
         </Container>
@@ -185,3 +253,7 @@ export default Meetingdate;
   //아무거나 눌리게하고 
   //세번째날짜를눌러서 날짜입력이 되더라도 위에 비어있는 박스가 있으면
   //빈 박스에날짜기입되게
+
+  //뒤로가는버튼이 state를 뒤로가게하는게아니라서 수정필요
+  //타임피커어케하는건데
+
