@@ -104,6 +104,7 @@ const MyCalendar = ({ onDateClick }) => {
 export default MyCalendar;
 
 //이번달이아닌주말도 검정으로표시되는문제
+//오늘날짜보다 전은 체크못하게해야하는거아닌가?
 
 
 

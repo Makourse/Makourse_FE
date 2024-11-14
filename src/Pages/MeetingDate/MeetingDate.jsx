@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Button from '../../component/Button';
 import Header from '../../component/Header';
 import Calendar from './Calendar';
-//import Time from './Time';
+import TimePicker from './TimePicker';
 
 import meetingdate from '../../assets/meetingdate.svg';
 import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
@@ -236,7 +236,7 @@ const Meetingdate = () => {
                         </DescriptionContainer2>
                         <TimeContainer>
                             <TimeBackground>
-
+                                <TimePicker/>
                             </TimeBackground>
                         </TimeContainer>
                         <Button text="시간 저장" onClick={handleTimeSave} />
