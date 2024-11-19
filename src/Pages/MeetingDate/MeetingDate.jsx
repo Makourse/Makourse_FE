@@ -151,27 +151,51 @@ const Heart = styled.img`
     transform: translate(0%, -50%);
 `;
 
-const dates = [
-    { id: 1, title: '첫 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
-    { id: 2, title: '두 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
-    { id: 3, title: '세 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
-];
+
 
 const Meetingdate = () => {
     const [viewState, setViewState] = useState('initial'); // initial, selectDate, selectTime 상태를 관리
-    const [isDateSelected, setIsDateSelected] = useState(false); // 날짜 선택 상태 추가
+    const [selectedDateId, setSelectedDateId] = useState(null); // 현재 선택된 ID
+    const [currentDate, setCurrentDate] = useState(null); // 캘린더에서 선택된 날짜
+    const [currentTime, setCurrentTime] = useState(null); // 타임피커에서 선택된 시간
+    const [dates, setDates] = useState([
+        { id: 1, title: '첫 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
+        { id: 2, title: '두 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
+        { id: 3, title: '세 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
+      ]);
 
     const handleDateClick = (id) => {
+        setSelectedDateId(id);
         setViewState('selectDate'); // 날짜 선택 화면으로 전환
     };
 
-    const handleDateSelection = () => {
-        setViewState('selectTime'); // 시간 선택 화면으로 전환
-    };
+    const handleCalendarDateClick = (date) => {
+        const formattedDate = `${date.getFullYear()}년 ${String(date.getMonth() + 1).padStart(2, '0')}월 ${String(date.getDate()).padStart(2, '0')}일`;
+        setCurrentDate(formattedDate);
+      };
 
-    const handleTimeSave = () => {
-        setViewState('initial'); // 시간을 저장하고 초기 화면으로 돌아감
+    const handleSaveDate = () => {
+        if (selectedDateId !== null && currentDate) {
+            const updatedDates = dates.map((date) =>
+            date.id === selectedDateId ? { ...date, title: currentDate } : date
+            );
+            setDates(updatedDates); // 상태 업데이트
+            setViewState('selectTime'); // 시간 선택 상태로 이동
+        }
     };
+      
+
+  const handleSaveTime = (time) => {
+    if (selectedDateId !== null && time) {
+      dates[selectedDateId - 1].description = time; // 더미 데이터 업데이트
+      setViewState('initial'); // 초기 상태로 복귀
+    }
+  };
+
+  // 현재 선택된 날짜 가져오기
+  const selectedDate = selectedDateId
+  ? dates.find((date) => date.id === selectedDateId)?.title
+  : null;
 
     return (
         <Container>
@@ -188,7 +212,11 @@ const Meetingdate = () => {
                         </DescriptionContainer>
                         <DateContainer>
                             {dates.map((date) => (
-                                <Date key={date.id} onClick={() => handleDateClick(date.id)}>
+                                <Date
+                                key={date.id}
+                                selected={date.id === selectedDateId}
+                                onClick={() => handleDateClick(date.id)}
+                                >
                                     <DateMeeting src={meetingdate} alt="meetingdate" />
                                     <Text>
                                         <Datetext>{date.title}</Datetext>
@@ -211,13 +239,14 @@ const Meetingdate = () => {
                     </DescriptionContainer2>
                     <CalendarContainer>
                     <CalendarBackground>
-                        <Calendar onDateClick={() => setIsDateSelected(true)} />
+                        <Calendar onDateClick={handleCalendarDateClick} />
                         <Button 
                             text="저장하기" 
-                            bgColor={isDateSelected ? "#D6EBFF" : "#F1F1F1"} 
+                            onClick={handleSaveDate}
+                            /*bgColor={isDateSelected ? "#D6EBFF" : "#F1F1F1"} 
                             textColor={isDateSelected ? "#376FA3" : "#666666"} 
                             onClick={isDateSelected ? handleDateSelection : null} 
-                            disabled={!isDateSelected}
+                            disabled={!isDateSelected}*/
                         />
                     </CalendarBackground>
                     </CalendarContainer>
@@ -236,10 +265,17 @@ const Meetingdate = () => {
                         </DescriptionContainer2>
                         <TimeContainer>
                             <TimeBackground>
-                                <TimePicker/>
+                                <TimePicker
+                                    onSaveTime={handleSaveTime}
+                                    selectedDate={selectedDate} // 여기서 선택된 날짜 전달
+                                />
                             </TimeBackground>
                         </TimeContainer>
-                        <Button text="시간 저장" onClick={handleTimeSave} />
+                        <Button 
+                            text="날짜 수정하기" 
+                            onClick={() => setViewState('selectDate')} 
+                        />
+                        <Button text="시간 저장" onSaveTime={handleSaveTime} />
                     </>
                 )}
             </MeetingDateContainer>
@@ -256,4 +292,6 @@ export default Meetingdate;
 
   //뒤로가는버튼이 state를 뒤로가게하는게아니라서 수정필요
   //타임피커어케하는건데
+
+  //날짜수정하기버튼디자인수정
 

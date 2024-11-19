@@ -60,10 +60,10 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const TimePicker = () => {
+const TimePicker = ({ onSaveTime, selectedDate }) => {
   const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
   const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
-  const periods = [' ','AM', 'PM',' '];
+  const periods = [' ', 'AM', 'PM', ' '];
 
   const [selectedHour, setSelectedHour] = useState('01');
   const [selectedMinute, setSelectedMinute] = useState('00');
@@ -75,43 +75,73 @@ const TimePicker = () => {
 
   useEffect(() => {
     const createObserver = (ref, setSelectedValue) => {
+      if (!ref.current) return;
+  
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              setSelectedValue(entry.target.textContent);
+              setSelectedValue(entry.target.textContent.trim());
             }
           });
         },
         {
           root: ref.current,
-          threshold: 0.9, // 중앙에 맞추기 <-왜 0.5아니고 0.9로하니까되는지는 모르겟음
+          threshold: 0.9,
         }
       );
-
-      ref.current.childNodes.forEach((item) => observer.observe(item));
-
-      // Clean up observer when component unmounts
+  
+      const childNodes = ref.current.childNodes;
+      if (childNodes) {
+        childNodes.forEach((item) => observer.observe(item));
+      }
+  
       return () => {
-        ref.current.childNodes.forEach((item) => observer.unobserve(item));
+        if (childNodes) {
+          childNodes.forEach((item) => observer.unobserve(item));
+        }
         observer.disconnect();
       };
     };
-
-    const hourObserverCleanup = createObserver(hourRef, setSelectedHour);
-    const minuteObserverCleanup = createObserver(minuteRef, setSelectedMinute);
-    const periodObserverCleanup = createObserver(periodRef, setSelectedPeriod);
-
+  
+    const hourCleanup = hourRef.current ? createObserver(hourRef, setSelectedHour) : null;
+    const minuteCleanup = minuteRef.current ? createObserver(minuteRef, setSelectedMinute) : null;
+    const periodCleanup = periodRef.current ? createObserver(periodRef, setSelectedPeriod) : null;
+  
     return () => {
-      hourObserverCleanup();
-      minuteObserverCleanup();
-      periodObserverCleanup();
+      if (hourCleanup) hourCleanup();
+      if (minuteCleanup) minuteCleanup();
+      if (periodCleanup) periodCleanup();
     };
   }, []);
+  
+  useEffect(() => {
+    const scrollToCenter = (ref, value) => {
+      if (ref.current) {
+        const childNodes = ref.current.childNodes;
+        const targetIndex = Array.from(childNodes).findIndex((node) => node.textContent.trim() === value);
+        if (targetIndex !== -1) {
+          childNodes[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    };
+  
+    scrollToCenter(hourRef, selectedHour);
+    scrollToCenter(minuteRef, selectedMinute);
+    scrollToCenter(periodRef, selectedPeriod);
+  }, [selectedHour, selectedMinute, selectedPeriod]);
+  
+
+  const handleSave = () => {
+    const formattedTime = `${selectedPeriod} ${selectedHour}시 ${selectedMinute}분`;
+    onSaveTime(formattedTime);
+  };
 
   return (
     <TimePickerContainer>
-      <DateDisplay>2024년 09월 30일</DateDisplay>
+      {/* 선택된 날짜 표시 */}
+      <DateDisplay>{selectedDate || '날짜를 선택하세요'}</DateDisplay>
+
       <PickerWrapper>
         <PickerColumn ref={periodRef}>
           {periods.map((period, index) => (
@@ -120,28 +150,31 @@ const TimePicker = () => {
             </PickerItem>
           ))}
         </PickerColumn>
+
         <PickerColumn ref={hourRef}>
-          {[...hours, ...hours, ...hours].map((hour, index) => (
+          {hours.map((hour, index) => (
             <PickerItem key={index} selected={hour === selectedHour}>
               {hour}
             </PickerItem>
           ))}
         </PickerColumn>
+
         <PickerColumn>:</PickerColumn>
+
         <PickerColumn ref={minuteRef}>
-          {[...minutes, ...minutes, ...minutes].map((minute, index) => (
+          {minutes.map((minute, index) => (
             <PickerItem key={index} selected={minute === selectedMinute}>
               {minute}
             </PickerItem>
           ))}
         </PickerColumn>
       </PickerWrapper>
-      <Button>저장하기</Button>
     </TimePickerContainer>
   );
 };
 
 export default TimePicker;
+
 
 //시간과 분의 무한반복을..못하겠음 그냥 3개이어붙였는데 나중에해결해보기
 //맨앞과 맨뒤에 공백을 삽입해야 01과 12도 가운데로올수있을 것 같은데.. (무한반복해결되면 자동해결)
