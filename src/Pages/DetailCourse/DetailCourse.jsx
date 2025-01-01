@@ -1,5 +1,5 @@
 import './DetailCourse.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MeetingPlace from './components/MeetingPlace';
 import PlaceGroup from './components/PlaceGroup';
@@ -13,6 +13,21 @@ const DetailCourse = () => {
     const [selectedItems, setSelectedItems] = useState(0);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const mapOptions = {
+            center: new naver.maps.LatLng(37.557527, 126.925595),
+            zoom: 15
+        };
+        
+        const map = new naver.maps.Map('naver-map', mapOptions);
+        
+        // 마커도 같은 좌표로 설정
+        new naver.maps.Marker({
+            position: new naver.maps.LatLng(37.557527, 126.925595),
+            map: map
+        });
+    }, []);
 
     const handleEditClick = () => {
         setIsModalOpen(true);
@@ -80,7 +95,6 @@ const DetailCourse = () => {
     const place2 = {
         mainPlace: {
             number: "2",
-            time: "PM 2시 00분",
             title: "연남동 식당",
             category: "식당",
             operatingHours: "11:00~21:00"
@@ -144,7 +158,9 @@ const DetailCourse = () => {
                     </div>
                 </div>
             </section>
-
+            <div className='detail-map-box'>
+                <div id='naver-map' style={{ width: '100%', height: '180px' }}/>
+            </div>
             {isEditing && (
                 <div className='edit-select'>
                     <div className='edit-select-container'>

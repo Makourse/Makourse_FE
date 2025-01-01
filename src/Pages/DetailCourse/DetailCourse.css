@@ -7,8 +7,10 @@
 .detail-course-header {
     display: flex;
     align-items: center;
-    padding: 20px;
-    position: relative;
+    padding: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
     background-color: #fff;
 }
 
@@ -193,8 +195,8 @@
 
 .modal-content {
     background: white;
-    width: 100%;
-    border-radius: 20px 20px 0 0;
+    width: 85%;
+    border-radius: 20px;
     padding: 24px;
 }
 
@@ -569,4 +571,13 @@
 .delete-modal-button.delete {
     background: #D6EBFF;
     color: #376FA3;
+}
+
+.detail-map-box {
+    padding: 0 20px;
+    margin: 20px 0;
+}
+
+#naver-map {
+    border-radius: 8px;
 }
