@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'; 
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from '../../component/Button';
 import Header from '../../component/Header';
@@ -108,17 +109,17 @@ const NormalText = styled.span`
 const MyplaceSave = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  
+  const navigate = useNavigate();
+
   const allSuggestions = [
-    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역" },
-    { name: "서울숲", address: "서울시 성동구 뚝섬로 273 서울숲역" },
-    { name: "남산타워", address: "서울시 중구 남산동2가 105-1" },
-    { name: "경복궁", address: "서울시 종로구 사직로 161" },
+    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", latitude: 37.557527, longitude: 126.925595 },
+    { name: "서울숲", address: "서울시 성동구 뚝섬로 273 서울숲역", latitude: 37.544579, longitude: 127.041268 },
+    { name: "남산타워", address: "서울시 중구 남산동2가 105-1", latitude: 37.551169, longitude: 126.988227 },
+    { name: "경복궁", address: "서울시 종로구 사직로 161", latitude: 37.579617, longitude: 126.977041 },
   ];
 
   const decomposeSearchQuery = (query) => query.split('').map(char => char.toLowerCase());
 
-  // 검색어 변경 시 필터링
   useEffect(() => {
     if (searchQuery) {
       const decomposedQuery = decomposeSearchQuery(searchQuery);
@@ -139,6 +140,22 @@ const MyplaceSave = () => {
     setSuggestions([]);
   };
 
+  const handleNavigateToMap = () => {
+    navigate('/myplace/map', { state: { searchQuery } }); // 검색어 전달
+  };
+  
+  // 장소 클릭 시 이동 부분 수정
+  const handleSuggestionClick = (suggestion) => {
+    navigate('/myplace/map', { 
+      state: { 
+        latitude: suggestion.latitude, 
+        longitude: suggestion.longitude, 
+        searchQuery 
+      }
+    });
+  };
+  
+
   // Highlight matching parts of the text
   const highlightText = (text, query) => {
     if (!query) return <NormalText>{text}</NormalText>;
@@ -154,7 +171,7 @@ const MyplaceSave = () => {
 
   return (
     <Container>
-      <Header title="나만의 장소" />
+      <Header title="나만의 장소 저장하기" />
       <MyplaceSaveContainer>
         <SearchBoxContainer>
           {searchQuery.length > 0 && (
@@ -173,7 +190,7 @@ const MyplaceSave = () => {
         {searchQuery.length > 0 ? (
           <SuggestionContainer>
             {suggestions.map((suggestion, index) => (
-              <Suggestion key={index}>
+              <Suggestion key={index} onClick={() => handleSuggestionClick(suggestion)}>
                 <div>{highlightText(suggestion.name, searchQuery)}</div>
                 <div>{highlightText(suggestion.address, searchQuery)}</div>
               </Suggestion>

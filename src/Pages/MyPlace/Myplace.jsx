@@ -1,6 +1,7 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from "react";
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import Button from '../../component/Button';
 import Header from '../../component/Header';
 
@@ -103,13 +104,31 @@ const PlaceImg = styled.img`
 
 const Myplace = () => {
   const [places, setPlaces] = useState([
-    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", image: null },
-    { name: "서울숲", address: "서울시 성동구 뚝섬로 273 서울숲역", image: null },
-    { name: "남산타워", address: "서울시 중구 남산동2가 105-1", image: null },
-    { name: "경복궁", address: "서울시 종로구 사직로 161", image: null }
-  ]); // 더미 데이터: 장소 이름과 주소, 이미지
-
+    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", latitude: 37.557527, longitude: 126.925595, image: null },
+  ]); // 더미 데이터: 여러 장소 추가
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 새로운 장소를 추가하는 로직
+  useEffect(() => {
+    if (location.state?.newPlace) {
+      setPlaces((prevPlaces) => {
+        // 중복 방지: 동일한 이름과 주소의 장소가 이미 있는지 확인
+        const isDuplicate = prevPlaces.some(
+          (place) =>
+            place.name === location.state.newPlace.name &&
+            place.address === location.state.newPlace.address
+        );
+        if (!isDuplicate) {
+          return [...prevPlaces, location.state.newPlace];
+        }
+        return prevPlaces;
+      });
+
+      // 상태 초기화 (중복 추가 방지)
+      navigate('/myplace', { replace: true });
+    }
+  }, [location.state, navigate]);
 
   const handleButtonClick = () => {
     navigate('/myplace/save');
@@ -118,10 +137,10 @@ const Myplace = () => {
   return (
     <Container>
       <Header title="나만의 장소" />
-      <MyplaceContainer>
         {places.length === 0 ? (
           <>
-            <DescriptionContainer>
+          <MyplaceContainer>
+          <DescriptionContainer>
               <DescriptionText1>가고 싶었던 곳을 <br /> 저장하고 코스에 반영해요</DescriptionText1>
               <DescriptionText2>평소에 가고 싶은 곳이 있었다면 저장해 보아요.<br />자도에 나오지 않는 곳도 저장할 수 있어요.</DescriptionText2>
             </DescriptionContainer>
@@ -129,10 +148,13 @@ const Myplace = () => {
             <TextContainer>아직 저장된 장소가 없어요</TextContainer>
             <Bgpurple src={backgroundpurple} alt="purlplecircle" />
             <Bgblue src={backgroundblue} alt="bluecircle" />
+          </MyplaceContainer>
+          <Button text="나만의 장소 저장하기" onClick={handleButtonClick} />
           </>
         ) : (
           <>
-            {places.map((place, index) => (
+          <MyplaceContainer>
+          {places.map((place, index) => (
               <PlaceContainer key={index}>
                 <PlaceImg src={place.image || myplaceimg} alt="Place Image" />
                 <PlaceTextContainer>
@@ -141,15 +163,16 @@ const Myplace = () => {
                 </PlaceTextContainer>
               </PlaceContainer>
             ))}
+          </MyplaceContainer>
+            <Button text="나만의 장소 추가하기" onClick={handleButtonClick} />
           </>
         )}
-      </MyplaceContainer>
-      <Button text="나만의 장소 저장하기" onClick={handleButtonClick} />
     </Container>
   );
 };
 
 export default Myplace;
+
 
 
 
