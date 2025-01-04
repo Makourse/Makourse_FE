@@ -1,4 +1,10 @@
-#root {
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+body {
+  font-family: 'Pretendard';
+}
+
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -39,4 +45,4 @@
 
 .read-the-docs {
   color: #888;
-}
+} */
