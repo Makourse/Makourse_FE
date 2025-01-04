@@ -187,6 +187,7 @@ const Meetingdate = () => {
     const [viewState, setViewState] = useState('initial'); // initial, selectDate, selectTime 상태를 관리
     const [selectedDateId, setSelectedDateId] = useState(null); // 현재 선택된 ID
     const [currentDate, setCurrentDate] = useState(null); // 캘린더에서 선택된 날짜
+    const [timeDescription, setTimeDescription] = useState('시간을 선택하세요');
     const [currentTime, setCurrentTime] = useState(null); // 타임피커에서 선택된 시간
     const [dates, setDates] = useState([
         { id: 1, title: '첫 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
@@ -204,6 +205,7 @@ const Meetingdate = () => {
         setCurrentDate(formattedDate);
       };
 
+
     const handleSaveDate = () => {
         if (selectedDateId !== null && currentDate) {
             const updatedDates = dates.map((date) =>
@@ -213,14 +215,22 @@ const Meetingdate = () => {
             setViewState('selectTime'); // 시간 선택 상태로 이동
         }
     };
+    
+    const handleTimeChange = (newTimeData) => {
+        setCurrentTime(newTimeData); // TimePicker에서 선택된 시간 저장
+      };
       
-
-  const handleSaveTime = (time) => {
-    if (selectedDateId !== null && time) {
-      dates[selectedDateId - 1].description = time; // 더미 데이터 업데이트
-      setViewState('initial'); // 초기 상태로 복귀
-    }
-  };
+      const handleSaveTime = () => {
+        if (selectedDateId !== null && currentTime) {
+          const formattedTime = `${currentTime.period} ${currentTime.hour}시 ${currentTime.minute}분`;
+          const updatedDates = dates.map((date) =>
+            date.id === selectedDateId ? { ...date, description: formattedTime } : date
+          );
+          setDates(updatedDates); // 상태 업데이트
+          setViewState('initial'); // 초기 상태로 복귀
+        }
+      };
+      
 
   // 현재 선택된 날짜 가져오기
   const selectedDate = selectedDateId
@@ -302,14 +312,14 @@ const Meetingdate = () => {
                         <TimeContainer>
                             <TimeBackground>
                                 <TimePicker
-                                    onSaveTime={handleSaveTime}
+                                    onTimeChange={handleTimeChange}
                                     selectedDate={selectedDate} // 여기서 선택된 날짜 전달
                                 />
                             </TimeBackground>
                         </TimeContainer>
                         <Button2 onClick={() => setViewState('selectDate')}>날짜 수정하기</Button2>
                         <ButtonContainer>
-                            <Button text="시간 저장" onSaveTime={handleSaveTime} />
+                            <Button text="시간 저장" onClick={handleSaveTime} />
                         </ButtonContainer>
                     </>
                 )}
@@ -321,11 +331,13 @@ const Meetingdate = () => {
 export default Meetingdate;
 
 
-  //아무거나 눌리게하고 
-  //세번째날짜를눌러서 날짜입력이 되더라도 위에 비어있는 박스가 있으면
-  //빈 박스에날짜기입되게
 
-  //뒤로가는버튼이 state를 뒤로가게하는게아니라서 수정필요
-  //타임피커어케하는건데
+  //빈박스보다 채워있는박스가 우선순위가 높게
+  //일정이 채워져있는게 존재하면 무조건 나중에정할게요가 아니라 저장하기 버튼으로 변경되어야함
+  //채워진 박스는 1순위 2순위..로 img바뀌어야함
+  //순서를 바꿀 수 있어야함
+
+  //뒤로가는버튼이 state를 뒤로가게하는게아니라서 수정필요,,
+  // 였었는데 걍 작동을안하는데?
 
   //날짜수정하기버튼디자인수정 (밑줄추가가)

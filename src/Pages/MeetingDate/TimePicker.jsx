@@ -77,7 +77,7 @@ const PickerItem = styled.div`
 
 
 
-const TimePicker = ({ onSaveTime, selectedDate }) => {
+const TimePicker = ({ onTimeChange, selectedDate }) => {
   const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
   const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
   const periods = [' ', 'AM', 'PM', ' '];
@@ -105,14 +105,19 @@ const TimePicker = ({ onSaveTime, selectedDate }) => {
     };
 
     const onScroll = (ref, setSelectedValue) => {
+      if (!ref.current) return;
+  
       const handleScroll = () => {
         updateSelectedValue(ref, setSelectedValue);
       };
-
+  
       ref.current.addEventListener('scroll', handleScroll);
-
+  
+      // Cleanup function to remove the event listener
       return () => {
-        ref.current.removeEventListener('scroll', handleScroll);
+        if (ref.current) {
+          ref.current.removeEventListener('scroll', handleScroll);
+        }
       };
     };
 
@@ -133,10 +138,12 @@ const TimePicker = ({ onSaveTime, selectedDate }) => {
     console.log('Selected Period:', selectedPeriod);
   }, [selectedHour, selectedMinute, selectedPeriod]);
 
-  const handleSave = () => {
-    const formattedTime = `${selectedPeriod} ${selectedHour}시 ${selectedMinute}분`;
-    onSaveTime(formattedTime);
-  };
+  useEffect(() => {
+    // 부모 컴포넌트로 시간 데이터 전달
+    onTimeChange({ hour: selectedHour, minute: selectedMinute, period: selectedPeriod });
+}, [selectedHour, selectedMinute, selectedPeriod]); // `onTimeChange` 제거
+
+  
 
   return (
     <TimePickerContainer>
