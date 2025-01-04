@@ -1,0 +1,583 @@
+/* 모든 요소에 Pretendard 폰트 적용 */
+* {
+    font-family: Pretendard;
+    font-style: normal;
+}
+
+.detail-course-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #fff;
+}
+
+.detail-course-header h1 {
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #000;
+}
+
+.back-button {
+    position: absolute;
+    left: 20px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.back-button img {
+    width: 24px;
+    height: 24px;
+}
+
+.title-section {
+    padding: 20px;
+}
+
+.title-section h2 {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 12px 0;
+    font-weight: 400;
+}
+
+.title-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-content h3 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    color: #000;
+}
+
+.edit-button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+}
+
+.edit-button img {
+    width: 24px;
+    height: 24px;
+}
+
+.options-section {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    position: relative;
+}
+
+/* 구분선 추가 */
+/* .options-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #F0F0F0;
+} */
+
+.option-card {
+    flex: 1;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.detail-icon {
+    margin-bottom: 12px;
+}
+
+.detail-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+.content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: #000;
+}
+
+.content p {
+    font-size: 12px;
+    color: #999;
+    margin: 0;
+}
+
+.info-section {
+    padding: 0 20px 20px 20px !important;
+}
+
+.info-section.editing {
+    padding-bottom: 80px !important;
+}
+
+.info-item {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    z-index: 3;
+    position: relative;
+}
+
+.info-item.add{
+    margin-top: 16px;
+}
+
+.icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-content h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: #000;
+}
+
+.info-content p {
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    width: 85%;
+    border-radius: 20px;
+    padding: 24px;
+}
+
+.modal-content h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 32px;
+    margin-bottom: 0px;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 16px 0;
+    border: none;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: 16px;
+    outline: none;
+    margin: 8px 0 16px 0;
+}
+
+.modal-input::placeholder {
+    color: #999;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.modal-button {
+    flex: 1;
+    padding: 16px 0;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #F5F5F5;
+}
+
+.modal-button.save {
+    background: rgba(241, 241, 241, 0.65);
+    color: #999;
+}
+
+/* 활성화된 저장 튼 스타일 */
+.modal-button.save.active {
+    background: #D6EBFF;
+    color: #376FA3;
+}
+
+.info-detail {
+    display: flex;
+    width: 100%;
+    padding: 8px 12px 12px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    border-radius: 8px;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.04);
+}
+
+.info-detail-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.time-info {
+    font-size: 12px;
+    font-weight: 500;
+    color: #000;
+    width: 100%;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.place-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.place-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+}
+
+.place-address {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 구분선 추가 */
+.info-detail > :not(:last-child) {
+    padding-bottom: 12px;
+}
+
+.meeting-pin {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 12px;
+    margin-left: 10px;
+}
+
+.pin-circle-meeting {
+    width: 40px;
+    height: 40px;
+    background: #F0E4FF;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #83148A;
+    font-size: 10px;
+    margin-bottom: 8px;
+    z-index: 2;
+}
+
+.pin-circle-place {
+    width: 40px;
+    height: 40px;
+    background: #D6EBFF;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #376FA3;
+    font-size: 12px;
+    margin-bottom: 8px;
+    z-index: 2;
+    font-weight: 500;
+}
+
+.pin-line {
+    width: 1px;
+    height: 130px;
+    background: #e3e3e3;
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    transition: height 0.3s ease;
+}
+
+/* !important를 추가하여 우선순위를 높여볼 수 있습니다 */
+.pin-line.extended {
+    height: 280px !important;
+}
+
+.place-replace {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+    gap: 4px;
+    margin-left: 70px;
+    margin-top: 12px;
+}
+
+.place-replace img{
+    width: 16px;
+    height: 16px;
+}
+
+.place-container {
+    width: 100%;
+}
+
+.place-time{
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.place-tag{
+    font-size: 11px;
+    font-family: Pretendard;
+    color: #83148A;
+    background-color: #F0E4FF;
+    font-weight: 400;
+    padding: 2px 4px;
+    border-radius: 4px;
+    width: 26px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.place-basic-info{
+    display: flex;
+    gap: 12px;
+}
+
+.place-replace-cnt{
+    color: var(--kakao-logo, #000);
+    font-family: Pretendard;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 138%; /* 16.56px */
+    letter-spacing: -0.3px;
+}
+
+.course-edit {
+    position: fixed;  /* 고정 위치 */
+    bottom: 24px;    /* 하단에서의 거리 */
+    right: 24px;     /* 오른쪽에서의 거리 */
+    z-index: 100;    /* 다른 요소들 위에 표시 */
+}
+
+.course-edit .edit-button {
+    display: inline-flex;
+    padding: 8px 12px 8px 10px;
+    align-items: center;
+    gap: 8px;
+    border-radius: 32px;
+    background: #FAFAFA;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04);
+    width: 120px;
+}
+
+.course-edit .edit-button span {
+    font-size: 14px;
+    color: #666;
+    writing-mode: horizontal-tb;
+}
+
+.course-edit .edit-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.edit-delete {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    width: 312px;
+    padding: 16px 0px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    background: #F1F1F1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.edit-delete p {
+    margin: 0;
+    color: #666;
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 138%;
+    letter-spacing: -0.4px;
+    transition: color 0.3s ease;
+}
+
+/* 선택된 아이템이 있을 때의 스타일 */
+.edit-delete.active {
+    background: #376FA3;
+}
+
+.edit-delete.active p {
+    color: #FFF;
+}
+
+/* 기존 modal-button 스타일에 추가 */
+.modal-button.delete {
+    background: rgba(241, 241, 241, 0.65);
+    color: #999;
+}
+
+.modal-button.delete.active {
+    background: #FF6B6B;
+    color: white;
+}
+
+/* 모달 스타일 수정 */
+.delete-modal {
+    position: relative;
+    display: inline-flex;
+    padding: 12px;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 14px;
+    background: #FAFAFA;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    width: 300px;
+}
+
+.delete-modal h2 {
+    display: flex;
+    padding: 12px 0px 16px 0px;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    align-self: stretch;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+}
+
+/* 줄바꿈을 위한 span 스타일 */
+.delete-modal-main {
+    color: var(--kakao-logo, #000);
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 138%; /* 22.08px */
+    letter-spacing: -0.4px;
+}
+
+.delete-modal-sub {
+    color: var(--kakao-logo, #878787);
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 138%; /* 16.56px */
+    letter-spacing: -0.3px;
+}
+
+.delete-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.delete-modal-button {
+    display: flex;
+    width: 132px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.delete-modal-button.cancel {
+    background: #F1F1F1;
+    color: #666;
+}
+
+.delete-modal-button.delete {
+    background: #D6EBFF;
+    color: #376FA3;
+}
+
+.detail-map-box {
+    padding: 0 20px;
+    margin: 20px 0;
+}
+
+#naver-map {
+    border-radius: 8px;
+}

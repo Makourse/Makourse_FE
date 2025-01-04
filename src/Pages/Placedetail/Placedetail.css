@@ -1,0 +1,298 @@
+* {
+    font-family: Pretendard;
+    font-style: normal;
+}
+
+body, html { /*전반적으로 배경색 지정*/
+    background-color: #FAFAFA;
+}
+
+.place-detail {
+    background-color: #FAFAFA;
+}
+
+.place-detail-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #FAFAFA;
+}
+
+.place-detail-header h1 {
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #000;
+}
+
+.back-button {
+    position: absolute;
+    left: 20px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.back-button img {
+    width: 24px;
+    height: 24px;
+}
+
+.place-detail-map-box {
+    margin-bottom: 20px;
+}
+
+#naver-map {
+    border-radius: 8px;
+}
+
+.place-detail-address-box {
+    display: flex;
+    color: #666666;
+    font-size: 12px;
+    gap: 4px;
+}
+
+.place-detail-place{
+    font-size: 24px;
+    font-weight: 600;
+    color: #000;
+}
+
+.place-detail-memo {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #F1F1F1;
+    color: #333333;
+    font-size: 16px;
+    padding: 16px 0;
+    align-items: center;
+}
+
+.place-detail-memo p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.place-detail-memo-text {
+    color: #666;
+    font-weight: 400 !important;
+}
+
+.place-detail-time {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #F1F1F1;
+    color: #333333;
+    font-size: 16px;
+}
+
+.place-detail-info-box{
+    margin-left: 24px;
+    gap: 24px;
+}
+
+.modal-overlay {            
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    touch-action: none; /* 터치 동작 방지 */
+    overflow: hidden; /* 스크롤 방지 */
+}
+
+/* 모달이 열려있을 때 body 스크롤 방지 */
+body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+.info-section {
+    padding: 0 20px 20px 20px !important;
+}
+
+.info-section.editing {
+    padding-bottom: 80px !important;
+}
+
+.modal-content {
+    background: white;
+    width: 85%;
+    border-radius: 20px;
+    padding: 24px;
+}
+
+.modal-content h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 16px;
+    margin-bottom: 0px;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 16px 0;
+    border: none;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: 16px;
+    outline: none;
+    margin: 8px 0 16px 0;
+}
+
+.modal-input::placeholder {
+    color: #999;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.modal-button {
+    flex: 1;
+    padding: 16px 0;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #F5F5F5;
+}
+
+.modal-button.save {
+    background: rgba(241, 241, 241, 0.65);
+    color: #999;
+}
+
+/* 활성화된 저장 튼 스타일 */
+.modal-button.save.active {
+    background: #D6EBFF;
+    color: #376FA3;
+}
+
+.time-modal {
+    width: 300px;
+}
+
+.time-picker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    gap: 20px;
+}
+
+.time-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    min-width: 60px;
+    position: relative;
+}
+
+.time-option {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.2);
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    padding: 0;
+}
+
+.time-option.selected {
+    color: #000;
+    font-weight: 500;
+    font-size: 18px;
+    position: relative;
+}
+
+/* 빠른 스크롤 중일 때는 transition 비활성화 */
+.quick-scrolling .time-option {
+    transition: none;
+}
+
+.sliding-up {
+    transform: translateY(-40px);
+    opacity: 0;
+}
+
+.sliding-down {
+    transform: translateY(40px);
+    opacity: 0;
+}
+
+/* 경계선 스타일 통일 */
+.time-option.selected::before,
+.time-option.selected::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    height: 1px;
+    background-color: #E8E8E8;
+}
+
+.time-option.selected::before {
+    top: -5px;  /* 상단 간격 조정 */
+}
+
+.time-option.selected::after {
+    bottom: -5px;  /* 하단 간격 조정 */
+}
+
+.time-separator {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 5px;
+    width: 20px;
+    text-align: center;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+/* AM/PM 컬럼에만 적용되는 스타일 */
+.time-column:first-child {
+    margin-right: 10px;
+}
+
+.time-column:first-child .time-option {
+    font-weight: 500;
+}
+
+/* AM/PM 컬럼 특정 스타일 */
+.period-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+}
+
+.period-column .time-option {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.place-detail-time-text{
+    color: #666666;   
+    font-weight: 500;
+}
+
+.place-detail-time-text2{
+    color: #000;   
+    font-weight: 500;
+}
