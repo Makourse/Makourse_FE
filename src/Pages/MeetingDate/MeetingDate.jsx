@@ -25,12 +25,21 @@ const MeetingDateContainer = styled.div`
     flex-direction: column;
     align-items: center;
 `;
+const MeetingDateContainer2 = styled.div`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border : 2px solid red;
+`;
+
 const DescriptionContainer = styled.div`
-    height: 40%;
+    height: 38%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 90%;
+    border : 2px solid black;
 `;
 const DescriptionContainer2 = styled.div`
     height: 30%;
@@ -44,7 +53,8 @@ const DescriptionTitle = styled.div`
     font-weight: 600;
 `;
 const DescriptionContent = styled.div`
-    margin-top: 1.5rem;
+    width: 90%;
+    margin-top: 1rem;
     font-size: 0.875rem;
     font-weight: 400;
 `;
@@ -53,13 +63,16 @@ const DateContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 90%;
+    border : 2px solid black;
 `;
 const Date = styled.div`
     display: flex;
-    padding: 1rem;
+    align-items: center;
+    height: 4.5rem;
     margin-bottom: 1rem;
     border-radius: 0.5rem;
     box-shadow: 0px 8px 8px 0px #0000000A;
+    padding-left: 0.75rem;
 `;
 
 const DateMeeting = styled.img`
@@ -90,7 +103,7 @@ const CalendarContainer = styled.div`
 const TimeContainer = styled.div`
     display: flex;
     flex-grow: 1;
-
+    border: 2px solid black;
 `;
 const CalendarBackground = styled.div`
     background-color: #FAFAFA;
@@ -111,7 +124,7 @@ const TimeBackground = styled.div`
     width: 100vw;
     box-shadow: 0px -4px 8px 0px #0000000A;
     z-index: 1;
-    //border:2px solid red;
+    border:2px solid red;
 
     display: flex;
     flex-direction: column;
@@ -151,6 +164,23 @@ const Heart = styled.img`
     transform: translate(0%, -50%);
 `;
 
+const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    height: 4.875rem;
+    width: 100%;
+
+`;
+
+const Button2=styled.div`
+    display: flex;
+    justify-content: center;
+    width:100%;
+    height: 3rem;
+    border: 2px solid red;
+    font-size: 1rem;
+    color: #666666;
+`;
 
 
 const Meetingdate = () => {
@@ -203,6 +233,7 @@ const Meetingdate = () => {
             <MeetingDateContainer>
                 {viewState === 'initial' && (
                     <>
+                    <MeetingDateContainer2>
                         <DescriptionContainer>
                             <DescriptionTitle>만날 날짜를</DescriptionTitle>
                             <DescriptionTitle>선택해주세요.</DescriptionTitle>
@@ -225,7 +256,10 @@ const Meetingdate = () => {
                                 </Date>
                             ))}
                         </DateContainer>
-                        <Button text="나중에 정할게요" />
+                </MeetingDateContainer2>
+                <ButtonContainer>
+                    <Button text="나중에 정할게요" />
+                </ButtonContainer>
                     </>
                 )}
 
@@ -240,6 +274,9 @@ const Meetingdate = () => {
                     <CalendarContainer>
                     <CalendarBackground>
                         <Calendar onDateClick={handleCalendarDateClick} />
+                    </CalendarBackground>
+                    </CalendarContainer>
+                    <ButtonContainer>
                         <Button 
                             text="저장하기" 
                             onClick={handleSaveDate}
@@ -248,8 +285,7 @@ const Meetingdate = () => {
                             onClick={isDateSelected ? handleDateSelection : null} 
                             disabled={!isDateSelected}*/
                         />
-                    </CalendarBackground>
-                    </CalendarContainer>
+                        </ButtonContainer>
                     </>
                 )}
 
@@ -271,11 +307,10 @@ const Meetingdate = () => {
                                 />
                             </TimeBackground>
                         </TimeContainer>
-                        <Button 
-                            text="날짜 수정하기" 
-                            onClick={() => setViewState('selectDate')} 
-                        />
-                        <Button text="시간 저장" onSaveTime={handleSaveTime} />
+                        <Button2 onClick={() => setViewState('selectDate')}>날짜 수정하기</Button2>
+                        <ButtonContainer>
+                            <Button text="시간 저장" onSaveTime={handleSaveTime} />
+                        </ButtonContainer>
                     </>
                 )}
             </MeetingDateContainer>
@@ -293,5 +328,4 @@ export default Meetingdate;
   //뒤로가는버튼이 state를 뒤로가게하는게아니라서 수정필요
   //타임피커어케하는건데
 
-  //날짜수정하기버튼디자인수정
-
+  //날짜수정하기버튼디자인수정 (밑줄추가가)

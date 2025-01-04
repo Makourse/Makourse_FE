@@ -27,7 +27,7 @@ const StyledCalendar = styled(Calendar)`
   }
 
   .react-calendar__tile--active {
-    background-color: #D6EBFF !important; /* 선택된 날짜에만 핑크색 배경 적용 */
+    background-color: #D6EBFF !important; 
     position: relative;
     width: 80%;
     height: 80%;
@@ -36,8 +36,8 @@ const StyledCalendar = styled(Calendar)`
   }
 
   .react-calendar__tile--now.react-calendar__tile--active {
-    color: #376FA3 !important; /* 오늘 날짜가 선택되었을 때 빨간색 텍스트 유지 */
-    background-color: #D6EBFF !important; /* 오늘 날짜가 선택되었을 때 핑크색 배경 유지 */
+    color: #376FA3 !important; 
+    background-color: #D6EBFF !important; 
   }
 
   .react-calendar__tile:focus {

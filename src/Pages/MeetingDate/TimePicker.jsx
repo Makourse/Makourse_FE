@@ -5,25 +5,39 @@ const TimePickerContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: Arial, sans-serif;
   color: #000;
+  border: 2px solid blue;
+  width: 100%;
+`;
+
+const DateContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const Description = styled.div`
+  font-size: 0.875rem;
+  color: #666666;
 `;
 
 const DateDisplay = styled.div`
-  font-size: 24px;
-  color: #4A90E2;
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #376FA3;
   margin-bottom: 20px;
 `;
 
 const PickerWrapper = styled.div`
   display: flex;
-  gap: 20px;
   justify-content: center;
   align-items: center;
+  border: 2px solid green;
 `;
 
 const PickerColumn = styled.div`
-  height: 180px;
+  height: 150px;
+  margin: 0 13px; /* 컬럼 간 간격 설정 */
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   display: flex;
@@ -36,29 +50,32 @@ const PickerColumn = styled.div`
   }
 `;
 
+const Colon=styled.div`
+    font-size: 1.125rem;
+    
+`;
+
 const PickerItem = styled.div`
-  font-size: 32px;
+  font-size: 1.125rem;
   color: ${(props) => (props.selected ? '#000' : '#aaa')};
-  height: 60px;
-  padding-bottom: 2rem;
+  height: 48px;
+  min-height: 48px;
+  width:3.5rem;
+  padding-top: 1px;
+  padding-bottom:1px;
   display: flex;
   align-items: center;
   justify-content: center;
   scroll-snap-align: center;
   transition: color 0.2s ease;
   font-weight: ${(props) => (props.selected ? 'bold' : 'normal')};
+  border-top: ${(props) => (props.selected ? '1px solid black' : 'transparent')};
+  border-bottom: ${(props) => (props.selected ? '1px solid black' : 'transparent')};
+  border-left: transparent;
+  border-right: transparent;
 `;
 
-const Button = styled.button`
-  margin-top: 20px;
-  background-color: #4A90E2;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-`;
+
 
 const TimePicker = ({ onSaveTime, selectedDate }) => {
   const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
@@ -74,63 +91,47 @@ const TimePicker = ({ onSaveTime, selectedDate }) => {
   const periodRef = useRef(null);
 
   useEffect(() => {
-    const createObserver = (ref, setSelectedValue) => {
+    const updateSelectedValue = (ref, setSelectedValue) => {
       if (!ref.current) return;
-  
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setSelectedValue(entry.target.textContent.trim());
-            }
-          });
-        },
-        {
-          root: ref.current,
-          threshold: 0.9,
-        }
-      );
-  
-      const childNodes = ref.current.childNodes;
-      if (childNodes) {
-        childNodes.forEach((item) => observer.observe(item));
+
+      const itemHeight = 48; // PickerItem height
+      const scrollTop = ref.current.scrollTop;
+      const index = Math.round(scrollTop / itemHeight+0.5);
+
+      const nearestItem = ref.current.childNodes[index];
+      if (nearestItem) {
+        setSelectedValue(nearestItem.textContent.trim());
       }
-  
+    };
+
+    const onScroll = (ref, setSelectedValue) => {
+      const handleScroll = () => {
+        updateSelectedValue(ref, setSelectedValue);
+      };
+
+      ref.current.addEventListener('scroll', handleScroll);
+
       return () => {
-        if (childNodes) {
-          childNodes.forEach((item) => observer.unobserve(item));
-        }
-        observer.disconnect();
+        ref.current.removeEventListener('scroll', handleScroll);
       };
     };
-  
-    const hourCleanup = hourRef.current ? createObserver(hourRef, setSelectedHour) : null;
-    const minuteCleanup = minuteRef.current ? createObserver(minuteRef, setSelectedMinute) : null;
-    const periodCleanup = periodRef.current ? createObserver(periodRef, setSelectedPeriod) : null;
-  
+
+    const hourCleanup = onScroll(hourRef, setSelectedHour);
+    const minuteCleanup = onScroll(minuteRef, setSelectedMinute);
+    const periodCleanup = onScroll(periodRef, setSelectedPeriod);
+
     return () => {
       if (hourCleanup) hourCleanup();
       if (minuteCleanup) minuteCleanup();
       if (periodCleanup) periodCleanup();
     };
   }, []);
-  
+
   useEffect(() => {
-    const scrollToCenter = (ref, value) => {
-      if (ref.current) {
-        const childNodes = ref.current.childNodes;
-        const targetIndex = Array.from(childNodes).findIndex((node) => node.textContent.trim() === value);
-        if (targetIndex !== -1) {
-          childNodes[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
-    };
-  
-    scrollToCenter(hourRef, selectedHour);
-    scrollToCenter(minuteRef, selectedMinute);
-    scrollToCenter(periodRef, selectedPeriod);
+    console.log('Selected Hour:', selectedHour);
+    console.log('Selected Minute:', selectedMinute);
+    console.log('Selected Period:', selectedPeriod);
   }, [selectedHour, selectedMinute, selectedPeriod]);
-  
 
   const handleSave = () => {
     const formattedTime = `${selectedPeriod} ${selectedHour}시 ${selectedMinute}분`;
@@ -139,8 +140,10 @@ const TimePicker = ({ onSaveTime, selectedDate }) => {
 
   return (
     <TimePickerContainer>
-      {/* 선택된 날짜 표시 */}
-      <DateDisplay>{selectedDate || '날짜를 선택하세요'}</DateDisplay>
+      <DateContainer>
+        <Description>선택된 날짜</Description>
+        <DateDisplay>{selectedDate || '날짜를 선택하세요'}</DateDisplay>
+      </DateContainer>
 
       <PickerWrapper>
         <PickerColumn ref={periodRef}>
@@ -159,7 +162,7 @@ const TimePicker = ({ onSaveTime, selectedDate }) => {
           ))}
         </PickerColumn>
 
-        <PickerColumn>:</PickerColumn>
+        <Colon>:</Colon>
 
         <PickerColumn ref={minuteRef}>
           {minutes.map((minute, index) => (
@@ -176,10 +179,12 @@ const TimePicker = ({ onSaveTime, selectedDate }) => {
 export default TimePicker;
 
 
-//시간과 분의 무한반복을..못하겠음 그냥 3개이어붙였는데 나중에해결해보기
+
+
+//시간과 분의 무한반복을..못하겠음
 //맨앞과 맨뒤에 공백을 삽입해야 01과 12도 가운데로올수있을 것 같은데.. (무한반복해결되면 자동해결)
-//현재 AM과 PM은 선택조차 되지않음
-//AM와 PM에는 앞뒤로 공백을 무조건 삽입해야할 것 같은데 영문자랑 비슷한 세로길이의 공백을 넣을 순 없나..
-//스크롤하면 애매하게 위에 걸림..
+//24분에서 25분 넘어가는 기점부터 가운데가 아니라 맨 밑을 선택하는것으로 인식됨
+//49에서 50 넘어가는 기점부터 맨 밑의 다음 숫자를 선택하는 것으로 인식됨
+
 //미팅데이트, 캘린터와 더불어 날짜와 시간을 저장하는 로직을 만들고 테스트해봐야함
 //3개 다 백엔드에 저장할 수 있도록 (3개 다 아니면 null값을 보내야하니까 title과 description을 placeholder로 써야하나?)

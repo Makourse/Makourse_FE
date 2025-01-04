@@ -105,7 +105,7 @@ const PlaceImg = styled.img`
 const Myplace = () => {
   const [places, setPlaces] = useState([
     { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", latitude: 37.557527, longitude: 126.925595, image: null },
-  ]); // 더미 데이터: 여러 장소 추가
+  ]); // 더미 데이터
   const navigate = useNavigate();
   const location = useLocation();
 
