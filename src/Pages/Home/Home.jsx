@@ -13,6 +13,13 @@ const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const userName = location.state?.userName || '김민수'; // 기본값으로 김민수
+  const handleFrame0Click = () => {
+    navigate('/check-course');
+  };
+
+  const handleFrame1Click = () => {
+    navigate('/myplace');
+  };
 
   return (
     <div className="home-container">
@@ -22,8 +29,18 @@ const Home = () => {
       </header>
 
       <div className="scrollable-section">
-        <img src={frame0} alt="Frame 0" className="frame0" />
-        <img src={frame1} alt="Frame 1" className="frame1" />
+      <img
+        src={frame0}
+        alt="Frame 0"
+        className="frame0"
+        onClick={handleFrame0Click}
+      />
+      <img
+        src={frame1}
+        alt="Frame 1"
+        className="frame1"
+        onClick={handleFrame1Click}
+      />
         <div className="profile-section" style={{ backgroundImage: `url(${frame2})` }}>
           <img src={profilePic} alt="Profile" className="profile-image" />
           <h3 className="profile-name">{userName}</h3>
