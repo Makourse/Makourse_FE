@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import backIcon from '../assets/Ic_gnb_back.svg';
 
 const BackButton = styled.button`
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 20px;
+  height: 20px;
   background-image: url(${backIcon});
   background-size: contain;
   background-repeat: no-repeat;
