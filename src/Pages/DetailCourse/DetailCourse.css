@@ -112,14 +112,14 @@
     height: 24px;
 }
 
-.content h3 {
+.detail-content h3 {
     font-size: 18px;
     font-weight: 600;
     margin: 0 0 4px 0;
     color: #000;
 }
 
-.content p {
+.detail-content p {
     font-size: 12px;
     color: #999;
     margin: 0;
@@ -127,6 +127,7 @@
 
 .info-section {
     padding: 0 20px 20px 20px !important;
+    background: #ffffff;
 }
 
 .info-section.editing {

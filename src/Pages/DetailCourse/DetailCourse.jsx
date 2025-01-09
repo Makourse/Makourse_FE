@@ -142,7 +142,7 @@ const DetailCourse = () => {
                     <div className="detail-icon">
                         <img src='/detail-cal.svg' alt="cal" />
                     </div>
-                    <div className="content">
+                    <div className="detail-content">
                         <h3>일정 저장</h3>
                         <p>날짜와 시간이 저장돼요</p>
                     </div>
@@ -152,7 +152,7 @@ const DetailCourse = () => {
                     <div className="detail-icon">
                         <img src='/detail-member.svg' alt="people" />
                     </div>
-                    <div className="content">
+                    <div className="detail-content">
                         <h3>같이 코스 짜기</h3>
                         <p>같이 갈 사람과 공유해요</p>
                     </div>
