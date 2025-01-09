@@ -47,8 +47,9 @@ html, body {
 }
 
 .alert-item {
-  width: 312px;
-  height: auto; 
+  width: 100%;
+  max-width: 100%;
+  height: auto;
   margin-bottom: 16px;
   background-color: transparent;
 }
@@ -129,10 +130,12 @@ html, body {
 .alert-actions {
   display: flex;
   gap: 8px;
+  width: 100%;
 }
 
 .decline-btn, .accept-btn {
-  width: 152px;
+  flex: 1;
+  min-width: 120px;
   height: 40px;
   font-size: 14px;
   font-weight: 500;
