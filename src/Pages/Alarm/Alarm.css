@@ -1,0 +1,152 @@
+* {
+  font-family: Pretendard;
+  font-style: normal;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #FAFAFA;
+  height: 100%;
+}
+
+.alarm-container {
+  background-color: #fafafa;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+.alarm-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px; /* 헤더 높이 */
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 16px;
+  position: relative;
+}
+
+.alarm-header h1 {
+  font-weight: 600; 
+  font-size: 20px;
+  color: #000;
+  margin: 0;
+}
+
+.back-icon {
+  position: absolute;
+  left: 16px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.alert-list {
+  padding: 16px;
+}
+
+.alert-item {
+  width: 312px;
+  height: auto; 
+  margin-bottom: 16px;
+  background-color: transparent;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 12px;
+  margin-right: 8px;
+}
+
+.status-indicator.unread {
+  background-color: #376fa3;
+}
+
+.status-indicator.read {
+  border: 1px solid #376fa3;
+  background-color: transparent;
+}
+
+.alert-date {
+  font-size: 12px;
+  font-weight: 400;
+  color: #666666;
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.status-label {
+  font-size: 12px;
+  font-weight: 500;
+  width: 29px;
+  height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  text-align: center;
+  margin-right: 8px;
+}
+
+
+.status-label.accepted {
+  background-color: #d6ebff;
+  color: #376fa3;
+}
+
+.status-label.declined {
+  background-color: #f1f1f1;
+  color: #666666;
+}
+
+.alert-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+  flex: 1;
+}
+
+.alert-sender {
+  font-size: 12px;
+  font-weight: 400;
+  color: #666666;
+  margin-top: 8px;
+}
+
+.alert-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.decline-btn, .accept-btn {
+  width: 152px;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.decline-btn {
+  background-color: #f1f1f1;
+  color: #666666;
+}
+
+.accept-btn {
+  background-color: #d6ebff;
+  color: #376fa3;
+}

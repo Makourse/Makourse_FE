@@ -30,7 +30,12 @@ const BackButton = styled.button`
   left: 1rem;
 `;
 
-
+const HeaderTitle = styled.h1`
+  font-weight: 600; 
+  font-size: 20px;
+  color: #000;
+  margin: 0;
+`;
 
 const Header = ({ title }) => {
   const navigate = useNavigate();
@@ -42,7 +47,7 @@ const Header = ({ title }) => {
   return (
     <Container>
       <BackButton onClick={goBack} />
-      {title}
+      <HeaderTitle>{title}</HeaderTitle>
     </Container>
   );
 };
