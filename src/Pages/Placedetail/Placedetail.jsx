@@ -129,6 +129,14 @@ const Placedetail = () => {
             }
         });
     };
+
+    const handlePeriodClick = () => {
+        setSelectedTime(prev => ({
+            ...prev,
+            period: prev.period === 'AM' ? 'PM' : 'AM'
+        }));
+    };
+
     // 컴포넌트가 언마운트될 때 클래스 제거
     useEffect(() => {
         return () => {
@@ -223,16 +231,13 @@ const Placedetail = () => {
                     <div className="time-picker"
                          onTouchMove={handleTouchMove}
                          onTouchEnd={handleTouchEnd}>
-                        <div className="time-column period-column"
-                             data-type="period"
-                             onTouchStart={(e) => handleTouchStart(e, 'period')}>
-                            <div className="time-option">
-                                {selectedTime.period === 'AM' ? '' : 'AM'}
-                            </div>
-                            <div className={`time-option selected`}>{selectedTime.period}</div>
-                            <div className="time-option">
-                                {selectedTime.period === 'PM' ? '' : 'PM'}
-                            </div>
+                        <div 
+                            className="time-column period-column" 
+                            onClick={handlePeriodClick}
+                            data-selected={selectedTime.period}
+                        >
+                            <div className="time-option am">AM</div>
+                            <div className="time-option pm">PM</div>
                         </div>
                         <div className="time-column"
                              data-type="hour"

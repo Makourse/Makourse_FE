@@ -213,6 +213,7 @@ body.modal-open {
     justify-content: center;
     font-weight: 500;
     padding: 0;
+    transition: all 0.3s ease;
 }
 
 .time-option.selected {
@@ -280,14 +281,62 @@ body.modal-open {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0;
+    position: relative;
+    height: 120px; /* 세 개의 옵션이 모두 보이도록 높이 증가 */
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .period-column .time-option {
+    position: absolute;
+    width: 100%;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: rgba(0, 0, 0, 0.2); /* 기본적으로 흐리게 */
+}
+
+/* AM이 선택되었을 때 */
+.period-column[data-selected="AM"] .time-option.am {
+    transform: translateY(0px); /* 중앙에 위치 */
+    color: #000; /* 선택된 항목은 진하게 */
+    font-weight: 500;
+}
+
+.period-column[data-selected="AM"] .time-option.pm {
+    transform: translateY(40px); /* 하단에 위치 */
+}
+
+/* PM이 선택되었을 때 */
+.period-column[data-selected="PM"] .time-option.pm {
+    transform: translateY(0px); /* 중앙에 위치 */
+    color: #000; /* 선택된 항목은 진하게 */
+    font-weight: 500;
+}
+
+.period-column[data-selected="PM"] .time-option.am {
+    transform: translateY(-40px); /* 상단에 위치 */
+}
+
+/* 선택된 옵션의 구분선 */
+.period-column .time-option.selected::before,
+.period-column .time-option.selected::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    height: 1px;
+    background-color: #E8E8E8;
+}
+
+.period-column .time-option.selected::before {
+    top: -5px;
+}
+
+.period-column .time-option.selected::after {
+    bottom: -5px;
 }
 
 .place-detail-time-text{
