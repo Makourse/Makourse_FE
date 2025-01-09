@@ -8,6 +8,8 @@ import star from '../../assets/star.svg';
 import search from '../../assets/search.svg';
 import deletex from '../../assets/deletex.svg';
 
+import "../../component/Fonts.css";
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -26,7 +28,7 @@ const MyplaceSaveContainer = styled.div`
 const SearchBoxContainer = styled.div`
   position: relative;
   width: 90%;
-  height: 10%;
+  height: 11%;
   margin-top: 1rem;
 `;
 
@@ -37,6 +39,7 @@ const SearchBox = styled.input`
   border-radius: 0.5rem;
   padding: 0 0.625rem;
   font-size: 1rem;
+  font-family:'Pretendard';
   box-sizing: border-box;
   outline: none;
   ::placeholder {
@@ -78,7 +81,8 @@ const TextContainer = styled.div`
   top: 65%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 4vw;
+  font-size: 18px;
+  font-weight: 500;
   color: black;
   white-space: nowrap;
 `;
@@ -96,6 +100,7 @@ const Suggestion = styled.div`
   justify-content: center;
   flex-direction: column;
   margin: 0.5rem 0;
+  gap:8px;
 `;
 
 const HighlightedText = styled.span`
@@ -104,6 +109,23 @@ const HighlightedText = styled.span`
 
 const NormalText = styled.span`
   color: black;
+`;
+
+const PlaceTextTitle = styled.div`
+  font-weight:500;
+  font-size:1rem;
+`;
+const PlaceTextAddr = styled.div`
+  font-weight:400;
+  font-size:12px;
+`;
+
+const FixedButtonContainer = styled.div`
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  width:100%;
+  transform: translateX(-50%);
 `;
 
 const MyplaceSave = () => {
@@ -191,8 +213,8 @@ const MyplaceSave = () => {
           <SuggestionContainer>
             {suggestions.map((suggestion, index) => (
               <Suggestion key={index} onClick={() => handleSuggestionClick(suggestion)}>
-                <div>{highlightText(suggestion.name, searchQuery)}</div>
-                <div>{highlightText(suggestion.address, searchQuery)}</div>
+                <PlaceTextTitle>{highlightText(suggestion.name, searchQuery)}</PlaceTextTitle>
+                <PlaceTextAddr>{highlightText(suggestion.address, searchQuery)}</PlaceTextAddr>
               </Suggestion>
             ))}
           </SuggestionContainer>
@@ -204,7 +226,9 @@ const MyplaceSave = () => {
           <TextContainer>장소를 검색해보세요.</TextContainer>
         )}
       </MyplaceSaveContainer>
-      <Button text="저장하기" bgColor="#F1F1F1" />
+      <FixedButtonContainer>
+      <Button text="저장하기" bgColor="#F1F1F1" textColor="#666666" />
+      </FixedButtonContainer>
     </Container>
   );
 };

@@ -11,8 +11,10 @@ import EditProfile from './Pages/Home/EditProfile';
 import Alarm from './Pages/Alarm/Alarm';
 import CheckCourse from './Pages/CheckCourse/CheckCourse';
 import Placedetail from './Pages/Placedetail/Placedetail';
+
 const App = () => {
   return (
+    <>
     <Router>
         <Routes>
           <Route path="/myplace" element={<Myplace />} />
@@ -29,6 +31,7 @@ const App = () => {
         <Route path="/alarm" element={<Alarm/>} />
         </Routes>
     </Router>
+    </>
   );
 };
 

@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Pretendard';
+    src: url('../assets/PretendardVariable.ttf') format('truetype');
+    font-weight: 400;
+  }
+  
+  body {
+    font-family: 'Pretendard';
+  }
