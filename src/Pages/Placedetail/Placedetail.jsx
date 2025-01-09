@@ -180,9 +180,9 @@ const Placedetail = () => {
             </div>
         </div>
         <div className="course-edit">
-            <div className="edit-button">
+            <div className="course-edit-button">
                     <img src='/detail-edit2.svg' alt="edit" />
-                    <span>장소 수정하기</span>
+                    <span className="course-edit-button-text">장소 수정하기</span>
                 </div>
             </div>
         
@@ -200,7 +200,7 @@ const Placedetail = () => {
                     <div className="modal-divider"></div>
                     <div className="modal-buttons">
                         <button 
-                            className="modal-button" 
+                            className="modal-button cancel" 
                             onClick={handleCloseModal}
                         >
                             닫기
@@ -260,7 +260,7 @@ const Placedetail = () => {
                     </div>
                     <div className="modal-divider"></div>
                     <div className="modal-buttons">
-                        <button className="modal-button" onClick={handleCloseTimeModal}>
+                        <button className="modal-button cancel" onClick={handleCloseTimeModal}>
                             닫기
                         </button>
                         <button className="modal-button save active" onClick={handleSaveTime}>

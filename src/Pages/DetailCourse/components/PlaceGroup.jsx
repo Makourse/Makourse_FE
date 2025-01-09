@@ -36,7 +36,7 @@ const PlaceGroup = ({ mainPlace, alternativePlaces = [], isEditing, selectAll, o
                                             <span>{place.title}</span>
                                             <div className="tag-selected">{place.category}</div>
                                         </div>
-                                        <button className="change-button">이 장소로 변경</button>
+                                        <button className="alternative-change-button">이 장소로 변경</button>
                                     </div>
                                 ))}
                                 <div className="alternative-add">

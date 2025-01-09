@@ -3,12 +3,8 @@
     font-style: normal;
 }
 
-body, html { /*전반적으로 배경색 지정*/
-    background-color: #FAFAFA;
-}
-
 .place-detail {
-    background-color: #FAFAFA;
+    background-color: #FFFFFF;
 }
 
 .place-detail-header {
@@ -18,7 +14,7 @@ body, html { /*전반적으로 배경색 지정*/
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: #FAFAFA;
+    background-color: #FFFFFF;
 }
 
 .place-detail-header h1 {
@@ -167,6 +163,13 @@ body.modal-open {
     font-weight: 500;
     cursor: pointer;
     background: #F5F5F5;
+}
+
+.modal-button.cancel {
+    background: #F5F5F5;
+    color: #999;
+    font-weight: 600;
+    font-family: Pretendard;
 }
 
 .modal-button.save {
