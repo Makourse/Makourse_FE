@@ -3,6 +3,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from 'styled-components';
 import Button from '../../component/Button';
 import Header from '../../component/Header';
+import StateHeader from '../../component/StateHeader';
 import Calendar from './Calendar';
 import Time from './Time';
 
@@ -330,14 +331,27 @@ const Meetingdate = () => {
     return hasSavedDate ? "저장하기" : "나중에 정할게요";
 };
 
+const handleBack = () => {
+    switch (viewState) {
+      case 'selectTime':
+        setViewState('selectDate');
+        break;
+      case 'selectDate':
+        setViewState('initial');
+        break;
+      default:
+        break;
+    }
+  };
+
   
 
     return (
         <Container>
-            <Header title="코스 등록하기" />
-            <MeetingDateContainer>
                 {viewState === 'initial' && (
                     <>
+                    <Header title="코스 등록하기" />
+                    <MeetingDateContainer>
                     <MeetingDateContainer2>
                         <DescriptionContainer>
                             <DescriptionTitle>만날 날짜를</DescriptionTitle>
@@ -395,11 +409,17 @@ const Meetingdate = () => {
                 <ButtonContainer>
                     <Button text={getButtonText()} />
                 </ButtonContainer>
+                </MeetingDateContainer>
                     </>
                 )}
 
                 {viewState === 'selectDate' && (
                     <>
+                    <StateHeader
+                    title='코스 등록하기'
+                    onBack={handleBack}
+                  />
+                    <MeetingDateContainer>
                     <DescriptionContainer2>
                     <Bgpurple src={backgroundpurple} alt="purlplecircle" />
                     <Bgblue src={backgroundblue} alt="bluecircle" />
@@ -421,11 +441,17 @@ const Meetingdate = () => {
                             disabled={!isDateSelected}*/
                         />
                         </ButtonContainer>
+                    </MeetingDateContainer>
                     </>
                 )}
 
                 {viewState === 'selectTime' && (
-                    <>
+                   <>
+                    <StateHeader
+                    title='코스 등록하기'
+                    onBack={handleBack}
+                    />
+                    <MeetingDateContainer>
                         <DescriptionContainer2>
                             <Bgpurple src={backgroundpurple} alt="purlplecircle" />
                             <Bgblue src={backgroundblue} alt="bluecircle" />
@@ -450,9 +476,9 @@ const Meetingdate = () => {
                         <ButtonContainer>
                             <Button text="저장 하기" onClick={handleSaveTime} />
                         </ButtonContainer>
+                    </MeetingDateContainer>
                     </>
                 )}
-            </MeetingDateContainer>
         </Container>
     );
 };

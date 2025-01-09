@@ -1,7 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-//import backIcon from '../assets/back.svg';
 import backIcon from '../assets/home/back.svg';
 import "./Fonts.css"
 
@@ -38,19 +36,14 @@ const HeaderTitle = styled.h1`
   margin: 0;
 `;
 
-const Header = ({ title }) => {
-  const navigate = useNavigate();
-
-  const goBack = () => {
-    navigate(-1);
+const StateHeader = ({ title, onBack }) => {
+    return (
+      <Container>
+        <BackButton onClick={onBack} />
+        <HeaderTitle>{title}</HeaderTitle>
+      </Container>
+    );
   };
-
-  return (
-    <Container>
-      <BackButton onClick={goBack} />
-      <HeaderTitle>{title}</HeaderTitle>
-    </Container>
-  );
-};
-
-export default Header;
+  
+  export default StateHeader;
+  
