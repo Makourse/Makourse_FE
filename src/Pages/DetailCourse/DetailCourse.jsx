@@ -178,9 +178,9 @@ const DetailCourse = () => {
             <section className={`info-section ${isEditing ? 'editing' : ''}`}>
                 {!isEditing && (
                     <div className="course-edit">
-                        <div className="edit-button" onClick={handleEditCourse}>
+                        <div className="course-edit-button" onClick={handleEditCourse}>
                             <img src='/detail-edit2.svg' alt="edit" />
-                            <span>코스 수정하기</span>
+                            <span className="course-edit-button-text">코스 수정하기</span>
                         </div>
                     </div>
                 )}
@@ -221,7 +221,7 @@ const DetailCourse = () => {
                         <div className="modal-divider"></div>
                         <div className="modal-buttons">
                             <button 
-                                className="modal-button" 
+                                className="modal-button cancel" 
                                 onClick={handleCloseModal}
                             >
                                 닫기

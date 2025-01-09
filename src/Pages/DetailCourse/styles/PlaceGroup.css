@@ -1,3 +1,4 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 .alternative-container {
     background: #ffffff;
     border-radius: 8px;
@@ -104,7 +105,7 @@
     letter-spacing: -0.3px;
 }
 
-.change-button {
+.alternative-change-button {
     display: flex;
     width: 100px;
     height: 28px;
@@ -122,6 +123,7 @@
     font-weight: 500;
     line-height: 138%; /* 16.56px */
     letter-spacing: -0.3px;
+    
 }
 
 .alternative-places-wrapper {

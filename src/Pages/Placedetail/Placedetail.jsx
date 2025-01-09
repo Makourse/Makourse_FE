@@ -129,6 +129,14 @@ const Placedetail = () => {
             }
         });
     };
+
+    const handlePeriodClick = () => {
+        setSelectedTime(prev => ({
+            ...prev,
+            period: prev.period === 'AM' ? 'PM' : 'AM'
+        }));
+    };
+
     // 컴포넌트가 언마운트될 때 클래스 제거
     useEffect(() => {
         return () => {
@@ -180,9 +188,9 @@ const Placedetail = () => {
             </div>
         </div>
         <div className="course-edit">
-            <div className="edit-button">
+            <div className="course-edit-button">
                     <img src='/detail-edit2.svg' alt="edit" />
-                    <span>장소 수정하기</span>
+                    <span className="course-edit-button-text">장소 수정하기</span>
                 </div>
             </div>
         
@@ -200,7 +208,7 @@ const Placedetail = () => {
                     <div className="modal-divider"></div>
                     <div className="modal-buttons">
                         <button 
-                            className="modal-button" 
+                            className="modal-button cancel" 
                             onClick={handleCloseModal}
                         >
                             닫기
@@ -223,16 +231,13 @@ const Placedetail = () => {
                     <div className="time-picker"
                          onTouchMove={handleTouchMove}
                          onTouchEnd={handleTouchEnd}>
-                        <div className="time-column period-column"
-                             data-type="period"
-                             onTouchStart={(e) => handleTouchStart(e, 'period')}>
-                            <div className="time-option">
-                                {selectedTime.period === 'AM' ? '' : 'AM'}
-                            </div>
-                            <div className={`time-option selected`}>{selectedTime.period}</div>
-                            <div className="time-option">
-                                {selectedTime.period === 'PM' ? '' : 'PM'}
-                            </div>
+                        <div 
+                            className="time-column period-column" 
+                            onClick={handlePeriodClick}
+                            data-selected={selectedTime.period}
+                        >
+                            <div className="time-option am">AM</div>
+                            <div className="time-option pm">PM</div>
                         </div>
                         <div className="time-column"
                              data-type="hour"
@@ -260,7 +265,7 @@ const Placedetail = () => {
                     </div>
                     <div className="modal-divider"></div>
                     <div className="modal-buttons">
-                        <button className="modal-button" onClick={handleCloseTimeModal}>
+                        <button className="modal-button cancel" onClick={handleCloseTimeModal}>
                             닫기
                         </button>
                         <button className="modal-button save active" onClick={handleSaveTime}>
