@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import backIcon from '../assets/back.svg';
+import "./Fonts.css"
 
 const Container = styled.header`
   width: 100%;
@@ -13,6 +14,8 @@ const Container = styled.header`
   box-sizing: border-box;
   font-size: 1.25rem;
   //border: 2px solid red;
+  font-family:'Pretendard';
+  font-weight:600;
 `;
 
 const BackButton = styled.button`

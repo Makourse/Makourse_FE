@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import "./Fonts.css"
 
 const ButtonContainer = styled.div`
   width: 100%;
@@ -20,6 +21,8 @@ const Button = styled.button`
   justify-content: center;
   align-items: center;
   color: ${(props) => props.textColor || '#376FA3'};
+  font-family:'Pretendard';
+  font-weight: 600;
 `;
 
 const MyButton = ({ text, bgColor, textColor, width, onClick }) => {

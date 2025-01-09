@@ -7,6 +7,8 @@ import Button from "../../component/Button";
 import deletex from "../../assets/deletex.svg";
 import ping from "../../assets/ping.svg";
 
+import "../../component/Fonts.css";
+
 const MapBox = styled.div`
   width: 100%;
   min-height: 60%;
@@ -49,6 +51,9 @@ const SearchListContainer = styled.div`
 `;
 
 const Suggestion = styled.div`
+  display:flex;
+  flex-direction: column;
+  gap:8px;
   padding: 1rem;
   border-bottom: 1px solid #f1f1f1;
   cursor: pointer;
@@ -72,10 +77,10 @@ const DescriptionBox = styled.div`
     align-items: center;
     font-size: 0.75rem;
     position: absolute;
+    width:226px;
     top: 57%;
     left: 50%;
     transform: translateX(-50%);
-    width: 70%;
     z-index: 1000;
     border-radius: 0.5rem;
     background-color: #FFFFFF;
@@ -87,30 +92,38 @@ const PingIcon = styled.img`
 
 const ButtonBox = styled.div`
   display: flex;
-  width:100%;
+  flex-direction: row;
+  width:90%;
   padding-top:1%;
 `;
+
+
 
 const BottomContainer = styled.div`
   background-color: #FAFAFA;
   border-radius: 1.5rem;
   width: 100%;
-  height: 35%;
-  top:65%;
+  top:60%;
+  bottom: 0;
   box-shadow: 0px -4px 8px 0px #0000000A;
   z-index: 100;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   position: absolute; /* 절대 위치로 변경 */
+  //border:2px solid blue;
 `;
 
 const BottomTextContainer=styled.div`
   display:flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  margin-bottom: 60px;
+  height: 70%;
   width: 100%;
   gap: 0.5rem;
+  //border:2px solid red;
 `;
 
 const InputField = styled.input`
@@ -120,14 +133,24 @@ const InputField = styled.input`
   padding: 0.4rem;
   border: none;
   border-bottom: 1.5px solid #999999;
+  font-family:'Pretendard';
+  font-size:1rem;
+  font-weight:500;
+
+  outline: none; /* 포커스 시 테두리 제거 */
+  &:focus {
+    outline: none; /* 추가적으로 포커스 상태에서도 테두리 제거 */
+  }
 `;
 
 const BottomTitle=styled.div`
   width: 86%;
   font-size: 1.25rem;
+  font-weight:600;
 `;
 const BottomAddr=styled.div`
   font-size: 1rem;
+  font-weight:500;
   color:#666666;
   padding-left: 0.5rem;
 `;
@@ -136,6 +159,26 @@ const BottomAddrContainer=styled.div`
  display:flex;
  align-items: center;
  //border: 2px solid red;
+`;
+
+const FixedButtonContainer = styled.div`
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  width:100%;
+  transform: translateX(-50%);
+`;
+
+const PlaceTextTitle = styled.div`
+  font-weight:500;
+  font-size:1rem;
+`;
+const PlaceTextAddr = styled.div`
+  font-weight:400;
+  font-size:12px;
 `;
 
 const Myplacemap = () => {
@@ -273,14 +316,15 @@ const Myplacemap = () => {
                         : "#ffffff",
                   }}
                 >
-                  <div>{suggestion.name}</div>
-                  <div>{suggestion.address}</div>
+                  <PlaceTextTitle>{suggestion.name}</PlaceTextTitle>
+                  <PlaceTextAddr>{suggestion.address}</PlaceTextAddr>
                 </Suggestion>
               ))}
             </SearchListContainer>
           )}
-  
+          <FixedButtonContainer>
           <Button text="선택하기" bgColor="#D6EBFF" onClick={() => setCurrentState(2)} />
+          </FixedButtonContainer>
         </>
       )}
   
@@ -297,10 +341,12 @@ const Myplacemap = () => {
               <PingIcon src={ping} alt="ping" />
               <BottomAddr>주소예시불러와야함</BottomAddr>
             </BottomAddrContainer>
-            <ButtonBox>
-            <Button text="닫기" bgColor="#F1F1F1" textColor="#666666"  onClick={() => setCurrentState(3)} />
-            <Button text="저장하기" bgColor="#D6EBFF"  onClick={handleAddPlace} />
-          </ButtonBox>
+            <FixedButtonContainer>
+              <ButtonBox>
+              <Button text="닫기" width="93%" bgColor="#F1F1F1" textColor="#666666"  onClick={() => setCurrentState(3)} />
+              <Button text="저장하기" width="93%" bgColor="#D6EBFF"  onClick={handleAddPlace} />
+              </ButtonBox>
+            </FixedButtonContainer>
           </BottomTextContainer>
         </BottomContainer>
       )}

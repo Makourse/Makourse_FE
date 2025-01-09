@@ -10,6 +10,8 @@ import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
 import backgroundpurple from '../../assets/bg_mypage3_bggra1_purple.svg';
 import myplaceimg from '../../assets/myplaceimg.svg';
 
+import "../../component/Fonts.css";
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -94,6 +96,15 @@ const PlaceTextContainer = styled.div`
    display: flex;
    flex-direction: column;
    margin-left: 1rem;
+   gap:8px;
+`;
+const PlaceTextTitle = styled.div`
+  font-weight:500;
+  font-size:1rem;
+`;
+const PlaceTextAddr = styled.div`
+  font-weight:400;
+  font-size:12px;
 `;
 
 const PlaceImg = styled.img`
@@ -102,10 +113,18 @@ const PlaceImg = styled.img`
    border-radius: 50%;
 `;
 
+const FixedButtonContainer = styled.div`
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  width:100%;
+  transform: translateX(-50%);
+`;
+
 const Myplace = () => {
   const [places, setPlaces] = useState([
     { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", latitude: 37.557527, longitude: 126.925595, image: null },
-  ]); // 더미 데이터: 여러 장소 추가
+  ]); // 더미 데이터
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -158,13 +177,15 @@ const Myplace = () => {
               <PlaceContainer key={index}>
                 <PlaceImg src={place.image || myplaceimg} alt="Place Image" />
                 <PlaceTextContainer>
-                  <strong>{place.name}</strong>
-                  {place.address}
+                  <PlaceTextTitle>{place.name}</PlaceTextTitle>
+                  <PlaceTextAddr>{place.address}</PlaceTextAddr>
                 </PlaceTextContainer>
               </PlaceContainer>
             ))}
           </MyplaceContainer>
-            <Button text="나만의 장소 추가하기" onClick={handleButtonClick} />
+          <FixedButtonContainer>
+          <Button text="나만의 장소 추가하기" onClick={handleButtonClick} />
+          </FixedButtonContainer>
           </>
         )}
     </Container>
