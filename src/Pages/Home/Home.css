@@ -15,6 +15,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
 .app-name {
@@ -34,6 +36,7 @@
     padding-bottom: 10px;
     scrollbar-width: none;
     padding-right: 10px;
+    padding-left: 24px;
 }
 
 .scrollable-section::-webkit-scrollbar {
@@ -50,18 +53,6 @@
     height: 309px;
 }
 
-.frame2 {
-    width: 172px; 
-    height: 278px;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.12);
-    min-width: 180px; 
-}
-
 .profile-section {
     background-size: cover;
     background-position: center;
@@ -75,7 +66,6 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-
 }
 
 .profile-image {
@@ -176,10 +166,81 @@
     filter: brightness(95%);
 }
 
-/* 반응형 처리 */
-@media (max-height: 700px) { /* 세로 길이가 700px 이하일 때 */
+.upcoming-section {
+    margin-top: 40px;
+    padding-left: 24px;
+    overflow: visible;
+}
+
+.upcoming-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333333;
+}
+
+.upcoming-list {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 8px;
+    padding-top: 8px;
+}
+
+.upcoming-list::-webkit-scrollbar {
+    display: none;
+}
+
+.course-box {
+    width: 132px;
+    height: 119px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(250, 253, 255, 0.04), rgba(243, 249, 255, 0.04), rgba(250, 253, 255, 0.04));
+    backdrop-filter: blur(12px);
+    box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 16px;
+    flex-shrink: 0;
+    overflow: visible;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.dday-box {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    background-color: #D6EBFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #376FA3;
+    margin-bottom: 8px;
+}
+
+.course-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+.course-people {
+    font-size: 12px;
+    color: #666666;
+    text-align: left;
+}
+
+@media (max-height: 700px) {
     .star-icon {
-        display: none; /* 별 아이콘 숨김 */
+        display: none;
     }
     .register-text {
         font-size: 20px;
