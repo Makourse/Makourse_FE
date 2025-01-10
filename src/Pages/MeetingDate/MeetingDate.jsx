@@ -128,6 +128,7 @@ const CalendarBackground = styled.div`
     width: 100%;
     box-shadow: 0px -4px 8px 0px #0000000A;
     z-index: 1;
+    margin-top: 1rem;
     //border:2px solid red;
 
     display: flex;
@@ -432,9 +433,9 @@ const handleBack = () => {
                         <DescriptionTitle>선택해주세요.</DescriptionTitle>
                     </DescriptionContainer2>
                     <CalendarContainer>
-                    <CalendarBackground>
-                        <Calendar onDateClick={handleCalendarDateClick} />
-                    </CalendarBackground>
+                        <CalendarBackground>
+                            <Calendar onDateClick={handleCalendarDateClick} />
+                        </CalendarBackground>
                     </CalendarContainer>
                     <ButtonContainer>
                         <Button 
