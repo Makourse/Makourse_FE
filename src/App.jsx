@@ -10,12 +10,13 @@ import EditProfile from './Pages/Home/EditProfile';
 import Alarm from './Pages/Alarm/Alarm';
 import CheckCourse from './Pages/CheckCourse/CheckCourse';
 import Placedetail from './Pages/Placedetail/Placedetail';
-
+import IntroPage from './Pages/Login/IntroPage';
 const App = () => {
   return (
     <>
     <Router>
         <Routes>
+          <Route path="/" element={<IntroPage />} />
           <Route path="/myplace" element={<Myplace />} />
           <Route path="/myplace/save" element={<MyplaceSave />} />   
           <Route path="/meetingdate" element={<Meetingdate />} />  
