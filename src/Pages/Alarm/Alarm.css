@@ -6,12 +6,10 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #FAFAFA;
   height: 100%;
 }
 
 .alarm-container {
-  background-color: #fafafa;
   min-height: 100vh;
   padding: 0;
   margin: 0;
