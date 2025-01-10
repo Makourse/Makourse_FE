@@ -20,9 +20,9 @@ import ic_move from '../../assets/ic_move.svg';
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    height: 100vh;
     max-height: 100vh;
     position: relative;
+    background-color: white;
 `;
 
 const MeetingDateContainer = styled.div`
@@ -40,19 +40,21 @@ const MeetingDateContainer2 = styled.div`
 `;
 
 const DescriptionContainer = styled.div`
-    height: 38%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 90%;
+    padding: 2rem 0;
+    margin-top: 1rem;
     //border : 2px solid black;
 `;
 const DescriptionContainer2 = styled.div`
-    height: 30%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 90%;
+    padding: 1.5rem 0;
+    margin-top: 1rem;
 `;
 const DescriptionTitle = styled.div`
     font-size: 1.875rem;
@@ -121,7 +123,7 @@ const TimeContainer = styled.div`
     //border: 2px solid black;
 `;
 const CalendarBackground = styled.div`
-    background-color: #FAFAFA;
+    background-color: #FFFFFF;
     border-radius: 1.5rem;
     width: 100%;
     box-shadow: 0px -4px 8px 0px #0000000A;
@@ -134,7 +136,7 @@ const CalendarBackground = styled.div`
     justify-content:space-around;
 `;
 const TimeBackground = styled.div`
-    background-color: #FAFAFA;
+    background-color: #FFFFFF;
     border-radius: 1.5rem;
     width: 100vw;
     box-shadow: 0px -4px 8px 0px #0000000A;
@@ -180,11 +182,14 @@ const Heart = styled.img`
 `;
 
 const ButtonContainer = styled.div`
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: center;
-    height: 4.875rem;
-    width: 100%;
-
+    padding: 1rem;
+    z-index: 10;
 `;
 
 const Button2=styled.div`
