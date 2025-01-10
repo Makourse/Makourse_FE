@@ -175,3 +175,15 @@
 .register-course-btn:hover {
     filter: brightness(95%);
 }
+
+/* 반응형 처리 */
+@media (max-height: 700px) { /* 세로 길이가 700px 이하일 때 */
+    .star-icon {
+        display: none; /* 별 아이콘 숨김 */
+    }
+    .register-text {
+        font-size: 20px;
+        font-weight: 600;
+        margin-top: 20px;
+    }
+}

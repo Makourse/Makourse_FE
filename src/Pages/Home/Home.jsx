@@ -1,12 +1,12 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Home.css';
-import alarmIcon from '../../assets/home/alarm.png';
-import frame0 from '../../assets/home/Frame0.png';
-import frame1 from '../../assets/home/Frame1.png';
-import frame2 from '../../assets/home/Frame2.png';
+import alarmIcon from '../../assets/home/alarm.svg';
+import frame0 from '../../assets/home/Frame0.svg';
+import frame1 from '../../assets/home/Frame1.svg';
+import frame2 from '../../assets/home/Frame2.svg';
 import profilePic from '../../assets/home/profile1.svg';
-import starIcon from '../../assets/home/star.png';
+import starIcon from '../../assets/home/star.svg';
 import loginIcon from '../../assets/home/login.png';
 
 const Home = () => {
