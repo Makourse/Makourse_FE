@@ -4,42 +4,37 @@ import backIcon from '../assets/home/back.svg';
 import "./Fonts.css"
 
 const Container = styled.header`
-  width: 100%;
-  height: 3.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-left: 1rem;
-  box-sizing: border-box;
-  font-size: 1.25rem;
-  //border: 2px solid red;
-  font-family:'Pretendard';
-  font-weight:600;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #fff;
 `;
 
-const BackButton = styled.button`
-  width: 1.5rem;
-  height: 1.5rem;
-  background-image: url(${backIcon});
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  border: none;
-  position: absolute;
-  left: 1rem;
+const BackButton = styled.img`
+    position: absolute;
+    left: 20px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
 `;
 
 const HeaderTitle = styled.h1`
-  font-weight: 600; 
-  font-size: 20px;
-  color: #000;
-  margin: 0;
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #000;
 `;
 
 const StateHeader = ({ title, onBack }) => {
     return (
       <Container>
-        <BackButton onClick={onBack} />
+        <BackButton onClick={onBack} src={backIcon} />
         <HeaderTitle>{title}</HeaderTitle>
       </Container>
     );

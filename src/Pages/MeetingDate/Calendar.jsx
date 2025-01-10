@@ -7,10 +7,11 @@ import Calendar from 'react-calendar';
 
 // Calendar 스타일을 커스터마이징
 const StyledCalendar = styled(Calendar)`
-  font-family: 'Arial', sans-serif;
+  font-family: 'Pretendard';
   width: 80%;
   max-width: 80%;
   border: none;
+  margin-top: 1rem;
 
   .react-calendar__month-view__weekdays__weekday abbr {
     text-decoration: none;
@@ -60,6 +61,7 @@ const StyledCalendar = styled(Calendar)`
       background: none;
       font-size: 20px;
       border: none; /* 버튼의 기본 테두리 제거 */
+      color: black;
     }
 
     button:focus {
@@ -73,8 +75,16 @@ const StyledCalendar = styled(Calendar)`
     pointer-events: none; /* 클릭 비활성화 */
   }
 
+  .react-calendar__month-view__days__day {
+    color: black; /* 기본 날짜 색상 */
+  }
+
   .react-calendar__month-view__days__day--weekend {
-    color: black; /* 주말의 기본 빨간색 제거 */
+    color: black; /* 주말 색상 */
+  }
+
+  .react-calendar__month-view__days__day--neighboringMonth {
+    color: #cccccc !important; /* 이전/다음 달의 날짜는 흐릿하게 표시 */
   }
 `;
 
