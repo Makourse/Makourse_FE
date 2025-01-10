@@ -6,6 +6,7 @@ import Header from '../../component/Header';
 import StateHeader from '../../component/StateHeader';
 import Calendar from './Calendar';
 import Time from './Time';
+import { createGlobalStyle } from 'styled-components';
 
 import meetingdate from '../../assets/meetingdate.svg';
 import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
@@ -16,6 +17,31 @@ import first from '../../assets/first.svg';
 import second from '../../assets/second.svg';
 import third from '../../assets/third.svg';
 import ic_move from '../../assets/ic_move.svg';
+
+const GlobalStyle = createGlobalStyle`
+  .no-scroll {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* 빠른 스크롤 중일 때는 transition 비활성화 */
+  .quick-scrolling .time-option {
+    transition: none;
+  }
+
+  /* 슬라이딩 애니메이션 */
+  .sliding-up {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+
+  .sliding-down {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+`;
 
 const Container = styled.div`
     display: flex;
@@ -59,6 +85,7 @@ const DescriptionContainer2 = styled.div`
 const DescriptionTitle = styled.div`
     font-size: 1.875rem;
     font-weight: 600;
+    z-index: 10;
 `;
 const DescriptionContent = styled.div`
     width: 90%;
@@ -72,6 +99,7 @@ const DateContainer = styled.div`
     flex-direction: column;
     width: 90%;
     //border : 2px solid black;
+    margin-top: 1rem;
 `;
 const Date = styled.div`
     display: flex;
@@ -101,6 +129,7 @@ const Datetext = styled.div`
 const Descriptiontext = styled.div`
     font-size: 0.75rem;
     font-weight: 400;
+    
 `;
 const Ic_move = styled.img`
     width:1.5rem;
@@ -121,6 +150,7 @@ const TimeContainer = styled.div`
     display: flex;
     flex-grow: 1;
     //border: 2px solid black;
+    margin-top: 54px;
 `;
 const CalendarBackground = styled.div`
     background-color: #FFFFFF;
@@ -168,7 +198,7 @@ const Bgblue = styled.img`
 const Blurstar = styled.img`
     width: 30vw;
     position: absolute;
-    top: 35%;
+    top: 232px;
     left: 0%;
     transform: translate(0%, -50%);
     z-index: 2;
@@ -177,7 +207,7 @@ const Blurstar = styled.img`
 const Heart = styled.img`
     width: 37vw;
     position: absolute;
-    top:33%;
+    top:220px;
     left: 63.5%;
     transform: translate(0%, -50%);
 `;
@@ -191,14 +221,14 @@ const ButtonContainer = styled.div`
     justify-content: center;
     padding: 1rem;
     z-index: 10;
+    flex-direction: column;
 `;
 
-const Button2=styled.div`
+const Button2 = styled.div`
     display: flex;
     justify-content: center;
-    width:100%;
+    width: 100%;
     height: 3rem;
-    //border: 2px solid red;
     font-size: 1rem;
     color: #666666;
     text-decoration: underline;
@@ -213,6 +243,7 @@ const DateContainer2 = styled.div`
 const Description = styled.div`
   font-size: 0.875rem;
   color: #666666;
+  margin-top: 48px;
 `;
 
 const DateDisplay = styled.div`
@@ -353,7 +384,9 @@ const handleBack = () => {
   
 
     return (
-        <Container>
+        <>
+          <GlobalStyle />
+          <Container>
                 {viewState === 'initial' && (
                     <>
                     <Header title="코스 등록하기" />
@@ -478,14 +511,15 @@ const handleBack = () => {
                                 />
                             </TimeBackground>
                         </TimeContainer>
-                        <Button2 onClick={() => setViewState('selectDate')}>날짜 수정하기</Button2>
                         <ButtonContainer>
+                        <Button2 onClick={() => setViewState('selectDate')}>날짜 수정하기</Button2>
                             <Button text="저장 하기" onClick={handleSaveTime} />
                         </ButtonContainer>
                     </MeetingDateContainer>
                     </>
                 )}
         </Container>
+        </>
     );
 };
 

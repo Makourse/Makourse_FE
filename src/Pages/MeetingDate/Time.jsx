@@ -13,6 +13,7 @@ const TimePicker = styled.div`
   justify-content: center;
   align-items: center;
   gap: 20px;
+  touch-action: none;
 `;
 
 const TimeColumn = styled.div`
@@ -23,13 +24,35 @@ const TimeColumn = styled.div`
   min-width: 60px;
   position: relative;
 
-  &:first-child {
-    margin-right: 10px;
-  }
-
   &.period-column {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    gap: 0;
+    position: relative;
+    height: 120px;
+    overflow: hidden;
+    cursor: pointer;
+
+    .time-option {
+      position: absolute;
+      width: 100%;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: rgba(0, 0, 0, 0.2);
+
+      &.am {
+        transform: ${props => props['data-selected'] === 'AM' ? 'translateY(0)' : 'translateY(-40px)'};
+        color: ${props => props['data-selected'] === 'AM' ? '#000' : 'rgba(0, 0, 0, 0.2)'};
+      }
+
+      &.pm {
+        transform: ${props => props['data-selected'] === 'PM' ? 'translateY(0)' : 'translateY(40px)'};
+        color: ${props => props['data-selected'] === 'PM' ? '#000' : 'rgba(0, 0, 0, 0.2)'};
+      }
+    }
   }
 `;
 
@@ -42,12 +65,12 @@ const TimeOption = styled.div`
   justify-content: center;
   font-weight: 500;
   padding: 0;
+  transition: all 0.3s ease;
 
   &.selected {
     color: #000;
-    font-weight: 500;
-    font-size: 18px;
     position: relative;
+    font-weight: 500;
 
     &::before,
     &::after {
@@ -56,7 +79,7 @@ const TimeOption = styled.div`
       left: -10px;
       right: -10px;
       height: 1px;
-      background-color: #000000;
+      background-color: #E8E8E8;
     }
 
     &::before {
@@ -92,14 +115,18 @@ const Time = ({ onTimeChange, selectedDate }) => {
   const scrollTimeout = useRef(null);
 
   const handleTouchStart = (e, type) => {
+    e.preventDefault();
     setStartY(e.touches[0].clientY);
     setIsDragging(true);
     setCurrentType(type);
+    
+    document.body.classList.add('no-scroll');
   };
 
   const handleTouchMove = (e) => {
     if (!isDragging) return;
-
+    
+    e.preventDefault();
     const currentY = e.touches[0].clientY;
     const diff = startY - currentY;
 
@@ -120,6 +147,8 @@ const Time = ({ onTimeChange, selectedDate }) => {
   const handleTouchEnd = () => {
     setIsDragging(false);
     setCurrentType(null);
+
+    document.body.classList.remove('no-scroll');
 
     scrollTimeout.current = setTimeout(() => {
       setIsQuickScrolling(false);
@@ -148,6 +177,13 @@ const Time = ({ onTimeChange, selectedDate }) => {
     });
   };
 
+  const handlePeriodClick = () => {
+    setSelectedTime(prev => ({
+      ...prev,
+      period: prev.period === 'AM' ? 'PM' : 'AM'
+    }));
+  };
+
   useEffect(() => {
     // 부모 컴포넌트로 시간 데이터 전달
     onTimeChange(selectedTime);
@@ -155,23 +191,21 @@ const Time = ({ onTimeChange, selectedDate }) => {
 
   return (
     <ModalContent>
-      <TimePicker
-        onTouchMove={handleTouchMove}
+      <TimePicker 
+        onTouchMove={handleTouchMove} 
         onTouchEnd={handleTouchEnd}
+        className={isQuickScrolling ? 'quick-scrolling' : ''}
       >
-        <TimeColumn
+        <TimeColumn 
           className="period-column"
-          data-type="period"
-          onTouchStart={(e) => handleTouchStart(e, 'period')}
+          onClick={handlePeriodClick}
+          data-selected={selectedTime.period}
         >
-          <TimeOption>
-            {selectedTime.period === 'AM' ? '' : 'AM'}
+          <TimeOption className={`time-option am ${selectedTime.period === 'AM' ? 'selected' : ''}`}>
+            AM
           </TimeOption>
-          <TimeOption className="selected">
-            {selectedTime.period}
-          </TimeOption>
-          <TimeOption>
-            {selectedTime.period === 'PM' ? '' : 'PM'}
+          <TimeOption className={`time-option pm ${selectedTime.period === 'PM' ? 'selected' : ''}`}>
+            PM
           </TimeOption>
         </TimeColumn>
         <TimeColumn
@@ -179,21 +213,11 @@ const Time = ({ onTimeChange, selectedDate }) => {
           onTouchStart={(e) => handleTouchStart(e, 'hour')}
         >
           <TimeOption>
-            {String(
-              parseInt(selectedTime.hour) === 1
-                ? 12
-                : parseInt(selectedTime.hour) - 1
-            ).padStart(2, '0')}
+            {String(parseInt(selectedTime.hour) === 1 ? 12 : parseInt(selectedTime.hour) - 1).padStart(2, '0')}
           </TimeOption>
-          <TimeOption className="selected">
-            {selectedTime.hour}
-          </TimeOption>
+          <TimeOption className="selected">{selectedTime.hour}</TimeOption>
           <TimeOption>
-            {String(
-              parseInt(selectedTime.hour) === 12
-                ? 1
-                : parseInt(selectedTime.hour) + 1
-            ).padStart(2, '0')}
+            {String(parseInt(selectedTime.hour) === 12 ? 1 : parseInt(selectedTime.hour) + 1).padStart(2, '0')}
           </TimeOption>
         </TimeColumn>
         <TimeSeparator>:</TimeSeparator>
@@ -202,21 +226,11 @@ const Time = ({ onTimeChange, selectedDate }) => {
           onTouchStart={(e) => handleTouchStart(e, 'minute')}
         >
           <TimeOption>
-            {String(
-              parseInt(selectedTime.minute) === 0
-                ? 59
-                : parseInt(selectedTime.minute) - 1
-            ).padStart(2, '0')}
+            {String(parseInt(selectedTime.minute) === 0 ? 59 : parseInt(selectedTime.minute) - 1).padStart(2, '0')}
           </TimeOption>
-          <TimeOption className="selected">
-            {selectedTime.minute}
-          </TimeOption>
+          <TimeOption className="selected">{selectedTime.minute}</TimeOption>
           <TimeOption>
-            {String(
-              parseInt(selectedTime.minute) === 59
-                ? 0
-                : parseInt(selectedTime.minute) + 1
-            ).padStart(2, '0')}
+            {String(parseInt(selectedTime.minute) === 59 ? 0 : parseInt(selectedTime.minute) + 1).padStart(2, '0')}
           </TimeOption>
         </TimeColumn>
       </TimePicker>
