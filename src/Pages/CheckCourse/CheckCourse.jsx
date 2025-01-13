@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CheckCourse.css';
 import backIcon from '../../assets/home/back.svg';
-import starIcon from '../../assets/home/star.png';
+import starIcon from '../../assets/home/star.svg';
 
 function CheckCourse() {
   const navigate = useNavigate();

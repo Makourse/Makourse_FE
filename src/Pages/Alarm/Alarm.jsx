@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Alarm.css';
 import backIcon from '../../assets/home/back.svg';
-import starIcon from '../../assets/home/star.png';
+import starIcon from '../../assets/home/star.svg';
 
 const Alarm = () => {
   const navigate = useNavigate();

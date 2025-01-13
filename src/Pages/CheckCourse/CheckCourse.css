@@ -6,12 +6,10 @@
 html, body {
     margin: 0;
     padding: 0;
-    background-color: #FAFAFA;
     height: 100%;
   }
   
   .checkcourse-container {
-    background-color: #FAFAFA;
     min-height: 100vh; 
     display: flex;
     flex-direction: column;
@@ -165,10 +163,6 @@ html, body {
   
   .content .course-item + .course-item {
     border-top: 1px solid #F1F1F1;
-  }
-  
-  .content .course-item {
-    background-color: #FAFAFA;
   }
   
   .content .course-item .course-info .course-details .course-date {
