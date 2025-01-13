@@ -1,0 +1,172 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+* {
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+.intro-background{
+    background: linear-gradient(to top, #376FA3, #83148A);
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.intro-logo{
+    width: 245px;
+    height: 245px;
+    transition: all 1s ease-out;
+}
+
+.intro-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    transform: translateY(0);
+    transition: all 1s ease-out;
+    position: relative;
+}
+
+.intro-title-container{
+    text-align: center;
+}
+
+.intro-subtitle{
+    font-family: "Pretendard";
+    font-size: 16px;
+    font-weight: 500;
+    color: #F9F9F9;
+    margin-bottom: 5px;
+}
+
+.intro-title{
+    font-family: "Pretendard";
+    font-size: 42px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-top: 5px;
+}   
+
+.slide-up {
+    transform: translateY(-150px);
+}
+
+.intro-container.slide-up .intro-logo {
+    width: 180px;
+    height: 180px;
+}
+
+.kakaoLoginBox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FEE500;
+    width: 250px;
+    height: 40px;
+    border-radius: 12px;
+    opacity: 0;
+    transition: all 0.5s ease-out;
+    position: absolute;
+    top: calc(40vh + 100px);
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+}
+
+.kakaoLoginBox.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.kakaoLogo {
+    width: 20px;  /* 로고 크기 지정 */
+    height: 20px;
+    margin-right: 8px; /* 텍스트와의 간격 */
+}
+
+.kakaoLoginText{
+    font-family: "Pretendard";
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+    margin: 0;
+}
+
+.intro-container.slide-up {
+    transform: translateY(-150px);
+}
+
+.naverLoginBox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    height: 40px;
+    border-radius: 12px;
+    opacity: 0;
+    transition: all 0.5s ease-out;
+    position: absolute;
+    top: calc(40vh + 160px);
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background-color: #03c75a;
+}
+
+.naverLoginBox.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.naverLogo{    
+    width: 32px;
+    height: 32px;
+    margin-right: 2px;
+}
+
+.naverLoginText{
+    font-family: "Pretendard";
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+}
+
+.googleLoginBox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    height: 40px;
+    border-radius: 12px;
+    opacity: 0;
+    transition: all 0.5s ease-out;
+    position: absolute;
+    top: calc(40vh + 220px);
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background-color: #ffffff;
+}
+
+.googleLoginBox.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.googleLogo{
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+.googleLoginText{
+    font-family: "Pretendard";
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+    margin: 0;
+}
