@@ -1,49 +1,62 @@
-import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+// src/Login/OAuth/OAuthCallback.jsx
+import React, { useEffect } from 'react';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../constant';
 
 const OAuthCallback = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
+  const { provider } = useParams();         // /account/:provider/callback => provider = 'kakao'
+  const location = useLocation();           // ?code=xxxxx
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const code = searchParams.get('code');
-        
-        // URL 경로에서 소셜 로그인 제공자 확인
-        const provider = location.pathname.split('/')[2]; // 'google', 'kakao', 'naver'
-        
-        if (code) {
-            sendAuthCode(code, provider);
+  useEffect(() => {
+    // URL의 query string 에서 code 추출
+    const searchParams = new URLSearchParams(location.search);
+    const code = searchParams.get('code');
+
+    if (!provider || !code) {
+      console.error('Provider 또는 code가 없습니다.');
+      navigate('/');
+      return;
+    }
+
+    (async () => {
+      try {
+        // 예: https://api-makourse.kro.kr/account/kakao/login
+        const apiUrl = `${API_URL}/account/${provider}/login`;
+
+        console.log('Provider:', provider);
+        console.log('Code:', code);
+        console.log('API URL:', apiUrl);
+
+        // 서버로 인증코드 전송
+        const response = await axios.post(
+          apiUrl,
+          { code },
+          { withCredentials: true }
+        );
+
+        // 서버로부터 받은 토큰 예시
+        const { accessToken, refreshToken, is_new } = response.data;
+
+        // 로컬스토리지 혹은 쿠키에 저장
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+
+        // 새 유저인지 여부에 따라 분기
+        if (is_new) {
+          navigate('/signup');
+        } else {
+          navigate('/home');
         }
-    }, [location]);
+      } catch (error) {
+        console.error('OAuth 인증 실패:', error.response || error);
+        navigate('/');
+      }
+    })();
+  }, [provider, location.search, navigate]);
 
-    const sendAuthCode = async (code, provider) => {
-        try {
-            console.log(code);
-            const response = await axios.post(`${process.env.VITE_API_URL}/${provider}/login`, {
-                code: code
-            });
-            
-            // 서버로부터 받은 토큰 저장
-            localStorage.setItem('accessToken', response.data.accessToken);
-            localStorage.setItem('refreshToken', response.data.refreshToken);
-            
-            if(response.data.is_new){
-                navigate('/signup');
-            }else{
-                navigate('/home');
-            }
-            
-        } catch (error) {
-            console.error('OAuth 인증 실패:', error);
-            navigate('/');
-        }
-    };
-
-    return (
-        <div>로그인 처리 중...</div>
-    );
+  return <div>로그인 처리 중...</div>;
 };
 
-export default OAuthCallback; 
+export default OAuthCallback;
