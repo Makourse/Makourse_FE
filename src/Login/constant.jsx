@@ -9,6 +9,6 @@ export const KAKAO_SECRET_ID = import.meta.env.VITE_KAKAO_CLIENT_SECRET;
 // API 엔드포인트
 export const API_URL = import.meta.env.VITE_API_URL;
 
-// 리다이렉트 URI 예시
+// 리다이렉트 URI 
 export const REDIRECT_URI = 'https://makourse.my';
 export const LOCAL_REDIRECT_URI = 'http://localhost:5173';
