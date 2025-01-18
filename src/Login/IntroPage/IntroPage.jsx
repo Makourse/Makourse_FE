@@ -1,32 +1,47 @@
 import './IntroPage.css';
+import { KAKAO_ID, GOOGLE_ID, NAVER_ID, REDIRECT_URI } from '../constant';
 import { useEffect, useState } from 'react';
 
-const KakaoLoginBtn = ({ show }) => {
+const KakaoLoginBtn = ({ show, onClick }) => {
     return (
-        <div className={`kakaoLoginBox ${show ? 'show' : ''}`}>
+        <div className={`kakaoLoginBox ${show ? 'show' : ''}`} onClick={onClick}>
             <img className='kakaoLogo' src='./kakaologo.svg' alt="kakao-login" />
             <p className='kakaoLoginText'>카카오 로그인</p>
         </div>        
     )
 }
 
-const NaverLoginBtn = ({ show }) => {
+const NaverLoginBtn = ({ show, onClick }) => {
     return (
-        <div className={`naverLoginBox ${show ? 'show' : ''}`}>
+        <div className={`naverLoginBox ${show ? 'show' : ''}`} onClick={onClick}>
             <img className='naverLogo' src='./naverlogo.svg' alt="naver-login" />
             <p className='naverLoginText'>네이버 로그인</p>
         </div>        
     )
 }
 
-const GoogleLoginBtn = ({ show }) => {
+const GoogleLoginBtn = ({ show, onClick }) => {
     return (
-        <div className={`googleLoginBox ${show ? 'show' : ''}`}>
+        <div className={`googleLoginBox ${show ? 'show' : ''}`} onClick={onClick}>
             <img className='googleLogo' src='./googlelogo.svg' alt="google-login" />
             <p className='googleLoginText'>구글 로그인</p>
         </div>        
     )
 }
+
+    const kakaoLogin = () => {
+        const link = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_ID}&redirect_uri=${REDIRECT_URI}/account/kakao/callback/`;
+        window.location.href = link;
+    }
+    const googleLogin = () => {
+        const link = `https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=${GOOGLE_ID}&redirect_uri=${REDIRECT_URI}/account/google/callback/&scope=email%20profile`;
+        window.location.href = link;
+    }
+    const naverLogin = () => {
+        const link = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_ID}&redirect_uri=${REDIRECT_URI}/account/naver/callback/&state=test123`;
+        window.location.href = link;
+    }
+
 
 const IntroPage = () => {
     const [animate, setAnimate] = useState(false);
@@ -68,9 +83,9 @@ const IntroPage = () => {
                         <h1 className='intro-title'>Makourse</h1>
                     </div>
                 </div>
-                <KakaoLoginBtn show={showKakao} />
-                <NaverLoginBtn show={showNaver} />
-                <GoogleLoginBtn show={showGoogle} />
+                <KakaoLoginBtn show={showKakao} onClick={kakaoLogin}/>
+                <NaverLoginBtn show={showNaver} onClick={naverLogin}/>
+                <GoogleLoginBtn show={showGoogle} onClick={googleLogin}/>
             </div>
         </div>
     )
