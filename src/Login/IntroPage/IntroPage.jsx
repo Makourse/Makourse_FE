@@ -1,5 +1,5 @@
 import './IntroPage.css';
-import { KAKAO_ID, GOOGLE_ID, NAVER_ID, REDIRECT_URI } from '../constant';
+import { KAKAO_ID, GOOGLE_ID, NAVER_ID, REDIRECT_URI, LOCAL_REDIRECT_URI } from '../constant';
 import { useEffect, useState } from 'react';
 
 const KakaoLoginBtn = ({ show, onClick }) => {
@@ -30,15 +30,16 @@ const GoogleLoginBtn = ({ show, onClick }) => {
 }
 
     const kakaoLogin = () => {
-        const link = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_ID}&redirect_uri=${REDIRECT_URI}/account/kakao/callback/`;
+        const link = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_ID}&redirect_uri=${LOCAL_REDIRECT_URI}/account/kakao/callback/`;
+        console.log('카카오 로그인 요청 URL:', link);
         window.location.href = link;
     }
     const googleLogin = () => {
-        const link = `https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=${GOOGLE_ID}&redirect_uri=${REDIRECT_URI}/account/google/callback/&scope=email%20profile`;
+        const link = `https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=${GOOGLE_ID}&redirect_uri=${LOCAL_REDIRECT_URI}/account/google/callback/&scope=email%20profile`;
         window.location.href = link;
     }
     const naverLogin = () => {
-        const link = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_ID}&redirect_uri=${REDIRECT_URI}/account/naver/callback/&state=test123`;
+        const link = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_ID}&redirect_uri=${LOCAL_REDIRECT_URI}/account/naver/callback/&state=test123`;
         window.location.href = link;
     }
 
