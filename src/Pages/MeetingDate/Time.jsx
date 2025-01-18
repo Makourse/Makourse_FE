@@ -115,7 +115,7 @@ const Time = ({ onTimeChange, selectedDate }) => {
   const scrollTimeout = useRef(null);
 
   const handleTouchStart = (e, type) => {
-    e.preventDefault();
+    // e.preventDefault();
     setStartY(e.touches[0].clientY);
     setIsDragging(true);
     setCurrentType(type);
@@ -126,7 +126,7 @@ const Time = ({ onTimeChange, selectedDate }) => {
   const handleTouchMove = (e) => {
     if (!isDragging) return;
     
-    e.preventDefault();
+    // e.preventDefault();
     const currentY = e.touches[0].clientY;
     const diff = startY - currentY;
 
