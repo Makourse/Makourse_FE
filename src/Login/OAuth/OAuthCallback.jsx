@@ -5,8 +5,8 @@ import axios from 'axios';
 import { API_URL } from '../constant';
 
 const OAuthCallback = () => {
-  const { provider } = useParams();         // /account/:provider/callback => provider = 'kakao'
-  const location = useLocation();           // ?code=xxxxx
+  const { provider } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,21 +23,12 @@ const OAuthCallback = () => {
     (async () => {
       try {
         const apiUrl = `${API_URL}/account/${provider}/login/`;
-
-        console.log('Provider:', provider);
-        console.log('Code:', code);
-        console.log('API URL:', apiUrl);
-
         // 서버로 인증코드 전송
         const response = await axios.post(
           apiUrl,
           {
-            "code": code
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
+            "code": code,
+            "address":1 //로컬에서 할 경우 1 배포 환경에서 할 경우 0
           }
         );
 

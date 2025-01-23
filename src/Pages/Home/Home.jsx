@@ -8,11 +8,21 @@ import frame2 from '../../assets/home/Frame2.svg';
 import profilePic from '../../assets/home/profile1.svg';
 import starIcon from '../../assets/home/star.svg';
 import loginIcon from '../../assets/home/login.svg';
+import { getUserData } from '../../api';
 
 const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const userName = location.state?.userName || '김민수'; // 기본값으로 김민수
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const data = await getUserData();
+      setUserData(data);
+    };
+    fetchUserData();
+  }, []);
 
   const handleFrame0Click = () => {
     navigate('/check-course');
