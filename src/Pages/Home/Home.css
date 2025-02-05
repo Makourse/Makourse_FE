@@ -32,7 +32,7 @@
 .scrollable-section {
     display: flex;
     overflow-x: scroll;
-    gap: 10px;
+    gap: 30px;
     padding-bottom: 10px;
     scrollbar-width: none;
     padding-right: 10px;
@@ -129,8 +129,8 @@
 }
 
 .star-icon {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: auto;
     margin: 0 auto;
     display: block;
     margin-top: 15px;
