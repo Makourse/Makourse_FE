@@ -11,7 +11,7 @@ import "../../component/Fonts.css";
 
 const MapBox = styled.div`
   width: 100%;
-  min-height: 70%;
+  min-height: 60%;
 `;
 
 const Container = styled.div`
@@ -69,10 +69,10 @@ const Suggestion = styled.div`
 
 const DeleteIcon = styled.img`
   position: absolute;
-  right: 8%;
+  right: 22px;
   top: 50%;
   transform: translateY(-50%);
-  width: 8%;
+  width: 24px;
   cursor: pointer;
 `;
 
