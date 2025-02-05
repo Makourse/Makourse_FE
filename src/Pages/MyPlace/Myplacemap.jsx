@@ -47,7 +47,12 @@ const SearchBox = styled.input`
 `;
 
 const SearchListContainer = styled.div`
-  height: 100px;
+  margin-top: 30px;
+  height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 `;
 
 const Suggestion = styled.div`
