@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';//임의추가
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Home.css';
 import alarmIcon from '../../assets/home/alarm.svg';
