@@ -24,18 +24,6 @@ const apiClient = axios.create({
     },
 });
 
-// 요청 시 액세스 토큰을 자동으로 추가하는 인터셉터
-apiClient.interceptors.request.use(
-    (config) => {
-        const token = getAccessToken();
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
-
 // 응답에서 401 오류가 발생하면 리프레시 토큰을 이용해 재시도하는 인터셉터
 apiClient.interceptors.response.use(
     (response) => response,
