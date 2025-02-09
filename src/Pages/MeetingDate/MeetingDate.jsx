@@ -261,22 +261,18 @@ const Meetingdate = () => {
     const [selectedDateId, setSelectedDateId] = useState(null); // 현재 선택된 ID
     const [currentDate, setCurrentDate] = useState(null); // 캘린더에서 선택된 날짜
     const [currentTime, setCurrentTime] = useState(null); // 타임피커에서 선택된 시간
+    const [userId, setUserId] = useState(null);
     const [dates, setDates] = useState([
         { id: 1, title: '첫 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
         { id: 2, title: '두 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
         { id: 3, title: '세 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
       ]);
 
-        // user_id 가져오기
         useEffect(() => {
           const fetchUserId = async () => {
-            try {
-              const token = "your_access_token_here"; // 적절히 토큰 설정
-              const fetchedUserId = await getUserId(token);
-              setUserId(fetchedUserId);
-            } catch (error) {
-              console.error("Error fetching user ID:", error);
-            }
+            const data = await getUserId();
+            console.log('id :',data);
+            setUserId(data);
           };
           fetchUserId();
         }, []);
@@ -368,9 +364,8 @@ const handleSaveInitialState = async () => {
       meetDateSecond: formattedDates[1],
       meetDateThird: formattedDates[2],
     };
-
     await schedulePost(requestData.userId, requestData.meetDateFirst, requestData.meetDateSecond, requestData.meetDateThird);
-
+   
     alert('일정이 저장되었습니다!');
   } catch (error) {
     console.error('일정 저장 실패:', error);
