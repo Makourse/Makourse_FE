@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Home.css';
 import alarmIcon from '../../assets/home/alarm.svg';
@@ -72,7 +72,7 @@ const Home = () => {
           src={alarmIcon}
           alt="Alarm"
           className="alarm-icon"
-          onClick={() => navigate('/editprofile', { state: { userName } })}
+          onClick={() => navigate('/alarm', { state: { userName } })}
         />
       </header>
 
