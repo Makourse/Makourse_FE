@@ -8,6 +8,8 @@ import Calendar from './Calendar';
 import Time from './Time';
 import { createGlobalStyle } from 'styled-components';
 
+import { schedulePost, getUserId } from "../../api";
+
 import meetingdate from '../../assets/meetingdate.svg';
 import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
 import backgroundpurple from '../../assets/bg_mypage3_bggra1_purple.svg';
@@ -259,11 +261,21 @@ const Meetingdate = () => {
     const [selectedDateId, setSelectedDateId] = useState(null); // 현재 선택된 ID
     const [currentDate, setCurrentDate] = useState(null); // 캘린더에서 선택된 날짜
     const [currentTime, setCurrentTime] = useState(null); // 타임피커에서 선택된 시간
+    const [userId, setUserId] = useState(null);
     const [dates, setDates] = useState([
         { id: 1, title: '첫 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
         { id: 2, title: '두 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
         { id: 3, title: '세 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
       ]);
+
+        useEffect(() => {
+          const fetchUserId = async () => {
+            const data = await getUserId();
+            console.log('id :',data);
+            setUserId(data);
+          };
+          fetchUserId();
+        }, []);
 
       const handleDateClick = (id) => {
         console.log(`Date ${id} clicked`);
@@ -283,48 +295,86 @@ const Meetingdate = () => {
         }
     };
 
+    // 날짜 선택
     const handleCalendarDateClick = (date) => {
-        const formattedDate = `${date.getFullYear()}년 ${String(date.getMonth() + 1).padStart(2, '0')}월 ${String(date.getDate()).padStart(2, '0')}일`;
-        setCurrentDate(formattedDate);
-      };
-
-
-      const handleSaveDate = () => {
-        if (currentDate) {
-            const updatedDates = [...dates];
-            const targetIndex = selectedDateId
-                ? updatedDates.findIndex(date => date.id === selectedDateId)
-                : updatedDates.findIndex(date => date.description === '날짜와 시간을 입력할 수 있어요');
+      // 로컬 시간을 기준으로 YYYY-MM-DD 형식으로 포맷
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+      const day = String(date.getDate()).padStart(2, '0');
     
-            if (targetIndex !== -1) {
-                updatedDates[targetIndex] = { 
-                    ...updatedDates[targetIndex], 
-                    title: currentDate, 
-                    description: '' // 시간은 아직 입력되지 않음
-                };
-                setDates(updatedDates);
-                setSelectedDateId(updatedDates[targetIndex].id);
-                setViewState('selectTime');
-            }
-        }
+      const formattedDate = `${year}-${month}-${day}`;
+      setCurrentDate(formattedDate);
     };
     
+
+
+    // 날짜 저장
+    const handleSaveDate = () => {
+      if (currentDate) {
+          const updatedDates = [...dates];
+          const targetIndex = selectedDateId
+              ? updatedDates.findIndex(date => date.id === selectedDateId)
+              : updatedDates.findIndex(date => date.description === '날짜와 시간을 입력할 수 있어요');
+
+          if (targetIndex !== -1) {
+              updatedDates[targetIndex] = { 
+                  ...updatedDates[targetIndex], 
+                  title: currentDate, 
+                  description: '' 
+              };
+              setDates(updatedDates);
+              setSelectedDateId(updatedDates[targetIndex].id);
+              setViewState('selectTime');
+          }
+      }
+  };
+    
+    // 시간 선택
     const handleTimeChange = (newTimeData) => {
-        setCurrentTime(newTimeData); // TimePicker에서 선택된 시간 저장
-      };
+      setCurrentTime(newTimeData);
+  };
       
-      const handleSaveTime = () => {
-        if (selectedDateId && currentTime) {
-            const formattedTime = `${currentTime.period} ${currentTime.hour}시 ${currentTime.minute}분`;
-            const updatedDates = dates.map(date =>
-                date.id === selectedDateId
-                    ? { ...date, description: formattedTime }
-                    : date
-            );
-            setDates(updatedDates);
-            setViewState('initial'); // 초기 상태로 복귀
-        }
+// 시간 저장 및 일정 저장 API 호출
+const handleSaveTime = async () => {
+  if (selectedDateId && currentTime) {
+      const formattedTime = `${String(currentTime.hour).padStart(2, '0')}:${String(currentTime.minute).padStart(2, '0')}:00`;
+      const dateIndex = dates.findIndex(date => date.id === selectedDateId);
+
+      if (dateIndex !== -1) {
+          const dateTime = `${dates[dateIndex].title}T${formattedTime}`;
+          const updatedDates = dates.map((date, index) =>
+              index === dateIndex ? { ...date, description: dateTime } : date
+          );
+
+          setDates(updatedDates);
+          setViewState('initial');
+      }
+  }
+};
+
+// initial 상태에서 일정 저장 버튼 클릭 시 API 호출
+const handleSaveInitialState = async () => {
+  try {
+    // 날짜와 시간이 입력되지 않은 경우 null 처리
+    const formattedDates = dates.map(date => date.description !== '날짜와 시간을 입력할 수 있어요' ? date.description : null);
+
+    const requestData = {
+      userId,
+      meetDateFirst: formattedDates[0],
+      meetDateSecond: formattedDates[1],
+      meetDateThird: formattedDates[2],
     };
+    await schedulePost(requestData.userId, requestData.meetDateFirst, requestData.meetDateSecond, requestData.meetDateThird);
+   
+    alert('일정이 저장되었습니다!');
+  } catch (error) {
+    console.error('일정 저장 실패:', error);
+    console.log('userId 값:', userId); // userId 출력
+  }
+};
+
+
+
 
     const getDateMeetingSrc = (description, index) => {
         if (description === '날짜와 시간을 입력할 수 있어요') return meetingdate;
@@ -446,7 +496,7 @@ const handleBack = () => {
             </DragDropContext>
           </MeetingDateContainer2>
                 <ButtonContainer>
-                    <Button text={getButtonText()} />
+                    <Button text={getButtonText()} onClick={handleSaveInitialState} />
                 </ButtonContainer>
                 </MeetingDateContainer>
                     </>
@@ -530,6 +580,4 @@ export default Meetingdate;
 
 
 
-  //뒤로가는버튼이 state를 뒤로가게하는게아니라서 수정필요,,
-  // 였었는데 걍 작동을안하는데?
 

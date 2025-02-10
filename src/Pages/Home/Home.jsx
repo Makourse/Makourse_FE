@@ -19,6 +19,7 @@ const Home = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const data = await getUserData();
+      console.log(data);
       setUserData(data);
     };
     fetchUserData();
