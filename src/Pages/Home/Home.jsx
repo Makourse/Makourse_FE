@@ -76,7 +76,7 @@ const Home = () => {
           src={alarmIcon}
           alt="Alarm"
           className="alarm-icon"
-          onClick={() => navigate('/editprofile', { state: { userName } })}
+          onClick={() => navigate('/alarm', { state: { userName } })}
         />
       </header>
 
