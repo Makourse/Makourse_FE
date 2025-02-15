@@ -588,3 +588,31 @@
 #naver-map {
     border-radius: 8px;
 }
+
+.edit-select{
+    padding: 0 20px;
+}
+
+.edit-select-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.edit-select-all{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+}
+
+.edit-end{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: #376FA3;
+}
+    
