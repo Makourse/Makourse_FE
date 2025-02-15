@@ -62,6 +62,9 @@ apiClient.interceptors.response.use(
                 return Promise.reject(refreshError);
             }
         }
+        return Promise.reject(error);
+    }
+);
 
 // 유저 정보 가져오기 API 호출 함수
 export const getUserData = async () => {
@@ -154,7 +157,10 @@ export const addEntries = async (accessToken, courseId, entries) => {
         return response.data;
     } catch (error) {
         console.error('Error adding entries:', error);
-      
+        throw error;
+    }
+};
+
 // user_id 가져오기 API 호출 함수
 export const getUserId = async () => {
     try {
