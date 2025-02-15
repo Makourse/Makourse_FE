@@ -20,8 +20,10 @@ const Home = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const data = await getUserData();
+      const accessToken = localStorage.getItem('accessToken');
+      const data = await getUserData(accessToken);
       setUserData(data);
+      console.log(data);
     };
     fetchUserData();
   }, []);
