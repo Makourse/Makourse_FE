@@ -241,3 +241,28 @@ export const schedulePost = async (userId, meetDateFirst, meetDateSecond, meetDa
         throw error;
     }
 };
+
+
+// 나만의 장소 추가 API 호출 함수
+export const saveMyPlace = async (placeData) => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+        throw new Error("Access token is missing.");
+    }
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/course/myplace`,
+        placeData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error saving place:", error);
+      throw error;
+    }
+  };

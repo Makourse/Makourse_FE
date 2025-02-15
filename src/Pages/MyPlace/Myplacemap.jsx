@@ -7,6 +7,8 @@ import Button from "../../component/Button";
 import deletex from "../../assets/deletex.svg";
 import ping from "../../assets/ping.svg";
 
+import { saveMyPlace } from "../../api";
+
 import "../../component/Fonts.css";
 
 const MapBox = styled.div`
@@ -182,21 +184,20 @@ const PlaceTextAddr = styled.div`
 const Myplacemap = () => {
   const location = useLocation();
   const { state } = location;
-  const initialLatitude = state?.latitude || 37.557527;
-  const initialLongitude = state?.longitude || 126.925595;
-
-  const [currentState, setCurrentState] = useState(1); // 1: 검색 단계, 2: 장소 이름 수정 단계
-  const [searchQuery, setSearchQuery] = useState(state?.searchQuery || "");
-  const [suggestions, setSuggestions] = useState([]);
-  const [map, setMap] = useState(null); // 지도 객체를 상태로 저장
+  
   const [selectedLocation, setSelectedLocation] = useState({
-    latitude: initialLatitude,
-    longitude: initialLongitude,
+    latitude: state?.latitude || 37.557527,
+    longitude: state?.longitude || 126.925595,
+    place_name: state?.name || null,
+    address: state?.address || null,
   });
 
+  const [currentState, setCurrentState] = useState(1);
+  const [searchQuery, setSearchQuery] = useState(state?.searchQuery || "");
+  const [suggestions, setSuggestions] = useState([]);
+  const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
-  const [newPlaceName, setNewPlaceName] = useState("");
-  const [selectedPlaceName, setSelectedPlaceName] = useState(state?.placeName || "");
+  const [newPlaceName, setNewPlaceName] = useState(selectedLocation.place_name);
   const [allSuggestions, setAllSuggestions] = useState([
     { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", latitude: 37.557527, longitude: 126.925595 },
     { name: "서울숲", address: "서울시 성동구 뚝섬로 273 서울숲역", latitude: 37.544579, longitude: 127.041268 },
@@ -206,7 +207,7 @@ const Myplacemap = () => {
 
   useEffect(() => {
     const mapOptions = {
-      center: new naver.maps.LatLng(initialLatitude, initialLongitude),
+      center: new naver.maps.LatLng(selectedLocation.latitude, selectedLocation.longitude),
       zoom: 15,
     };
 
@@ -214,7 +215,7 @@ const Myplacemap = () => {
     setMap(newMap);
 
     const newMarker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(initialLatitude, initialLongitude),
+      position: new naver.maps.LatLng(selectedLocation.latitude, selectedLocation.longitude),
       map: newMap,
     });
     setMarker(newMarker);
@@ -224,15 +225,14 @@ const Myplacemap = () => {
       const clickedLongitude = e.coord.lng();
 
       newMarker.setPosition(new naver.maps.LatLng(clickedLatitude, clickedLongitude));
-      setSelectedLocation({ latitude: clickedLatitude, longitude: clickedLongitude });
+      setSelectedLocation({ latitude: clickedLatitude, longitude: clickedLongitude, name: null, address: null });
     });
-  }, [initialLatitude, initialLongitude]);
+  }, [selectedLocation.latitude, selectedLocation.longitude]);
 
   useEffect(() => {
     if (searchQuery) {
       const filteredSuggestions = allSuggestions.filter(
-        (item) =>
-          item.name.includes(searchQuery) || item.address.includes(searchQuery)
+        (item) => item.name.includes(searchQuery) || item.address.includes(searchQuery)
       );
       setSuggestions(filteredSuggestions);
     } else {
@@ -241,10 +241,10 @@ const Myplacemap = () => {
   }, [searchQuery]);
 
   const handleSuggestionClick = (suggestion) => {
-    const { latitude, longitude, name } = suggestion;
+    const { latitude, longitude, name, address } = suggestion;
   
     if (map) {
-      map.setCenter(new naver.maps.LatLng(latitude, longitude)); // 지도 중심 변경
+      map.setCenter(new naver.maps.LatLng(latitude, longitude));
       map.setZoom(15);
   
       new naver.maps.Marker({
@@ -253,11 +253,10 @@ const Myplacemap = () => {
       });
     }
   
-    // 선택된 위치 및 장소 이름 업데이트
-    setSelectedLocation({ latitude, longitude });
-    setSelectedPlaceName(name); // name을 올바르게 설정
+    setSelectedLocation({ latitude, longitude, name, address });
+    console.log("선택된 위치_myplacemap:", { latitude, longitude, name, address }); // 디버깅용
   };
-  
+
   const handleClearSearch = () => {
     setSearchQuery("");
     setSuggestions([]);
@@ -265,17 +264,31 @@ const Myplacemap = () => {
 
   const navigate = useNavigate();
 
-  const handleAddPlace = () => {
+  const handleAddPlace = async() => {
     const newPlace = {
-      name: newPlaceName || selectedPlaceName, 
-      address: "아무주소",
+      name: newPlaceName || selectedLocation.place_name, 
+      address: selectedLocation.address || "주소 없음",
       latitude: selectedLocation.latitude,
       longitude: selectedLocation.longitude,
     };
+    console.log("저장할 장소_myplacemap:", newPlace); // 디버깅용
 
-    setAllSuggestions((prev) => [...prev, newPlace]);
-    setNewPlaceName("");
-    navigate('/myplace', { state: { newPlace } });
+    try {
+      // 백엔드에 데이터 저장 요청
+      const response = await saveMyPlace(newPlace);
+      console.log("저장된 장소 응답:", response); // API 응답 확인
+  
+      // 저장된 장소를 기존 목록에 추가
+      setAllSuggestions((prev) => [...prev, response]);
+  
+      // 입력 필드 초기화 및 페이지 이동
+      setNewPlaceName("");
+      navigate('/myplace', { state: { newPlace: response } });
+  
+    } catch (error) {
+      console.error("장소 저장 중 오류 발생:", error);
+      alert("장소를 저장하는 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -321,7 +334,7 @@ const Myplacemap = () => {
             </SearchListContainer>
           )}
           <FixedButtonContainer>
-          <Button text="선택하기" bgColor="#D6EBFF" onClick={() => setCurrentState(2)} />
+            <Button text="선택하기" bgColor="#D6EBFF" onClick={() => setCurrentState(2)} />
           </FixedButtonContainer>
         </>
       )}
@@ -329,36 +342,34 @@ const Myplacemap = () => {
       {currentState === 2 && (
         <BottomContainer>
           <BottomTextContainer>
-              <BottomTitle>나만의 장소</BottomTitle>
+            <BottomTitle>나만의 장소</BottomTitle>
             <InputField
-              value={newPlaceName !== "" ? newPlaceName : selectedPlaceName} // 조건 수정
+              value={newPlaceName}
               onChange={(e) => setNewPlaceName(e.target.value)}
               placeholder="장소 이름을 입력하세요"
             />
             <BottomAddrContainer>
               <PingIcon src={ping} alt="ping" />
-              <BottomAddr>주소예시불러와야함</BottomAddr>
+              <BottomAddr>{selectedLocation.address || "주소 없음"}</BottomAddr>
             </BottomAddrContainer>
             <FixedButtonContainer>
               <ButtonBox>
-              <Button text="닫기" width="93%" bgColor="#F1F1F1" textColor="#666666"  onClick={() => setCurrentState(3)} />
-              <Button text="저장하기" width="93%" bgColor="#D6EBFF"  onClick={handleAddPlace} />
+                <Button text="닫기" width="93%" bgColor="#F1F1F1" textColor="#666666" onClick={() => setCurrentState(3)} />
+                <Button text="저장하기" width="93%" bgColor="#D6EBFF" onClick={handleAddPlace} />
               </ButtonBox>
             </FixedButtonContainer>
           </BottomTextContainer>
         </BottomContainer>
       )}
   
-      {currentState === 3 && (
-        null
-      )}
+      {currentState === 3 && null}
     </Container>
   );  
 };  
 
 export default Myplacemap;
 
-// state2에서 닫기, 저장하기버튼이 이상함.. 뭘해도 거리가 안좁혀짐
+
 // 폰트, bottomtitle굵기, 반응형 디테일들,,
 // 추후 백엔드 연결시에 주소 받아와서 역지오코딩, 새로 추가한 장소 백엔드 올리기 등등 로직 구현
 // 핑 이동은 가능한데 나중에 핑 찍힌곳 좌표로 주소 알아내서 적?기? 그런식으로 없는장소도 추가할 수 있도록록
