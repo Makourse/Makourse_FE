@@ -6,4 +6,14 @@ export default defineConfig({
     resolve: {
         dedupe: ["react", "react-dom"],
     },
+    server: {
+        proxy: {
+          '/v1': {
+            target: 'https://openapi.naver.com',
+            changeOrigin: true,
+            secure: false,
+            rewrite: (path) => path
+          }
+        }
+      }
 });
