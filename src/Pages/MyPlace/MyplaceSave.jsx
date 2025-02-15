@@ -169,6 +169,8 @@ const MyplaceSave = () => {
   const handleSuggestionClick = (suggestion) => {
     navigate('/myplace/map', { 
       state: { 
+        name : suggestion.name,
+        address: suggestion.address,
         latitude: suggestion.latitude, 
         longitude: suggestion.longitude, 
         searchQuery 
