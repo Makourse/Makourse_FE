@@ -28,7 +28,7 @@ const MyplaceSaveContainer = styled.div`
 const SearchBoxContainer = styled.div`
   position: relative;
   width: 90%;
-  height: 11%;
+  height: 60px;
   margin-top: 1rem;
 `;
 
@@ -53,7 +53,7 @@ const SearchIcon = styled.img`
   right: 6%;
   top: 50%;
   transform: translateY(-50%);
-  width: 8%;
+  width: 24px;
   cursor: pointer;
 `;
 
@@ -67,9 +67,8 @@ const DeleteIcon = styled.img`
 `;
 
 const Logo = styled.img`
-  width: 40vw;
-  max-width: 300px;
-  margin-top: 1rem;
+  width: 150px;
+  height: 150px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -78,12 +77,12 @@ const Logo = styled.img`
 
 const TextContainer = styled.div`
   position: absolute;
-  top: 65%;
+  top: 60%;
   left: 50%;
   transform: translateX(-50%);
   font-size: 18px;
   font-weight: 500;
-  color: black;
+  color: #2b2b2b;
   white-space: nowrap;
 `;
 

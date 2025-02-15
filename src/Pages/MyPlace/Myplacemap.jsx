@@ -47,7 +47,11 @@ const SearchBox = styled.input`
 `;
 
 const SearchListContainer = styled.div`
-  height: 100px;
+  margin-top: 30px;
+  height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  padding-bottom: 80px;
 `;
 
 const Suggestion = styled.div`
@@ -65,10 +69,10 @@ const Suggestion = styled.div`
 
 const DeleteIcon = styled.img`
   position: absolute;
-  right: 8%;
+  right: 22px;
   top: 50%;
   transform: translateY(-50%);
-  width: 8%;
+  width: 24px;
   cursor: pointer;
 `;
 
@@ -97,33 +101,26 @@ const ButtonBox = styled.div`
   padding-top:1%;
 `;
 
-
-
 const BottomContainer = styled.div`
-  background-color: #FAFAFA;
+  background-color: #FFFFFF;
   border-radius: 1.5rem;
   width: 100%;
-  top:60%;
+  height: 265px;
   bottom: 0;
   box-shadow: 0px -4px 8px 0px #0000000A;
   z-index: 100;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  position: absolute; /* 절대 위치로 변경 */
-  //border:2px solid blue;
+  position: absolute;
 `;
 
-const BottomTextContainer=styled.div`
-  display:flex;
+const BottomTextContainer = styled.div`
+  display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 60px;
-  height: 70%;
+  padding-top: 1.5rem;
   width: 100%;
   gap: 0.5rem;
-  //border:2px solid red;
 `;
 
 const InputField = styled.input`
@@ -147,6 +144,7 @@ const BottomTitle=styled.div`
   width: 86%;
   font-size: 1.25rem;
   font-weight:600;
+  margin-top: 5px;
 `;
 const BottomAddr=styled.div`
   font-size: 1rem;

@@ -9,7 +9,9 @@ import profilePic from '../../assets/home/profile1.svg';
 import starIcon from '../../assets/home/star.svg';
 import loginIcon from '../../assets/home/login.svg';
 import { getUserData } from '../../api';
-
+import HomeCard1 from './HomeCards/HomeCard1';
+import HomeCard2 from './HomeCards/HomeCard2';
+import HomeCard3 from './HomeCards/HomeCard3';
 const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,9 +20,10 @@ const Home = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const data = await getUserData();
-      console.log(data);
+      const accessToken = localStorage.getItem('accessToken');
+      const data = await getUserData(accessToken);
       setUserData(data);
+      console.log(data);
     };
     fetchUserData();
   }, []);
@@ -78,19 +81,10 @@ const Home = () => {
       </header>
 
       <div className="scrollable-section">
-        <img
-          src={frame0}
-          alt="Frame 0"
-          className="frame0"
-          onClick={handleFrame0Click}
-        />
-        <img
-          src={frame1}
-          alt="Frame 1"
-          className="frame1"
-          onClick={handleFrame1Click}
-        />
-        <div
+        <HomeCard2 />
+        <HomeCard1 />
+        <HomeCard3 />
+        {/* <div
           className="profile-section"
           style={{ backgroundImage: `url(${frame2})` }}
         >
@@ -104,7 +98,7 @@ const Home = () => {
           >
             프로필 수정하기
           </button>
-        </div>
+        </div> */}
       </div>
 
       {courseData.length > 0 && (
@@ -127,8 +121,7 @@ const Home = () => {
 
       {courseData.length === 0 && (
         <div className="register-section">
-          <img src={starIcon} alt="Star Icon" className="star-icon" />
-          <p className="register-text">코스를 등록해보세요!</p>
+          <img src="/homestar.png" alt="homestar" className='star-icon'/>
         </div>
       )}
 
