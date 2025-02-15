@@ -251,9 +251,7 @@ export const saveMyPlace = async (placeData) => {
     }
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}/course/myplace`,
-        placeData,
+      const response = await axios.post(`${BASE_URL}/course/myplace`, placeData,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -263,6 +261,29 @@ export const saveMyPlace = async (placeData) => {
       return response.data;
     } catch (error) {
       console.error("Error saving place:", error);
+      throw error;
+    }
+  };
+
+
+// 나만의 장소 보기 API 호출 함수
+  export const getMyPlaces = async () => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+        throw new Error("Access token is missing.");
+    }
+
+    try {
+      const response = await axios.get(`${BASE_URL}/course/myplace`,
+         {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+      );
+      return response;
+    } catch (error) {
+      console.error("나만의 장소 데이터를 가져오는 데 실패했습니다.", error);
       throw error;
     }
   };

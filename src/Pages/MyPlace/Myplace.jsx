@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 import Button from '../../component/Button';
 import Header from '../../component/Header';
 
+import { getMyPlaces } from "../../api";
+
 import logo from '../../assets/logo1 2.svg';
 import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
 import backgroundpurple from '../../assets/bg_mypage3_bggra1_purple.svg';
@@ -37,14 +39,17 @@ const DescriptionContainer = styled.div`
 const DescriptionText1 = styled.p`
   padding-top: 5%;
   font-size: 5.5vw;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 24px;
   color: black;
+  line-height: 1.3;
 `;
 
 const DescriptionText2 = styled.p`
-  font-size: 3.5vw;
   color: black;
-  margin-top: 1rem;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4;
 `;
 
 const Logo = styled.img`
@@ -78,7 +83,8 @@ const TextContainer = styled.div`
   top: 65%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 4vw;
+  font-size: 18px;
+  font-weight: 500;
   color: black;
   white-space: nowrap;
 `;
@@ -122,11 +128,24 @@ const FixedButtonContainer = styled.div`
 `;
 
 const Myplace = () => {
-  const [places, setPlaces] = useState([
-    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", latitude: 37.557527, longitude: 126.925595, image: null },
-  ]); // 더미 데이터
+  const [places, setPlaces] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+
+
+  // 백엔드 API에서 데이터 불러오기
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const response = await getMyPlaces(); // API 호출
+        setPlaces(response.data); // 가져온 데이터를 상태에 저장
+      } catch (error) {
+        console.error("장소를 불러오는 데 실패했습니다.", error);
+      }
+    };
+
+    fetchPlaces();
+  }, []);
 
   // 새로운 장소를 추가하는 로직
   useEffect(() => {
@@ -168,7 +187,9 @@ const Myplace = () => {
             <Bgpurple src={backgroundpurple} alt="purlplecircle" />
             <Bgblue src={backgroundblue} alt="bluecircle" />
           </MyplaceContainer>
+          <FixedButtonContainer>
           <Button text="나만의 장소 저장하기" onClick={handleButtonClick} />
+          </FixedButtonContainer>
           </>
         ) : (
           <>
