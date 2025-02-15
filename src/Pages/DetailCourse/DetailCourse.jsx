@@ -185,10 +185,10 @@ const DetailCourse = () => {
                     </div>
                 )}
                 <MeetingPlace 
-                    time="PM 12시 30분"
-                    title="홍대입구역 2번 출구"
-                    address="서울시 마포구 양화로 100 홍대입구역"
-                    isEditing={isEditing}
+                    time="PM 12시 30분"// props로 넘기기
+                    title="홍대입구역 2번 출구" //title
+                    address="서울시 마포구 양화로 100 홍대입구역" //meet_place
+                    isEditing={isEditing} 
                     selectAll={selectAll}
                     onSelect={handleItemSelect}
                 />

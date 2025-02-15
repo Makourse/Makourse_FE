@@ -42,7 +42,7 @@ const PlaceItem = ({ number, title, time, category, operatingHours, showAlternat
                     <div className="place-title">{title}</div>
                     <div className="place-basic-info">
                         <div className='place-tag'>{category}</div>
-                        <div className='place-time'>영업시간 | {operatingHours}</div>
+                        <div className='place-time'>{operatingHours}</div>
                     </div>
                 </div>
             </div>
