@@ -6,7 +6,7 @@ import Header from "../../component/Header";
 import Button from "../../component/Button";
 import deletex from "../../assets/deletex.svg";
 import ping from "../../assets/ping.svg";
-
+import getPlaceSearch from '../../Components/PlaceSearch/PlaceSearch';
 import { saveMyPlace } from "../../api";
 
 import "../../component/Fonts.css";
@@ -205,6 +205,9 @@ const Myplacemap = () => {
     { name: "경복궁", address: "서울시 종로구 사직로 161", latitude: 37.579617, longitude: 126.977041 },
   ]);
 
+  // debounce를 위한 새로운 state와 useEffect 추가
+  const [searchTimeout, setSearchTimeout] = useState(null);
+
   useEffect(() => {
     const mapOptions = {
       center: new naver.maps.LatLng(selectedLocation.latitude, selectedLocation.longitude),
@@ -240,21 +243,47 @@ const Myplacemap = () => {
     }
   }, [searchQuery]);
 
+  // 검색어 변경 시 debounce 처리
+  useEffect(() => {
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    if (searchQuery.length > 0) {
+      const timeout = setTimeout(() => {
+        handleSearch();
+      }, 2000); // 2초 동안 입력이 없으면 검색 실행
+      setSearchTimeout(timeout);
+    }
+  }, [searchQuery]);
+
   const handleSuggestionClick = (suggestion) => {
     const { latitude, longitude, name, address } = suggestion;
   
     if (map) {
-      map.setCenter(new naver.maps.LatLng(latitude, longitude));
+      const position = new naver.maps.LatLng(latitude, longitude);
+      map.setCenter(position);
       map.setZoom(15);
   
-      new naver.maps.Marker({
-        position: new naver.maps.LatLng(latitude, longitude),
-        map: map,
-      });
+      if (marker) {
+        marker.setPosition(position);
+      } else {
+        const newMarker = new naver.maps.Marker({
+          position: position,
+          map: map,
+        });
+        setMarker(newMarker);
+      }
     }
   
-    setSelectedLocation({ latitude, longitude, name, address });
-    console.log("선택된 위치_myplacemap:", { latitude, longitude, name, address }); // 디버깅용
+    setSelectedLocation({ 
+      latitude, 
+      longitude, 
+      place_name: name,
+      address: address 
+    });
+    setNewPlaceName(name);
+    console.log("선택된 위치_myplacemap:", { latitude, longitude, name, address });
   };
 
   const handleClearSearch = () => {
@@ -291,6 +320,44 @@ const Myplacemap = () => {
     }
   };
 
+  const handleSearch = async () => {
+    try {
+      const response = await getPlaceSearch(searchQuery);
+      
+      // response와 items 배열이 존재하는지 확인
+      if (response && response.items && Array.isArray(response.items)) {
+        const formattedResults = response.items.map(item => ({
+          name: item.title.replace(/<[^>]*>/g, ''), // HTML 태그 제거
+          address: item.roadAddress || item.address,
+          latitude: parseFloat(item.mapy) / 10000000, // 네이버 좌표를 위도로 변환
+          longitude: parseFloat(item.mapx) / 10000000, // 네이버 좌표를 경도로 변환
+          category: item.category,
+          telephone: item.telephone
+        }));
+        setSuggestions(formattedResults);
+      } else {
+        console.log("검색 결과가 없습니다:", response);
+        setSuggestions([]);
+      }
+    } catch (error) {
+      console.error("검색 중 오류 발생:", error);
+      setSuggestions([]);
+    }
+  };
+
+  // SearchBox 부분 수정
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value === '') {
+      setSuggestions([]);
+    }
+  };
+
+  // 1. 검색창에 검색한다
+  // 2. 2초간 검색어 입력이 없으면 검색으로 인식한다
+  // 3. 검색 api를 호출하여 검색결과를 받는다.
+  // 4. 검색결과를 리스트로 보여준다.
+
   return (
     <Container>
       <Header title="나만의 장소 저장하기" />
@@ -304,7 +371,7 @@ const Myplacemap = () => {
             )}
             <SearchBox
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchInputChange}
               placeholder="검색어를 입력하세요."
             />
           </SearchBoxContainer>

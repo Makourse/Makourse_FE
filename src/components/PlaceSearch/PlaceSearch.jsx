@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://openapi.naver.com/v1/search/local';
+const BASE_URL = '/v1/search/local.json';
 const CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
 const CLIENT_SECRET = import.meta.env.VITE_NAVER_CLIENT_SECRET;
 
@@ -16,6 +16,7 @@ const getPlaceSearch = async (query) => {
             'X-Naver-Client-Secret': CLIENT_SECRET,
         },
     });
+    console.log(response.data);
     return response.data;
 };
 
