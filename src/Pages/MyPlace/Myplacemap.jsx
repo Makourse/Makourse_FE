@@ -295,7 +295,7 @@ const Myplacemap = () => {
 
   const handleAddPlace = async() => {
     const newPlace = {
-      name: newPlaceName || selectedLocation.place_name, 
+      place_name: newPlaceName || selectedLocation.place_name, 
       address: selectedLocation.address || "주소 없음",
       latitude: selectedLocation.latitude,
       longitude: selectedLocation.longitude,
