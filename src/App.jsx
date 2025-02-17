@@ -13,6 +13,7 @@ import Placedetail from './Pages/Placedetail/Placedetail';
 import IntroPage from './Login/IntroPage/IntroPage';
 import SignUpPage from './Login/SignUpPage/SignUpPage';
 import OAuthCallback from './Login/OAuth/OAuthCallback';
+import Setparticipant from './Pages/Setparticipant/Setparticipant'
 
 const App = () => {
   return (
@@ -25,14 +26,14 @@ const App = () => {
           <Route path="/myplace/save" element={<MyplaceSave />} />   
           <Route path="/meetingdate" element={<Meetingdate />} />  
           <Route path="/myplace/map" element={<Myplacemap/>} />
-         <Route path="/detail-course" element={<DetailCourse />} />
-        <Route path="/place-detail" element={<Placedetail />} />
-        <Route path="/detail-course" element={<DetailCourse />} />
-        <Route path="/check-course" element={<CheckCourse />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/editprofile" element={<EditProfile />} />
-        <Route path="/alarm" element={<Alarm/>} />
-        <Route path="/account/:provider/callback" element={<OAuthCallback />} />
+          <Route path="/detail-course" element={<DetailCourse />} />
+          <Route path="/place-detail" element={<Placedetail />} />
+         <Route path="/check-course" element={<CheckCourse />} />
+         <Route path="/home" element={<Home />} />
+          <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/alarm" element={<Alarm/>} />
+          <Route path="/account/:provider/callback" element={<OAuthCallback />} />
+          <Route path="/setparticipant" element={<Setparticipant />} />       
         </Routes>
     </Router>
     </>
