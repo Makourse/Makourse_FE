@@ -148,7 +148,7 @@ const DetailCourse = () => {
                     </div>
                 </div>
                 
-                <div className="option-card">
+                <div className="option-card" onClick={() => navigate('/setparticipant')} style={{ cursor: 'pointer' }}>
                     <div className="detail-icon">
                         <img src='/detail-member.svg' alt="people" />
                     </div>
