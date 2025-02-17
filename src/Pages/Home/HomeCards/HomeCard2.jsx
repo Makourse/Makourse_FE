@@ -1,8 +1,12 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HomeCard.css';
 
 const HomeCard2 = () => {
+    const navigate = useNavigate();
+
     return (
-        <div className="home-card-2">
+        <div className="home-card-2" onClick={() => navigate('/check-course')} style={{ cursor: 'pointer' }}>
             <img className="homecard2-img" src="/HomeCard/homecard2.png" alt="homecard2" />
             <div className="homecard2-container">
                 <img className="homecard2-icon" src="/HomeCard/homecard2-icon.png" alt="homecard2-icon" />
@@ -11,7 +15,7 @@ const HomeCard2 = () => {
                 <p className="home-card-2-text">다시 볼 수 있어요.</p>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default HomeCard2;

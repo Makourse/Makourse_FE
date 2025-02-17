@@ -7,7 +7,7 @@ import loginIcon from '../../assets/home/login.svg';
 import { getUserData } from '../../api';
 import HomeCard1 from './HomeCards/HomeCard1';
 import HomeCard2 from './HomeCards/HomeCard2';
-import frame2 from '../../assets/home/Frame2.svg';
+import HomeCard3 from './HomeCards/HomeCard3';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -79,15 +79,7 @@ const Home = () => {
       <div className="scrollable-section">
         <HomeCard2 />
         <HomeCard1 />
-        <div className="profile-section" style={{ backgroundImage: `url(${frame2})` }}>
-          <img src={profilePic} alt="Profile" className="profile-image" />
-          <h3 className="profile-name">{userData ? userData.name : '로딩 중...'}</h3>
-          <img src={loginIcon} alt="Login Icon" className="login-icon" />
-          <div className="divider"></div>
-          <button className="edit-profile-btn" onClick={() => navigate('/editprofile')}>
-            프로필 수정하기
-          </button>
-        </div> 
+        <HomeCard3 userData={userData} />
       </div>
 
       {schedules.length > 0 && (
