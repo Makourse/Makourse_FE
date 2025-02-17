@@ -156,8 +156,10 @@
   margin-top: 15px;
 }
 
-.homecard3-text {
+.homecard3-btn {
   position: relative;
+  background-color: transparent; 
+  border: none;
   z-index: 2;
   margin: 2px;
   color: #ffffff;
