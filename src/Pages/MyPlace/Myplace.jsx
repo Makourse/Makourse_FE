@@ -198,7 +198,7 @@ const Myplace = () => {
               <PlaceContainer key={index}>
                 <PlaceImg src={place.image || myplaceimg} alt="Place Image" />
                 <PlaceTextContainer>
-                  <PlaceTextTitle>{place.name}</PlaceTextTitle>
+                  <PlaceTextTitle>{place.place_name}</PlaceTextTitle>
                   <PlaceTextAddr>{place.address}</PlaceTextAddr>
                 </PlaceTextContainer>
               </PlaceContainer>
