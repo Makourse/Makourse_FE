@@ -197,13 +197,8 @@ const Myplacemap = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
-  const [newPlaceName, setNewPlaceName] = useState(selectedLocation.place_name);
-  const [allSuggestions, setAllSuggestions] = useState([
-    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", latitude: 37.557527, longitude: 126.925595 },
-    { name: "서울숲", address: "서울시 성동구 뚝섬로 273 서울숲역", latitude: 37.544579, longitude: 127.041268 },
-    { name: "남산타워", address: "서울시 중구 남산동2가 105-1", latitude: 37.551169, longitude: 126.988227 },
-    { name: "경복궁", address: "서울시 종로구 사직로 161", latitude: 37.579617, longitude: 126.977041 },
-  ]);
+  const [newPlaceName, setNewPlaceName] = useState(selectedLocation.place_name.replace(/<[^>]*>/g, ''));
+  const [allSuggestions, setAllSuggestions] = useState([]);
 
   // debounce를 위한 새로운 state와 useEffect 추가
   const [searchTimeout, setSearchTimeout] = useState(null);
@@ -437,6 +432,5 @@ const Myplacemap = () => {
 export default Myplacemap;
 
 
-// 폰트, bottomtitle굵기, 반응형 디테일들,,
 // 추후 백엔드 연결시에 주소 받아와서 역지오코딩, 새로 추가한 장소 백엔드 올리기 등등 로직 구현
 // 핑 이동은 가능한데 나중에 핑 찍힌곳 좌표로 주소 알아내서 적?기? 그런식으로 없는장소도 추가할 수 있도록록
