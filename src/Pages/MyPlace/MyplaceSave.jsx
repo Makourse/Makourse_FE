@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import Button from '../../component/Button';
 import Header from '../../component/Header';
 
+import getPlaceSearch from '../../Components/PlaceSearch/PlaceSearch';
+
 import star from '../../assets/star.svg';
 import search from '../../assets/search.svg';
 import deletex from '../../assets/deletex.svg';
@@ -131,53 +133,45 @@ const MyplaceSave = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
-
-  const allSuggestions = [
-    { name: "홍대입구", address: "서울시 마포구 양화로 100 홍대입구역", latitude: 37.557527, longitude: 126.925595 },
-    { name: "서울숲", address: "서울시 성동구 뚝섬로 273 서울숲역", latitude: 37.544579, longitude: 127.041268 },
-    { name: "남산타워", address: "서울시 중구 남산동2가 105-1", latitude: 37.551169, longitude: 126.988227 },
-    { name: "경복궁", address: "서울시 종로구 사직로 161", latitude: 37.579617, longitude: 126.977041 },
-  ];
-
-  const decomposeSearchQuery = (query) => query.split('').map(char => char.toLowerCase());
-
-  useEffect(() => {
-    if (searchQuery) {
-      const decomposedQuery = decomposeSearchQuery(searchQuery);
-      const filteredSuggestions = allSuggestions.filter((item) => {
-        const isMatch = decomposedQuery.every(char => 
-          item.name.toLowerCase().includes(char) || item.address.toLowerCase().includes(char)
-        );
-        return isMatch;
-      });
-      setSuggestions(filteredSuggestions);
-    } else {
-      setSuggestions([]);
-    }
-  }, [searchQuery]);
+  let searchTimeout = null;
 
   const handleClearSearch = () => {
     setSearchQuery('');
     setSuggestions([]);
   };
-
-  const handleNavigateToMap = () => {
-    navigate('/myplace/map', { state: { searchQuery } }); // 검색어 전달
-  };
   
   // 장소 클릭 시 이동 부분 수정
-  const handleSuggestionClick = (suggestion) => {
-    navigate('/myplace/map', { 
-      state: { 
-        name : suggestion.name,
-        address: suggestion.address,
-        latitude: suggestion.latitude, 
-        longitude: suggestion.longitude, 
-        searchQuery 
-      }
-    });
+  const handleSuggestionClick = (suggestions) => {
+    const stateData = { 
+      name: suggestions.title,
+      address: suggestions.address,
+      latitude: (suggestions.mapy / 1e7).toFixed(7), 
+      longitude: (suggestions.mapx / 1e7).toFixed(7), 
+      searchQuery 
+    };
+  
+    navigate('/myplace/map', { state: stateData });
   };
   
+  useEffect(() => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+
+    if (searchQuery.trim() !== '') {
+      searchTimeout = setTimeout(async () => {
+        try {
+          const results = await getPlaceSearch(searchQuery);
+          setSuggestions(results.items || []);
+        } catch (error) {
+          console.error('검색 오류:', error);
+          setSuggestions([]);
+        }
+      }, 2000); // 디바운싱 적용
+    } else {
+      setSuggestions([]);
+    }
+
+    return () => clearTimeout(searchTimeout);
+  }, [searchQuery]);
 
   // Highlight matching parts of the text
   const highlightText = (text, query) => {
@@ -212,10 +206,10 @@ const MyplaceSave = () => {
 
         {searchQuery.length > 0 ? (
           <SuggestionContainer>
-            {suggestions.map((suggestion, index) => (
-              <Suggestion key={index} onClick={() => handleSuggestionClick(suggestion)}>
-                <PlaceTextTitle>{highlightText(suggestion.name, searchQuery)}</PlaceTextTitle>
-                <PlaceTextAddr>{highlightText(suggestion.address, searchQuery)}</PlaceTextAddr>
+            {suggestions.map((suggestions, index) => (
+              <Suggestion key={index} onClick={() => handleSuggestionClick(suggestions)}>
+                <PlaceTextTitle>{highlightText(suggestions.title.replace(/<[^>]*>/g, ''), searchQuery)}</PlaceTextTitle>
+                <PlaceTextAddr>{highlightText(suggestions.address, searchQuery)}</PlaceTextAddr>
               </Suggestion>
             ))}
           </SuggestionContainer>

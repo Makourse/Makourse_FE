@@ -1,8 +1,15 @@
 import './Placedetail.css';
 import { useEffect, useState, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+
 
 const Placedetail = () => {
+    const location = useLocation();
+    const place = location.state; // 전달받은 place 데이터
 
+    console.log(place); // place 데이터 확인
+
+    
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
     const [placeMemo, setPlaceMemo] = useState('');
@@ -19,19 +26,21 @@ const Placedetail = () => {
     const [displayTime, setDisplayTime] = useState('');
 
     useEffect(() => {
+        if (!place) return; // place가 없으면 실행 안 함
+    
         const mapOptions = {
-            center: new naver.maps.LatLng(37.557527, 126.925595),
+            center: new naver.maps.LatLng(place.latitude, place.longitude),
             zoom: 15
         };
         
         const map = new naver.maps.Map('naver-map', mapOptions);
         
-        // 마커도 같은 좌표로 설정
+        // 마커를 place 위치에 설정
         new naver.maps.Marker({
-            position: new naver.maps.LatLng(37.557527, 126.925595),
+            position: new naver.maps.LatLng(place.latitude, place.longitude),
             map: map
         });
-    }, []);
+    }, [place]);
 
     const handleMemo = () => {
         setIsModalOpen(true);
@@ -159,10 +168,10 @@ const Placedetail = () => {
             <div className='place-detail-info-box'>
                 <div className='place-detail-address-box'>
                     <img src='/placedetail-locate.svg' alt="address" />
-                    <p>서울특별시 종로구 종로3길 17 1층</p>
+                    <p>{place?.address || "주소 없음"}</p>
                 </div>
                 <div className='place-detail-place'>
-                    <p>홍대입구역 2번 출구</p>
+                    <p>{place?.place_name || "장소 이름 없음"}</p>
                 </div>
                 <div className='place-detail-options'>
                     <div className='place-detail-memo' onClick={handleMemo}>

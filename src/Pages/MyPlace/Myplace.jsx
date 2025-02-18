@@ -172,6 +172,10 @@ const Myplace = () => {
     navigate('/myplace/save');
   };
 
+  const handlePlaceClick = (place) => {
+    navigate('/place-detail', { state: place });
+  };
+
   return (
     <Container>
       <Header title="나만의 장소" />
@@ -195,7 +199,7 @@ const Myplace = () => {
           <>
           <MyplaceContainer>
           {places.map((place, index) => (
-              <PlaceContainer key={index}>
+              <PlaceContainer key={index} onClick={() => handlePlaceClick(place)}>
                 <PlaceImg src={place.image || myplaceimg} alt="Place Image" />
                 <PlaceTextContainer>
                   <PlaceTextTitle>{place.place_name}</PlaceTextTitle>
