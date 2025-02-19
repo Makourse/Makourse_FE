@@ -33,3 +33,5 @@ const getAddressFromCoords = async (latitude, longitude) => {
         return "주소 없음";
     }
 };
+
+export default getAddressFromCoords;

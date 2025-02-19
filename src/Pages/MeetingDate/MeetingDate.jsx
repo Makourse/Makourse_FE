@@ -365,8 +365,6 @@ const handleSaveInitialState = async () => {
 };
 
 
-
-
     const getDateMeetingSrc = (description, index) => {
         if (description === '날짜와 시간을 입력할 수 있어요') return meetingdate;
         const srcMapping = [first, second, third];
@@ -398,6 +396,7 @@ const handleSaveInitialState = async () => {
         console.log("초기 dates 상태:", dates);
         console.log("초기 draggableId 목록:", dates.map(date => date.id));
       }, []);
+
       
   // 현재 선택된 날짜 가져오기
   const selectedDate = selectedDateId
@@ -422,8 +421,27 @@ const handleBack = () => {
     }
   };
 
-  
 
+  
+  
+  const formatDateTitle = (dateString) => {
+    if (!dateString) return '';
+    const [year, month, day] = dateString.split('-');
+    return `${year}년 ${parseInt(month, 10)}월 ${parseInt(day, 10)}일`;
+  };
+
+  const formatTimeDescription = (dateTimeString) => {
+    if (!dateTimeString || !dateTimeString.includes('T')) return '';
+    const [date, time] = dateTimeString.split('T');
+    let [hour, minute] = time.split(':');
+    
+    hour = parseInt(hour, 10);
+    const ampm = hour < 12 ? 'AM' : 'PM';
+    const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+  
+    return `${ampm} ${formattedHour}시 ${parseInt(minute, 10)}분`;
+  };
+  
     return (
         <>
           <GlobalStyle />
