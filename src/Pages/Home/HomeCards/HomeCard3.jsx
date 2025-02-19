@@ -22,7 +22,7 @@ const HomeCard3 = ({ userData }) => {
         <div className="home-card-3">
             <img className="homecard3-img" src="/HomeCard/homecard3.png" alt="homecard3" />
             <div className="homecard3-container">
-                <img className="homecard3-icon" src={profileImage} alt="profile" />
+                <img className="homecard3-icon" src={`https://api-makourse.kro.kr${profileImage}`} alt="profile" />
                 <h1 className="homecard3-title">{userData?.name || '로딩 중...'}</h1>
                 <img className="homecard3-kakao" src={socialIcon} alt="social-icon" />
                 <div className="homecard3-divider"></div>
