@@ -1,50 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import alarmIcon from '../../assets/home/alarm.svg';
-import { getUserData, getCourseDetail } from '../../api';
+import { getUserData } from '../../api'; 
 import HomeCard1 from './HomeCards/HomeCard1';
 import HomeCard2 from './HomeCards/HomeCard2';
 import HomeCard3 from './HomeCards/HomeCard3';
 
 const Home = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [userData, setUserData] = useState(null);
   const [schedules, setSchedules] = useState([]);
-  const [courseDetails, setCourseDetails] = useState({}); // 코스 상세 정보 저장
 
   useEffect(() => {
-    const fetchUserDataAndCourses = async () => {
+    const fetchUserData = async () => {
       try {
         const response = await getUserData();
         if (response) {
           setUserData(response.user);
-          setSchedules(response.schedules);
-
-          const courseDetailsPromises = response.schedules.map(async (schedule) => {
-            const courseDetail = await getCourseDetail(localStorage.getItem('accessToken'), schedule.id);
-            
-            // ✅ 코스 상세정보 로그 출력
-            console.log(`코스 ID: ${courseDetail.course.id}, 코스 이름: ${courseDetail.course.course_name}`);
-
-            return courseDetail;
-          });
-
-          const courseDetailsResponses = await Promise.all(courseDetailsPromises);
-          const detailsMap = courseDetailsResponses.reduce((acc, detail) => {
-            acc[detail.course.id] = detail;
-            return acc;
-          }, {});
-
-          setCourseDetails(detailsMap);
+          setSchedules(response.schedules || []); // 스케줄 없으면 빈 배열로 설정
         }
       } catch (error) {
-        console.error('Error fetching user data or course details:', error);
+        console.error('Error fetching user data:', error);
       }
     };
 
-    fetchUserDataAndCourses();
+    fetchUserData();
   }, []);
 
   const formatDate = (dateString) => {
@@ -71,7 +52,7 @@ const Home = () => {
       </header>
 
       <div className="scrollable-section">
-        <HomeCard2 />
+        {schedules.length > 0 && <HomeCard2 />}
         <HomeCard1 />
         <HomeCard3 userData={userData} />
       </div>
@@ -80,19 +61,15 @@ const Home = () => {
         <div className="upcoming-section">
           <h2 className="upcoming-title">다가오는 일정</h2>
           <div className="upcoming-list">
-            {schedules.map((schedule) => {
-              const courseDetail = courseDetails[schedule.id];
-
-              return (
-                <div className="course-box" key={schedule.id}>
-                  <div className="dday-box">{calculateDday(courseDetail?.course.meet_date_first)}</div>
-                  <div className="course-title">{courseDetail?.course.course_name || '코스 이름 없음'}</div>
-                  <div className="course-people">
-                    {userData?.name} 외 {courseDetail?.course.group ? `${courseDetail.course.group - 1}명` : '?명'}
-                  </div>
+            {schedules.map((schedule) => (
+              <div className="course-box" key={schedule.id}>
+                <div className="dday-box">{calculateDday(schedule.meet_date_first)}</div>
+                <div className="course-title">{schedule.course_name || '코스 이름 없음'}</div>
+                <div className="course-people">
+                  {userData?.name} 외 {schedule.group - 1}명
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       ) : (
