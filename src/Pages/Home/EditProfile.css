@@ -82,7 +82,7 @@
   /* 이름 입력 필드 */
   .input-container {
     display: flex;
-    flex-direction: row; /* 취소 버튼을 입력란과 같은 줄에 배치 */
+    flex-direction: row; 
     align-items: center;
     width: 100%;
     position: relative;
@@ -126,3 +126,9 @@
     transition: all 0.3s ease;
   }
   
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* 원형으로 만들기 */
+    object-fit: cover; /* 이미지 비율을 유지하면서 잘림을 방지 */
+  }
