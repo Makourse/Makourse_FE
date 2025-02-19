@@ -311,3 +311,23 @@ export const saveMyPlace = async (placeData) => {
         throw error;
         }
     };
+
+    // 유저 정보 가져오기 (account/profile)
+    export const getUserProfile = async () => {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            throw new Error("Access token is missing.");
+        }
+
+        try {
+            const response = await axios.get(`${BASE_URL}/account/profile`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching user profile:", error);
+            throw error;
+        }
+    };
