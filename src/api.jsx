@@ -227,20 +227,33 @@ export const getEntries = async (accessToken, courseId) => {
 };
 
 // 일정 등록 API 호출 함수
-export const schedulePost = async (userId, meetDateFirst, meetDateSecond, meetDateThird) => {
+export const schedulePost = async (meetDateFirst, meetDateSecond, meetDateThird) => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+        throw new Error("Access token is missing.");
+    }
+
     try {
-        const response = await apiClient.post("/course/schedule/", {
-            user_id: userId,
-            meet_date_first: meetDateFirst,
-            meet_date_second: meetDateSecond,
-            meet_date_third: meetDateThird,
-        });
+        const response = await axios.post(`${BASE_URL}/course/schedule`,
+            {
+                meet_date_first: meetDateFirst,
+                meet_date_second: meetDateSecond,
+                meet_date_third: meetDateThird,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
         return response.data;
     } catch (error) {
         console.error("Error posting schedule:", error);
         throw error;
     }
 };
+
+
 
 
 // 나만의 장소 추가 API 호출 함수

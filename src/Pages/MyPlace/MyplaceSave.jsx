@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Button from '../../component/Button';
 import Header from '../../component/Header';
 
-import getPlaceSearch from '../../Components/PlaceSearch/PlaceSearch';
+import getPlaceSearch from '../../components/Naverapi/PlaceSearch';
 
 import star from '../../assets/star.svg';
 import search from '../../assets/search.svg';

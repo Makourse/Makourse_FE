@@ -6,7 +6,8 @@ import Header from "../../component/Header";
 import Button from "../../component/Button";
 import deletex from "../../assets/deletex.svg";
 import ping from "../../assets/ping.svg";
-import getPlaceSearch from '../../Components/PlaceSearch/PlaceSearch';
+import getPlaceSearch from '../../components/Naverapi/PlaceSearch';
+import getAddressFromCoords from '../../components/Naverapi/ReverseGeocoding';
 import { saveMyPlace } from "../../api";
 
 import "../../component/Fonts.css";
@@ -197,7 +198,10 @@ const Myplacemap = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
-  const [newPlaceName, setNewPlaceName] = useState(selectedLocation.place_name.replace(/<[^>]*>/g, ''));
+  const [newPlaceName, setNewPlaceName] = useState(
+    (selectedLocation.place_name || '').replace(/<[^>]*>/g, '')
+  );
+  
   const [allSuggestions, setAllSuggestions] = useState([]);
 
   // debounce를 위한 새로운 state와 useEffect 추가
@@ -221,6 +225,9 @@ const Myplacemap = () => {
     naver.maps.Event.addListener(newMap, "click", (e) => {
       const clickedLatitude = e.coord.lat();
       const clickedLongitude = e.coord.lng();
+
+      console.log("마커 위치 변경:", { latitude: clickedLatitude, longitude: clickedLongitude });
+
 
       newMarker.setPosition(new naver.maps.LatLng(clickedLatitude, clickedLongitude));
       setSelectedLocation({ latitude: clickedLatitude, longitude: clickedLongitude, name: null, address: null });
@@ -431,6 +438,3 @@ const Myplacemap = () => {
 
 export default Myplacemap;
 
-
-// 추후 백엔드 연결시에 주소 받아와서 역지오코딩, 새로 추가한 장소 백엔드 올리기 등등 로직 구현
-// 핑 이동은 가능한데 나중에 핑 찍힌곳 좌표로 주소 알아내서 적?기? 그런식으로 없는장소도 추가할 수 있도록록
