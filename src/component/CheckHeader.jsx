@@ -2,9 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const SelectionContainer = styled.div`
-  position: absolute;
-  top: 64px;
-  left: 0;
+  position: relative;
   width: 100%;
   height: 48px;
   display: flex;
