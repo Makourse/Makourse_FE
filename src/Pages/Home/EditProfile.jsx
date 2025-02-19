@@ -1,19 +1,34 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './EditProfile.css';
 import backIcon from '../../assets/home/back.svg';
 import profilePic from '../../assets/home/profile1.svg';
 import profileEditIcon from '../../assets/home/profile_edit.svg';
 import cancelIcon from '../../assets/home/cancel.svg';
-import { updateProfileImage } from '../../api';
+import { getUserProfile, updateProfileImage } from '../../api';
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const initialName = location.state?.userName || '';
-  const [name, setName] = useState(initialName);
+  const [name, setName] = useState('');
   const [profileImage, setProfileImage] = useState(profilePic);
   const [imageFile, setImageFile] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const userProfile = await getUserProfile();
+        setName(userProfile.name || '');
+        
+        if (userProfile.profile_image) {
+          setProfileImage(userProfile.profile_image);
+        }
+      } catch (error) {
+        console.error("사용자 프로필 가져오기 실패:", error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     setName(e.target.value);
@@ -25,7 +40,13 @@ const EditProfile = () => {
         await updateProfileImage(imageFile);
       }
 
-      navigate('/home', { state: { userName: name } });
+      navigate('/home', { 
+        state: { 
+          userName: name, 
+          profileImage: imageFile ? URL.createObjectURL(imageFile) : profileImage 
+        } 
+      });
+
     } catch (error) {
       console.error("프로필 이미지 업데이트 중 오류 발생:", error);
     }
@@ -38,7 +59,8 @@ const EditProfile = () => {
   const handleProfileImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setProfileImage(URL.createObjectURL(file)); // 미리보기 이미지 변경
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImage(imageUrl);
       setImageFile(file);
     }
   };
@@ -62,6 +84,7 @@ const EditProfile = () => {
             src={profileImage}
             alt="Profile"
             className="profile-picture"
+            onError={() => setProfileImage(profilePic)} // 이미지 깨지면 기본 이미지로 변경
           />
           <label htmlFor="file-upload" className="profile-edit-icon">
             <img

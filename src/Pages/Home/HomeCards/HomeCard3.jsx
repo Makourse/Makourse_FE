@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomeCard.css';
 
 const HomeCard3 = ({ userData }) => {
     const navigate = useNavigate();
 
-    const profileImage = '/HomeCard/homecard3-icon.png'; //프로필 이미지 get 연동 필요
+    useEffect(() => {
+        console.log('userData:', userData);
+    }, [userData]);
+
+    const profileImage = userData?.profile_image
+        ? userData.profile_image
+        : '/HomeCard/homecard3-icon.png'; // 기본 프로필
 
     const socialIcon =
         userData?.social_provider === 'google' ? '/HomeCard/homecard3-google.png' :

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Home.css';
 import alarmIcon from '../../assets/home/alarm.svg';
-import { getUserData } from '../../api'; 
+import { getUserData, getUserProfile } from '../../api'; 
 import HomeCard1 from './HomeCards/HomeCard1';
 import HomeCard2 from './HomeCards/HomeCard2';
 import HomeCard3 from './HomeCards/HomeCard3';
 
 const Home = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [userData, setUserData] = useState(null);
   const [schedules, setSchedules] = useState([]);
 
@@ -17,24 +18,41 @@ const Home = () => {
       try {
         const response = await getUserData();
         if (response) {
+          console.log('사용자 데이터 응답:', response);
           setUserData(response.user);
-          setSchedules(response.schedules || []); // 스케줄 없으면 빈 배열로 설정
+          setSchedules(response.schedules || []);
+        }
+
+        const profileResponse = await getUserProfile();
+        console.log('프로필 이미지 응답:', profileResponse);
+
+        if (profileResponse?.profile_image) {
+          setUserData(prev => ({
+            ...prev,
+            profile_image: profileResponse.profile_image
+          }));
+          console.log('프로필 이미지 상태 업데이트:', profileResponse.profile_image);
+        } else {
+          console.warn('⚠️ 프로필 이미지 값이 null이거나 없음');
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('❌ 사용자 데이터 가져오기 실패:', error);
       }
     };
 
     fetchUserData();
   }, []);
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '날짜 미정';
-    const days = ['일', '월', '화', '수', '목', '금', '토'];
-    const date = new Date(dateString);
-    const day = days[date.getDay()];
-    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}(${day})`;
-  };
+  // 프로필 수정 후 Home으로 돌아왔을 때 반영
+  useEffect(() => {
+    if (location.state?.profileImage) {
+      console.log('✅ 프로필 수정 후 새로운 이미지 적용:', location.state.profileImage);
+      setUserData(prev => ({
+        ...prev,
+        profile_image: location.state.profileImage
+      }));
+    }
+  }, [location.state?.profileImage]);
 
   const calculateDday = (dateString) => {
     if (!dateString) return 'D-?';
