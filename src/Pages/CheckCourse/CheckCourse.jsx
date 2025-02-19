@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CheckCourse.css';
 import backIcon from '../../assets/home/back.svg';
@@ -7,10 +7,11 @@ import starIcon from '../../assets/home/star.svg';
 function CheckCourse() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('upcoming');
+  const [courseData, setCourseData] = useState([]); // API 데이터 저장
+  const [loading, setLoading] = useState(true);
 
   // 오늘 날짜 계산
   const today = new Date();
-  const formattedToday = today.toISOString().split('T')[0];
 
   // 날짜 포맷팅 함수 (YYYY.MM.DD(요일))
   const formatDate = (date) => {
@@ -20,16 +21,6 @@ function CheckCourse() {
     return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}(${day})`;
   };
 
-  // 임시 데이터
-  const courseData = [
-    { title: '성수 데이트', date: '2025-01-07', people: '김민수 외 2명' },
-    { title: '홍대 데이트', date: '2025-01-05', people: '김민수 외 2명' },
-    { title: '경복궁 나들이', date: '2025-01-09', people: '김민수 외 2명' },
-    { title: '코스 이름', date: '2025-01-10', people: '김민수 외 2명' },
-    { title: '코스 이름', date: '2025-01-11', people: '김민수 외 2명' },
-    { title: '코스 이름', date: '2025-01-12', people: '김민수 외 2명' },
-  ].sort((a, b) => new Date(a.date) - new Date(b.date)); // 날짜 정렬
-
   // D-Day 계산
   const calculateDday = (date) => {
     const targetDate = new Date(date);
@@ -38,6 +29,35 @@ function CheckCourse() {
     if (difference === 0) return 'D-Day';
     return `D-${difference}`;
   };
+
+  // 일정 가져오기
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch('course/schedule/<int:schedule_id>');
+    
+        if (!response.ok) {
+          throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+        }
+    
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('JSON 형식의 응답이 아닙니다.');
+        }
+    
+        const data = await response.json();
+        console.log('받아온 데이터:', data);
+        setCourseData(data.sort((a, b) => new Date(a.date) - new Date(b.date)));
+      } catch (error) {
+        console.error('에러 발생:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+
+    fetchCourses();
+  }, []);
 
   // 일정 분리
   const upcomingCourses = courseData.filter(
@@ -49,7 +69,6 @@ function CheckCourse() {
 
   return (
     <div className="checkcourse-container">
-      {/* Header */}
       <div className="header">
         <img
           src={backIcon}
@@ -60,7 +79,6 @@ function CheckCourse() {
         <div className="header-title">등록된 코스</div>
       </div>
 
-      {/* Tabs */}
       <div className="tabs">
         <button
           className={`tab-button ${activeTab === 'upcoming' ? 'active' : ''}`}
@@ -75,10 +93,11 @@ function CheckCourse() {
           완료된 일정
         </button>
       </div>
-
       {/* Content */}
       <div className="content">
-        {activeTab === 'upcoming' && upcomingCourses.length > 0 ? (
+        {loading ? (
+          <div className="loading-message">데이터 불러오는 중...</div>
+        ) : activeTab === 'upcoming' && upcomingCourses.length > 0 ? (
           upcomingCourses.map((course, index) => (
             <div className="course-item" key={index}>
               <div className="course-info">
@@ -116,7 +135,6 @@ function CheckCourse() {
         )}
       </div>
 
-      {/* Register Button */}
       <button
         className="register-button"
         onClick={() => navigate('/detail-course')}

@@ -287,3 +287,27 @@ export const saveMyPlace = async (placeData) => {
       throw error;
     }
   };
+
+  // 프로필 이미지 업데이트 API
+    export const updateProfileImage = async (file) => {
+        const accessToken = getAccessToken();
+        if (!accessToken) throw new Error("Access token is missing.");
+    
+        try {
+        const formData = new FormData();
+        formData.append('profile_image', file);
+    
+        const response = await axios.post(`${BASE_URL}/account/profile-image/update`, formData, 
+            {
+                headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'multipart/form-data',
+                },
+            }
+        );
+        return response.data;
+        } catch (error) {
+        console.error("프로필 이미지 업데이트 실패:", error);
+        throw error;
+        }
+    };
