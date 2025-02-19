@@ -14,24 +14,9 @@ const Container = styled.div`
   position: relative;
 `;
 
-const SelectionContainer = styled.div`
-  position: absolute;
-  top: 64px;
-  left: 0;
-  width: 100%;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(0, 0, 0, 0.02);
-  backdrop-filter: blur(4px);
-  z-index: 2;
-`;
-
 const MemberList = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: ${({ isSelecting }) => (isSelecting ? "48px" : "0")};
 `;
 
 const MemberItem = styled.div`
@@ -114,22 +99,6 @@ const DeleteButton = styled.img`
   width: 136px;
   height: 36px;
   cursor: pointer;
-`;
-
-const CheckAllButton = styled.img`
-  width: 75px;
-  height: 36px;
-  margin-left: 24px; 
-  cursor: pointer;
-`;
-
-const DoneButton = styled.div`
-  font-size: 14px;
-  color: #376FA3;
-  cursor: pointer;
-  padding: 8px 16px;
-  position: absolute;
-  right: 24px;
 `;
 
 const Overlay = styled.div`
@@ -272,7 +241,7 @@ const SetParticipant = () => {
   return (
     <Container>
       <Header title="모임원 설정" />
-      {isSelecting && <CheckHeader onCheckAll={handleCheckAll} onDone={toggleSelectMode} />}  {/* 변경된 부분 */}
+      {isSelecting && <CheckHeader onCheckAll={handleCheckAll} onDone={toggleSelectMode} />}
       
       <MemberList isSelecting={isSelecting}>
         {members.map((member) => (
