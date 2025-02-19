@@ -8,7 +8,6 @@ const HomeCard3 = ({ userData }) => {
 
     useEffect(() => {
         const image = localStorage.getItem('profileImage');
-        console.log('Profile image loaded:', image); // 이미지 확인 로그
         if (image) {
             setProfileImage(image);
         }
