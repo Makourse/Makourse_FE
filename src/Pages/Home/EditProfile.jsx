@@ -20,7 +20,7 @@ const EditProfile = () => {
         setName(userProfile.name || '');
         
         if (userProfile.profile_image) {
-          setProfileImage(userProfile.profile_image);
+          setProfileImage(`https://api-makourse.kro.kr${userProfile.profile_image}`);
         }
       } catch (error) {
         console.error("사용자 프로필 가져오기 실패:", error);
