@@ -33,7 +33,6 @@
     display: flex;
     overflow-x: scroll;
     gap: 30px;
-    padding-bottom: 10px;
     scrollbar-width: none;
     padding-right: 10px;
     padding-left: 24px;
@@ -157,7 +156,7 @@
 }
 
 .upcoming-section {
-    margin-top: 40px;
+    margin-top: 30px;
     padding-left: 24px;
     overflow: visible;
 }
@@ -175,7 +174,6 @@
     overflow-x: auto;
     scrollbar-width: none;
     padding-bottom: 8px;
-    padding-top: 8px;
 }
 
 .upcoming-list::-webkit-scrollbar {
