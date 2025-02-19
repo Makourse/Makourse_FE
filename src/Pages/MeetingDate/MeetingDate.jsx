@@ -268,14 +268,6 @@ const Meetingdate = () => {
         { id: 3, title: '세 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
       ]);
 
-        useEffect(() => {
-          const fetchUserId = async () => {
-            const data = await getUserId();
-            console.log('id :',data);
-            setUserId(data);
-          };
-          fetchUserId();
-        }, []);
 
       const handleDateClick = (id) => {
         console.log(`Date ${id} clicked`);
@@ -359,17 +351,16 @@ const handleSaveInitialState = async () => {
     const formattedDates = dates.map(date => date.description !== '날짜와 시간을 입력할 수 있어요' ? date.description : null);
 
     const requestData = {
-      userId,
       meetDateFirst: formattedDates[0],
       meetDateSecond: formattedDates[1],
       meetDateThird: formattedDates[2],
     };
-    await schedulePost(requestData.userId, requestData.meetDateFirst, requestData.meetDateSecond, requestData.meetDateThird);
-   
+
+    await schedulePost(requestData.meetDateFirst, requestData.meetDateSecond, requestData.meetDateThird);
+
     alert('일정이 저장되었습니다!');
   } catch (error) {
     console.error('일정 저장 실패:', error);
-    console.log('userId 값:', userId); // userId 출력
   }
 };
 
