@@ -311,22 +311,3 @@ export const saveMyPlace = async (placeData) => {
         throw error;
         }
     };
-
-      // 🔹 프로필 이미지 가져오기 API
-export const getProfileImage = async () => {
-    const accessToken = getAccessToken();
-    if (!accessToken) {
-      throw new Error("Access token is missing.");
-    }
-  
-    try {
-      const response = await axios.get(`${BASE_URL}/account/profile-image/`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      });
-  
-      return response.data.profile_image; // 프로필 이미지 URL 반환
-    } catch (error) {
-      console.error("프로필 이미지를 가져오는 데 실패했습니다.", error);
-      return null; // 실패 시 null 반환
-    }
-  };
