@@ -3,6 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 import Button from "../../component/Button";
 import Header from "../../component/Header";
+import CheckHeader from "../../component/CheckHeader";
 import Profile from "../../assets/home/profile1.svg";
 
 const Container = styled.div`
@@ -179,15 +180,15 @@ const InviteModal = ({ onClose, groupId }) => {
     setIsInviting(true);
     try {
       const response = await axios.post(
-        `/account/groups/${groupId}/join`, // 실제 API 주소로 수정 필요
+        `/account/groups/${groupId}/join`,
         {
           code,
-          user_id: userId, // 사용자 아이디
+          user_id: userId, 
         }
       );
       console.log("초대 성공:", response.data);
       alert("초대가 성공적으로 전송되었습니다.");
-      onClose();  // 초대 완료 후 모달 닫기
+      onClose(); 
     } catch (error) {
       console.error("초대 실패:", error);
       alert("초대 전송에 실패했습니다.");
@@ -210,15 +211,15 @@ const InviteModal = ({ onClose, groupId }) => {
       <TextInput
         placeholder="초대할 아이디를 입력해주세요."
         value={userId}
-        onChange={(e) => setUserId(e.target.value)}  // 아이디 입력 처리
+        onChange={(e) => setUserId(e.target.value)}  
       />
       </InputField>
       <ButtonRow>
         <ActionButton style={{ background: "#F1F1F1", color: "#666666" }} onClick={onClose}>닫기</ActionButton>
         <ActionButton
           style={{ background: "#D6EBFF", color: "#376FA3" }}
-          onClick={handleInvite} // 초대 요청
-          disabled={isInviting || !userId} // 초대 중일 때나 아이디가 비어있을 때는 비활성화
+          onClick={handleInvite}
+          disabled={isInviting || !userId} 
         >
           {isInviting ? "초대 중..." : "초대하기"}
         </ActionButton>
@@ -248,7 +249,7 @@ const SetParticipant = () => {
 
   const toggleSelectMode = () => {
     setIsSelecting(!isSelecting);
-    setSelectedMembers([]); // 선택 모드 전환 시 선택된 회원 초기화
+    setSelectedMembers([]); 
   };
 
   const handleMemberClick = (id, isLeader) => {
@@ -271,12 +272,8 @@ const SetParticipant = () => {
   return (
     <Container>
       <Header title="모임원 설정" />
-      {isSelecting && (
-        <SelectionContainer>
-          <CheckAllButton src="/btn_allcheck.svg" alt="전체 선택" onClick={handleCheckAll} />
-          <DoneButton onClick={toggleSelectMode}>완료</DoneButton>
-        </SelectionContainer>
-      )}
+      {isSelecting && <CheckHeader onCheckAll={handleCheckAll} onDone={toggleSelectMode} />}  {/* 변경된 부분 */}
+      
       <MemberList isSelecting={isSelecting}>
         {members.map((member) => (
           <MemberItem
