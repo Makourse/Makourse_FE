@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import Button from "../../component/Button";
 import Header from "../../component/Header";
 import Profile from "../../assets/home/profile1.svg";
-import axios from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -14,9 +13,24 @@ const Container = styled.div`
   position: relative;
 `;
 
+const SelectionContainer = styled.div`
+  position: absolute;
+  top: 64px;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.02);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+`;
+
 const MemberList = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: ${({ isSelecting }) => (isSelecting ? "48px" : "0")};
 `;
 
 const MemberItem = styled.div`
@@ -24,7 +38,8 @@ const MemberItem = styled.div`
   align-items: center;
   height: 88px;
   padding: 0 24px;
-  border-bottom: 1px solid #F1F1F1;
+  border-bottom: 1px solid #f1f1f1;
+  background: ${({ selected }) => (selected ? "#EDF3F8A6" : "transparent")};
 `;
 
 const ProfileImage = styled.img`
@@ -42,6 +57,7 @@ const MemberInfo = styled.div`
 const MemberName = styled.div`
   font-size: 16px;
   font-weight: bold;
+  margin-bottom: 8px;
 `;
 
 const MemberRole = styled.div`
@@ -58,39 +74,216 @@ const FixedButtonContainer = styled.div`
   left: 50%;
   width: 100%;
   transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
 `;
 
-const SetParticipant = ({ scheduleId }) => {
-  const [members, setMembers] = useState([]);
-  const navigate = useNavigate();
+const ActionButton = styled.div`
+  width: 152px;
+  height: 54px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+`;
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get(`/account/schedules/${scheduleId}/group`);
-        const sortedMembers = response.data.memberships.map(m => ({
-          id: m.id,
-          name: m.user.name,
-          role: m.role,
-          isMe: m.user.id === "current_user_id" // 여기에 현재 사용자 ID 확인 로직 필요
-        })).sort((a, b) => (a.isMe ? -1 : 1));
-        setMembers(sortedMembers);
-      } catch (error) {
-        console.error("모임원을 불러오는 데 실패했습니다.", error);
-      }
-    })();
-  }, [scheduleId]);
+const DeleteActionButton = styled.button`
+  width: 80%;
+  height: 3.375rem;
+  background-color: ${({ disabled }) => (disabled ? "#F1F1F1" : "#376FA3")};
+  border-radius: 0.5rem;
+  border: none;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  font-size: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ disabled }) => (disabled ? "#666666" : "white")};
+  font-family: 'Pretendard';
+  font-weight: 600;
+`;
 
-  const handleButtonClick = () => {
-    navigate("/myplace/save");
+const DeleteButton = styled.img`
+  position: fixed;
+  bottom: calc(1.5rem + 64px);
+  right: 24px;
+  width: 136px;
+  height: 36px;
+  cursor: pointer;
+`;
+
+const CheckAllButton = styled.img`
+  width: 75px;
+  height: 36px;
+  margin-left: 24px; 
+  cursor: pointer;
+`;
+
+const DoneButton = styled.div`
+  font-size: 14px;
+  color: #376FA3;
+  cursor: pointer;
+  padding: 8px 16px;
+  position: absolute;
+  right: 24px;
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 417px;
+  background: white;
+  box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+`;
+
+const InputField = styled.div`
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1.5px solid #999999;
+  margin-top: 4px;
+  padding-left: 8px;
+`;
+
+const TextInput = styled.input`
+  width: 100%;
+  height: 28px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding-left: 8px;
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+`;
+
+const InviteModal = ({ onClose, groupId }) => {
+  const [userId, setUserId] = useState("");  // 사용자 아이디
+  const [code, setCode] = useState("123456");  // 예시로 고정된 초대 코드
+  const [isInviting, setIsInviting] = useState(false);  // 초대 중 여부 확인
+
+  const handleInvite = async () => {
+    setIsInviting(true);
+    try {
+      const response = await axios.post(
+        `/account/groups/${groupId}/join`, // 실제 API 주소로 수정 필요
+        {
+          code,
+          user_id: userId, // 사용자 아이디
+        }
+      );
+      console.log("초대 성공:", response.data);
+      alert("초대가 성공적으로 전송되었습니다.");
+      onClose();  // 초대 완료 후 모달 닫기
+    } catch (error) {
+      console.error("초대 실패:", error);
+      alert("초대 전송에 실패했습니다.");
+    } finally {
+      setIsInviting(false);
+    }
+  };
+  return (
+    <Overlay>
+      <h2 style={{ marginLeft: "8px", fontSize: "24px" }}>모임원 초대</h2>
+      <p style={{ marginLeft: "8px", fontSize: "14px", marginTop: "8px" }}>
+        코스 주소를 복사하여 전달하거나 회원 아이디를 입력하여 초대할 수 있어요.
+      </p>
+      <h3 style={{ marginLeft: "8px", fontSize: "16px", marginTop: "32px" }}>코스 주소</h3>
+      <InputField>
+        www.naver.com
+      </InputField>
+      <h3 style={{ marginLeft: "8px", fontSize: "16px", marginTop: "36px" }}>아이디 입력</h3>
+      <InputField>
+      <TextInput
+        placeholder="초대할 아이디를 입력해주세요."
+        value={userId}
+        onChange={(e) => setUserId(e.target.value)}  // 아이디 입력 처리
+      />
+      </InputField>
+      <ButtonRow>
+        <ActionButton style={{ background: "#F1F1F1", color: "#666666" }} onClick={onClose}>닫기</ActionButton>
+        <ActionButton
+          style={{ background: "#D6EBFF", color: "#376FA3" }}
+          onClick={handleInvite} // 초대 요청
+          disabled={isInviting || !userId} // 초대 중일 때나 아이디가 비어있을 때는 비활성화
+        >
+          {isInviting ? "초대 중..." : "초대하기"}
+        </ActionButton>
+      </ButtonRow>
+    </Overlay>
+  );
+};
+
+const SetParticipant = () => {
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [members, setMembers] = useState([
+    {
+      id: "1",
+      name: "김민수",
+      role: "모임장",
+      isMe: true,
+    },
+    {
+      id: "2",
+      name: "박민지",
+      role: "모임원",
+      isMe: false,
+    },
+  ]);
+
+  const toggleSelectMode = () => {
+    setIsSelecting(!isSelecting);
+    setSelectedMembers([]); // 선택 모드 전환 시 선택된 회원 초기화
+  };
+
+  const handleMemberClick = (id, isLeader) => {
+    if (!isSelecting || isLeader) return; // 모임장(자기 자신)을 선택하지 않도록
+    setSelectedMembers((prev) =>
+      prev.includes(id) ? prev.filter((memberId) => memberId !== id) : [...prev, id]
+    );
+  };
+
+  const handleCheckAll = () => {
+    setSelectedMembers(members.filter((m) => !m.isMe).map((m) => m.id));
+  };
+
+  const handleDeleteMembers = () => {
+    setMembers(members.filter((member) => !selectedMembers.includes(member.id)));
+    setSelectedMembers([]); 
+    setIsSelecting(false);
   };
 
   return (
     <Container>
       <Header title="모임원 설정" />
-      <MemberList>
+      {isSelecting && (
+        <SelectionContainer>
+          <CheckAllButton src="/btn_allcheck.svg" alt="전체 선택" onClick={handleCheckAll} />
+          <DoneButton onClick={toggleSelectMode}>완료</DoneButton>
+        </SelectionContainer>
+      )}
+      <MemberList isSelecting={isSelecting}>
         {members.map((member) => (
-          <MemberItem key={member.id}>
+          <MemberItem
+            key={member.id}
+            selected={selectedMembers.includes(member.id)}
+            onClick={() => handleMemberClick(member.id, member.isMe)}
+          >
             <ProfileImage src={Profile} alt="프로필" />
             <MemberInfo>
               <MemberName>
@@ -103,9 +296,16 @@ const SetParticipant = ({ scheduleId }) => {
           </MemberItem>
         ))}
       </MemberList>
+      {!isSelecting && <DeleteButton src="/participantbtn_delete.svg" alt="모임원 내보내기" onClick={toggleSelectMode} />}
       <FixedButtonContainer>
-        <Button text="초대하기" onClick={handleButtonClick} />
+        {!isSelecting && <Button text="초대하기" onClick={() => setIsInviteOpen(true)} backgroundColor="#F1F1F1" color="#666666" />}
+        {isSelecting && (
+          <DeleteActionButton disabled={selectedMembers.length === 0} onClick={handleDeleteMembers}>
+            내보내기
+          </DeleteActionButton>
+        )}
       </FixedButtonContainer>
+      {isInviteOpen && <InviteModal onClose={() => setIsInviteOpen(false)} />}
     </Container>
   );
 };
