@@ -1,35 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './EditProfile.css';
 import backIcon from '../../assets/home/back.svg';
 import profilePic from '../../assets/home/profile1.svg';
 import profileEditIcon from '../../assets/home/profile_edit.svg';
 import cancelIcon from '../../assets/home/cancel.svg';
-import { getProfileImage, updateProfileImage } from '../../api';
+import { updateProfileImage } from '../../api';
 
 const EditProfile = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const initialName = location.state?.userName || ''; // 이전 페이지에서 받은 이름 값
+  const initialName = location.state?.userName || '';
   const [name, setName] = useState(initialName);
-  const [profileImage, setProfileImage] = useState(profilePic); // 기본 프로필 이미지
-  const [imageFile, setImageFile] = useState(null); // 선택한 이미지 파일
-
-  // 🔹 프로필 이미지 가져오기
-  useEffect(() => {
-    const fetchProfileImage = async () => {
-      try {
-        const imageUrl = await getProfileImage();
-        if (imageUrl) {
-          setProfileImage(imageUrl); // 기존 프로필 이미지가 있으면 적용
-        }
-      } catch (error) {
-        console.error("프로필 이미지 가져오기 실패:", error);
-      }
-    };
-
-    fetchProfileImage();
-  }, []);
+  const [profileImage, setProfileImage] = useState(profilePic);
+  const [imageFile, setImageFile] = useState(null);
 
   const handleChange = (e) => {
     setName(e.target.value);
@@ -37,12 +21,10 @@ const EditProfile = () => {
 
   const handleNext = async () => {
     try {
-      // 프로필 이미지 변경 (이미지 선택한 경우만)
       if (imageFile) {
         await updateProfileImage(imageFile);
       }
 
-      // 홈 화면으로 이동 (이름 변경 API는 호출하지 않음)
       navigate('/home', { state: { userName: name } });
     } catch (error) {
       console.error("프로필 이미지 업데이트 중 오류 발생:", error);
@@ -50,14 +32,14 @@ const EditProfile = () => {
   };
 
   const handleCancel = () => {
-    setName(''); // 입력 필드 초기화
+    setName('');
   };
 
   const handleProfileImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setProfileImage(URL.createObjectURL(file)); // 미리보기 이미지 변경
-      setImageFile(file); // 파일 저장
+      setImageFile(file);
     }
   };
 
