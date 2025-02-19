@@ -1,146 +1,121 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getUserId, deleteCourse, getUserData } from '../../api'; // Import from api.js
 import './CheckCourse.css';
 import backIcon from '../../assets/home/back.svg';
-import starIcon from '../../assets/home/star.svg';
+import Button from '../../component/Button';
+import CheckHeader from '../../component/CheckHeader';
 
 function CheckCourse() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('upcoming');
-  const [courseData, setCourseData] = useState([]); // API 데이터 저장
-  const [loading, setLoading] = useState(true);
-
-  // 오늘 날짜 계산
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [selectedCourses, setSelectedCourses] = useState(new Set());
+  const [courses, setCourses] = useState([]);
   const today = new Date();
 
-  // 날짜 포맷팅 함수 (YYYY.MM.DD(요일))
-  const formatDate = (date) => {
-    const days = ['일', '월', '화', '수', '목', '금', '토'];
-    const d = new Date(date);
-    const day = days[d.getDay()];
-    return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}(${day})`;
-  };
-
-  // D-Day 계산
-  const calculateDday = (date) => {
-    const targetDate = new Date(date);
-    const difference = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
-    if (difference < 0) return `D+${Math.abs(difference)}`;
-    if (difference === 0) return 'D-Day';
-    return `D-${difference}`;
-  };
-
-  // 일정 가져오기
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('course/schedule/<int:schedule_id>');
-    
-        if (!response.ok) {
-          throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
-        }
-    
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('JSON 형식의 응답이 아닙니다.');
-        }
-    
-        const data = await response.json();
-        console.log('받아온 데이터:', data);
-        setCourseData(data.sort((a, b) => new Date(a.date) - new Date(b.date)));
+        const userId = await getUserId();
+        const userData = await getUserData(); // Fetch user data to get the courses
+
+        const fetchedCourses = userData.schedules.map(course => ({
+          id: course.id,
+          title: course.course_name,
+          date: course.meet_date_first,
+          people: '미정'
+        }));
+
+        setCourses(fetchedCourses);
       } catch (error) {
-        console.error('에러 발생:', error);
-      } finally {
-        setLoading(false);
+        console.error('Error fetching courses:', error);
       }
     };
-    
 
     fetchCourses();
   }, []);
 
-  // 일정 분리
-  const upcomingCourses = courseData.filter(
-    (course) => calculateDday(course.date).startsWith('D-')
-  );
-  const completedCourses = courseData.filter(
-    (course) => !calculateDday(course.date).startsWith('D-')
-  );
+  const formatDate = (date) => {
+    const days = ['일', '월', '화', '수', '목', '금', '토'];
+    const d = new Date(date);
+    return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}(${days[d.getDay()]})`;
+  };
+
+  const calculateDday = (date) => {
+    const targetDate = new Date(date);
+    const difference = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+    return difference < 0 ? `D+${Math.abs(difference)}` : difference === 0 ? 'D-Day' : `D-${difference}`;
+  };
+
+  const upcomingCourses = courses.filter((course) => calculateDday(course.date).startsWith('D-'));
+  const completedCourses = courses.filter((course) => !calculateDday(course.date).startsWith('D-'));
+
+  const toggleSelectMode = () => {
+    setIsSelecting(!isSelecting);
+    setSelectedCourses(new Set());
+  };
+
+  const toggleCourseSelection = (id) => {
+    const newSelected = new Set(selectedCourses);
+    newSelected.has(id) ? newSelected.delete(id) : newSelected.add(id);
+    setSelectedCourses(newSelected);
+  };
+
+  const deleteSelectedCourses = async () => {
+    try {
+      const accessToken = getAccessToken();
+      for (const courseId of selectedCourses) {
+        await deleteCourse(accessToken, courseId);
+      }
+      setCourses(courses.filter(course => !selectedCourses.has(course.id)));
+      setSelectedCourses(new Set());
+      setIsSelecting(false);
+    } catch (error) {
+      console.error('Error deleting courses:', error);
+    }
+  };
 
   return (
     <div className="checkcourse-container">
       <div className="header">
-        <img
-          src={backIcon}
-          alt="Back"
-          className="back-icon"
-          onClick={() => navigate('/home')}
-        />
+        <img src={backIcon} alt="Back" className="back-icon" onClick={() => navigate('/home')} />
         <div className="header-title">등록된 코스</div>
       </div>
-
+      
       <div className="tabs">
-        <button
-          className={`tab-button ${activeTab === 'upcoming' ? 'active' : ''}`}
-          onClick={() => setActiveTab('upcoming')}
-        >
-          다가오는 일정
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'completed' ? 'active' : ''}`}
-          onClick={() => setActiveTab('completed')}
-        >
-          완료된 일정
-        </button>
+        <button className={`tab-button ${activeTab === 'upcoming' ? 'active' : ''}`} onClick={() => setActiveTab('upcoming')}>다가오는 일정</button>
+        <button className={`tab-button ${activeTab === 'completed' ? 'active' : ''}`} onClick={() => setActiveTab('completed')}>완료된 일정</button>
       </div>
-      {/* Content */}
+
+      {isSelecting && <CheckHeader onCheckAll={() => setSelectedCourses(new Set(courses.map(course => course.id)))} onDone={toggleSelectMode} />}
+      
       <div className="content">
-        {loading ? (
-          <div className="loading-message">데이터 불러오는 중...</div>
-        ) : activeTab === 'upcoming' && upcomingCourses.length > 0 ? (
-          upcomingCourses.map((course, index) => (
-            <div className="course-item" key={index}>
-              <div className="course-info">
-                <div className="course-title">{course.title}</div>
-                <div className="course-details">
-                  <span className="course-date">{formatDate(course.date)}</span>{' '}
-                  <span className="separator" /> {course.people}
-                </div>
+        {(activeTab === 'upcoming' ? upcomingCourses : completedCourses).map((course) => (
+          <div 
+            className={`course-item ${selectedCourses.has(course.id) ? 'selected' : ''}`} 
+            key={course.id} 
+            onClick={isSelecting ? () => toggleCourseSelection(course.id) : null}
+          >
+            <div className="course-info">
+              <div className="course-title">{course.title}</div>
+              <div className="course-details">
+                <span className="course-date">{formatDate(course.date)}</span> <span className="separator" /> {course.people}
               </div>
-              <div className="course-dday">{calculateDday(course.date)}</div>
             </div>
-          ))
-        ) : activeTab === 'completed' && completedCourses.length > 0 ? (
-          completedCourses.map((course, index) => (
-            <div className="course-item" key={index}>
-              <div className="course-info">
-                <div className="course-title">{course.title}</div>
-                <div className="course-details">
-                  <span className="course-date">{formatDate(course.date)}</span>{' '}
-                  <span className="separator" /> {course.people}
-                </div>
-              </div>
-              <div className="course-dday">{calculateDday(course.date)}</div>
-            </div>
-          ))
-        ) : (
-          <div className="empty-message-container">
-            <img src={starIcon} alt="Star" className="star-icon" />
-            <div className="empty-message">
-              {activeTab === 'upcoming'
-                ? '예정된 일정이 없어요.'
-                : '아직 완료된 일정이 없어요.'}
-            </div>
+            <div className="course-dday">{calculateDday(course.date)}</div>
           </div>
+        ))}
+      </div>
+      <img src="/course_delete.svg" alt="코스 삭제하기" className="delete-icon" onClick={toggleSelectMode} />
+
+      <div className="button-container">
+        {isSelecting ? (
+          <Button text="삭제하기" bgColor={selectedCourses.size > 0 ? "#376FA3" : "#F1F1F1"} textColor={selectedCourses.size > 0 ? "#FFFFFF" : "#666666"} onClick={deleteSelectedCourses} disabled={selectedCourses.size === 0} />
+        ) : (
+          <Button text="코스 등록하기" bgColor="#D6EBFF" textColor="#376FA3" onClick={() => navigate('/detail-course')} />
         )}
       </div>
-
-      <button
-        className="register-button"
-        onClick={() => navigate('/detail-course')}
-      >
-        코스 등록하기
-      </button>
     </div>
   );
 }
