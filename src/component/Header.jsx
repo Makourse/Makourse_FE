@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-//import backIcon from '../assets/back.svg';
 import backIcon from '../assets/home/back.svg';
 import "./Fonts.css"
 
