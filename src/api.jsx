@@ -229,7 +229,7 @@ export const getEntries = async (accessToken, courseId) => {
 // 일정 등록 API 호출 함수
 export const schedulePost = async (userId, meetDateFirst, meetDateSecond, meetDateThird) => {
     try {
-        const response = await apiClient.post("/course/schedule/", {
+        const response = await apiClient.post("/course/schedule", {
             user_id: userId,
             meet_date_first: meetDateFirst,
             meet_date_second: meetDateSecond,
