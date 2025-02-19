@@ -105,7 +105,7 @@ const Home = () => {
         </div>
       )}
 
-      <button className="register-course-btn" onClick={() => navigate('/myplace')}>
+      <button className="register-course-btn" onClick={() => navigate('/meetingdate')}>
         코스 등록하기
       </button>
     </div>

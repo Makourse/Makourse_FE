@@ -6,7 +6,7 @@ import Header from "../../component/Header";
 import Button from "../../component/Button";
 import deletex from "../../assets/deletex.svg";
 import ping from "../../assets/ping.svg";
-import getPlaceSearch from '../../Components/PlaceSearch/PlaceSearch';
+import getPlaceSearch from '../../components/Naverapi/PlaceSearch';
 import { saveMyPlace } from "../../api";
 
 import "../../component/Fonts.css";
