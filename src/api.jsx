@@ -4,15 +4,15 @@ import { API_URL } from './Login/constant';
 const BASE_URL = API_URL;
 
 // Access Token 저장 및 가져오기 헬퍼 함수
-const setAccessToken = (token) => {
+export const setAccessToken = (token) => {
     localStorage.setItem("accessToken", token);
 };
 
-const getAccessToken = () => {
+export const getAccessToken = () => {
     return localStorage.getItem("accessToken");
 };
 
-const getRefreshToken = () => {
+export const getRefreshToken = () => {
     return localStorage.getItem("refreshToken");
 };
 
@@ -104,7 +104,7 @@ export const createCourse = async (accessToken, courseData) => {
 //코스 상세보기 API 호출 함수
 export const getCourseDetail = async (accessToken, courseId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/course/schedule/${courseId}/`, {
+        const response = await axios.get(`${BASE_URL}/course/schedule/${courseId}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -132,9 +132,13 @@ export const deleteCourse = async (accessToken, courseId) => {
 };
 
 //코스 수정 API 호출 함수
-export const updateCourse = async (accessToken, courseId, courseData) => {
+export const updateCourse = async (courseId, courseData) => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+        throw new Error("Access token is missing.");
+    }
     try {
-        const response = await axios.patch(`${BASE_URL}/course/schedule/${courseId}/`, courseData, {
+        const response = await axios.patch(`${BASE_URL}/course/schedule/${courseId}`, courseData, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -144,21 +148,6 @@ export const updateCourse = async (accessToken, courseId, courseData) => {
         console.error('Error updating course:', error);
         throw error;
     }   
-};
-
-//코스-세부 장소 추가 API 호출 함수
-export const addEntries = async (accessToken, courseId, entries) => {   
-    try {
-        const response = await axios.post(`${BASE_URL}/course/schedule-entries/post/${courseId}/`, entries, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error adding entries:', error);
-        throw error;
-    }
 };
 
 // user_id 가져오기 API 호출 함수
@@ -253,9 +242,6 @@ export const schedulePost = async (meetDateFirst, meetDateSecond, meetDateThird)
     }
 };
 
-
-
-
 // 나만의 장소 추가 API 호출 함수
 export const saveMyPlace = async (placeData) => {
     const accessToken = getAccessToken();
@@ -344,3 +330,60 @@ export const saveMyPlace = async (placeData) => {
             throw error;
         }
     };
+
+    //세부 장소 보기 API
+    export const getPlaceDetail = async (entryPk) => {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            throw new Error("Access token is missing.");
+        }
+        try {
+            const response = await axios.get(`${BASE_URL}/course/schedule-entries/${entryPk}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("세부장소 데이터를 가져오는 데 실패했습니다.", error);
+            throw error;
+        }
+    }
+
+    //세부 장소 추가 API
+    export const postPlaceDetail = async (scheduleId, placeData) => {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            throw new Error("Access token is missing.");
+        }
+        try {
+            const response = await axios.post(`${BASE_URL}/course/schedule-entries/post/${scheduleId}`, placeData, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("세부장소 데이터를 가져오는 데 실패했습니다.", error);
+            throw error;
+        }
+    }
+
+    //대안 장소 보기 API
+    export const getAlternativePlaces = async (entryPk) => {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            throw new Error("Access token is missing.");
+        }
+        try {
+            const response = await axios.get(`${BASE_URL}/course/schedule-entries/${entryPk}/alternative-places`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("대안 장소 데이터를 가져오는 데 실패했습니다.", error);
+            throw error;
+        }
+    }

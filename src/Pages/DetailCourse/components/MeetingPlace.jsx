@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-
+import { useParams, useNavigate } from 'react-router-dom';
 const MeetingPlace = ({ time, title, address, isEditing, selectAll, onSelect }) => {
     const [isSelected, setIsSelected] = useState(false);
-
+    const { scheduleId } = useParams();
+    const navigate = useNavigate();
     // selectAll이 변경될 때만 실행
     useEffect(() => {
         if (isEditing) {
@@ -25,9 +26,15 @@ const MeetingPlace = ({ time, title, address, isEditing, selectAll, onSelect }) 
         }
     };
 
+    const clickToFstPlace = () => {
+        navigate(`/setfirst/save`, {
+            state: { scheduleId: scheduleId }  
+        });
+    };
+
     if (!time && !title && !address) {
         return (
-            <div className="info-item">
+            <div className="info-item" onClick={clickToFstPlace}>
                 <div className="icon-circle">
                     <img src='/detail-cir-meeting.svg' alt="meeting" />
                 </div>

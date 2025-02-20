@@ -7,6 +7,32 @@ import HomeCard1 from './HomeCards/HomeCard1';
 import HomeCard2 from './HomeCards/HomeCard2';
 import HomeCard3 from './HomeCards/HomeCard3';
 
+const calculateDday = (dateString) => {
+  if (!dateString) return 'D-?';
+  const today = new Date();
+  const targetDate = new Date(dateString);
+  const difference = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+  return difference > 0 ? `D-${difference}` : 'D-Day';
+};
+
+const CourseBox = ({ schedule, userData }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/detail-course/${schedule.id}`);
+  };
+
+  return (
+    <div className="course-box" onClick={handleClick}>
+      <div className="dday-box">{calculateDday(schedule.meet_date_first)}</div>
+      <div className="course-title">{schedule.course_name || '코스 이름 없음'}</div>
+      <div className="course-people">
+        {userData?.name} 외 n명
+      </div>
+    </div>
+  );
+};
+
 const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,14 +80,6 @@ const Home = () => {
     }
   }, [location.state?.profileImage]);
 
-  const calculateDday = (dateString) => {
-    if (!dateString) return 'D-?';
-    const today = new Date();
-    const targetDate = new Date(dateString);
-    const difference = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
-    return difference > 0 ? `D-${difference}` : 'D-Day';
-  };
-
   return (
     <div className="home-container">
       <header className="home-header">
@@ -80,13 +98,11 @@ const Home = () => {
           <h2 className="upcoming-title">다가오는 일정</h2>
           <div className="upcoming-list">
             {schedules.map((schedule) => (
-              <div className="course-box" key={schedule.id}>
-                <div className="dday-box">{calculateDday(schedule.meet_date_first)}</div>
-                <div className="course-title">{schedule.course_name || '코스 이름 없음'}</div>
-                <div className="course-people">
-                  {userData?.name} 외 {schedule.group - 1}명
-                </div>
-              </div>
+                <CourseBox 
+                  key={schedule.id} 
+                  schedule={schedule} 
+                  userData={userData} 
+                />
             ))}
           </div>
         </div>

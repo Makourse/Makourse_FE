@@ -1,11 +1,15 @@
 import './DetailCourse.css';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MeetingPlace from './components/MeetingPlace';
 import PlaceGroup from './components/PlaceGroup';
 import AddPlaceGuide from './components/AddPlaceGuide';
+import { getCourseDetail } from '../../api';
+import { getAccessToken } from '../../api';
 
 const DetailCourse = () => {
+    const { scheduleId } = useParams();
+    const [courseDetail, setCourseDetail] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [courseName, setCourseName] = useState('');
     const [isEditing, setIsEditing] = useState(false);
@@ -13,6 +17,20 @@ const DetailCourse = () => {
     const [selectedItems, setSelectedItems] = useState(0);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const navigate = useNavigate();
+    const accessToken = getAccessToken();
+
+    useEffect(() => {
+        const fetchCourseDetail = async () => {
+            try {
+                const response = await getCourseDetail(accessToken, scheduleId);
+                setCourseDetail(response);
+                console.log('courseDetail response:', response);
+            } catch (error) {
+                console.error('Error fetching course detail:', error);
+            }
+        };
+        fetchCourseDetail();
+    }, [accessToken, scheduleId]);
 
     useEffect(() => {
         const mapOptions = {
@@ -59,48 +77,6 @@ const DetailCourse = () => {
         setSelectedItems(prev => isSelected ? prev + 1 : prev - 1);
     };
 
-    const place1 = {
-        mainPlace: {
-            number: "1",
-            time: "PM 12시 30분",
-            title: "홍대 카페",
-            category: "카페",
-            operatingHours: "11:30~21:00"
-        },
-        alternativePlaces: [
-            {
-                number: "1",
-                time: "PM 12시 30분",
-                title: "다른 홍대 카페",
-                category: "카페",
-                operatingHours: "10:00~22:00"
-            },
-            {
-                number: "1",
-                time: "PM 12시 30분",
-                title: "다른 홍대 카페",
-                category: "카페",
-                operatingHours: "10:00~22:00"
-            },            {
-                number: "1",
-                time: "PM 12시 30분",
-                title: "다른 홍대 카페",
-                category: "카페",
-                operatingHours: "10:00~22:00"
-            }
-
-        ]
-    };
-
-    const place2 = {
-        mainPlace: {
-            number: "2",
-            title: "연남동 식당",
-            category: "식당",
-            operatingHours: "11:00~21:00"
-        },
-        alternativePlaces: []
-    };
 
     const handleEditEnd = () => {
         setIsEditing(false);
@@ -118,6 +94,29 @@ const DetailCourse = () => {
         setIsDeleteModalOpen(false);
     };
 
+    // 날짜 형식 변환 함수 추가
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}.${month}.${day}`;
+    };
+
+    // 시간 형식 변환 함수 추가
+    const formatTime = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const displayHours = hours > 12 ? hours - 12 : hours;
+        
+        return `${period} ${displayHours}시 ${minutes}분`;
+    };
+
     return (
         <div className="detail-course">
             <header className="detail-course-header">
@@ -130,7 +129,7 @@ const DetailCourse = () => {
             <section className="title-section">
                 <h2>약속 제목</h2>
                 <div className="title-content">
-                    <h3>홍대 놀러가기</h3>
+                    <h3>{courseDetail?.course.course_name}</h3>
                     <div className="edit-button" onClick={handleEditClick}>
                         <img src='/detail-edit.svg' alt="edit" />
                     </div>
@@ -143,8 +142,16 @@ const DetailCourse = () => {
                         <img src='/detail-cal.svg' alt="cal" />
                     </div>
                     <div className="detail-content">
-                        <h3>일정 저장</h3>
-                        <p>날짜와 시간이 저장돼요</p>
+                        {courseDetail?.course.meet_date_first ? 
+                            <>
+                                <h3>{formatDate(courseDetail?.course.meet_date_first)}</h3>
+                                <p>{formatTime(courseDetail?.course.meet_date_first)}</p>
+                            </>
+                        : <>
+                                <h3>일정 저장</h3>
+                                <p>날짜와 시간이 저장돼요</p>
+                            </>
+                        }
                     </div>
                 </div>
                 
@@ -184,17 +191,29 @@ const DetailCourse = () => {
                         </div>
                     </div>
                 )}
+                {courseDetail?.course.address ? (
                 <MeetingPlace 
-                    time="PM 12시 30분"// props로 넘기기
-                    title="홍대입구역 2번 출구" //title
-                    address="서울시 마포구 양화로 100 홍대입구역" //meet_place
+                    time={courseDetail?.course.meet_date_first ? formatTime(courseDetail?.course.meet_date_first) : ''}
+                    title={courseDetail?.course.meet_place}
+                    address={courseDetail?.course.meet_address}
                     isEditing={isEditing} 
                     selectAll={selectAll}
                     onSelect={handleItemSelect}
                 />
-                
-                <PlaceGroup {...place1} isEditing={isEditing} selectAll={selectAll} onSelect={handleItemSelect} />
-                <PlaceGroup {...place2} isEditing={isEditing} selectAll={selectAll} onSelect={handleItemSelect} />
+                ) : (
+                    <MeetingPlace 
+                    time={null}
+                    title={null}
+                    address={null}
+                    isEditing={isEditing} 
+                    selectAll={selectAll}
+                    onSelect={handleItemSelect}
+                />
+                )}
+
+                {courseDetail?.entry.map((place) => (
+                    <PlaceGroup place_pk = {place.pk} place_number = {place.num} place_name ={place.entry_name} isEditing={isEditing} selectAll={selectAll} onSelect={handleItemSelect} />
+                ))}
                 
                 {!isEditing && <AddPlaceGuide />}
                 {isEditing && (
