@@ -208,7 +208,6 @@ const simplifyCategory = (category) => {
       return simplifiedCat;
     }
   }
-
   return '기타';
 };
 

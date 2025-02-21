@@ -369,6 +369,25 @@ export const saveMyPlace = async (placeData) => {
         }
     }
 
+    //세부 장소 삭제 API
+    export const deletePlace = async (entryPk) => {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            throw new Error("Access token is missing.");
+        }
+        try {
+            const response = await axios.delete(`${BASE_URL}/course/schedule-entries/${entryPk}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }); 
+            return response;
+        } catch (error) {
+            console.error("세부장소 삭제 실패:", error);
+            throw error;
+        }
+    }
+
     //대안 장소 보기 API
     export const getAlternativePlaces = async (entryPk) => {
         const accessToken = getAccessToken();

@@ -5,7 +5,7 @@ import MeetingPlace from './components/MeetingPlace';
 import PlaceGroup from './components/PlaceGroup';
 import AddPlaceGuide from './components/AddPlaceGuide';
 import { getCourseDetail } from '../../api';
-import { getAccessToken } from '../../api';
+import { getAccessToken, deletePlace } from '../../api';
 
 const DetailCourse = () => {
     const { scheduleId } = useParams();
@@ -14,7 +14,7 @@ const DetailCourse = () => {
     const [courseName, setCourseName] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
-    const [selectedItems, setSelectedItems] = useState(0);
+    const [selectedItems, setSelectedItems] = useState([]);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const navigate = useNavigate();
     const accessToken = getAccessToken();
@@ -68,24 +68,40 @@ const DetailCourse = () => {
         const newSelectAll = !selectAll;
         setSelectAll(newSelectAll);
         
-        // 전체 선택 시 모든 아이템 개수만큼 설정, 전체 해제 시 0으로 설정
-        // mainPlace만 선택 가능하므로 총 3개 (meetingPlace + place1 + place2)
-        setSelectedItems(newSelectAll ? 3 : 0);
+        // 전체 선택 시 모든 항목의 ID 배열 설정, 해제 시 빈 배열로 설정
+        if (newSelectAll) {
+            const allIds = [];
+            if (courseDetail?.course.meet_place) {
+                allIds.push('meeting');
+            }
+            if (courseDetail?.entry) {
+                courseDetail.entry.forEach(place => {
+                    allIds.push(place.pk);
+                });
+            }
+            setSelectedItems(allIds);
+        } else {
+            setSelectedItems([]);
+        }
     };
 
-    const handleItemSelect = (isSelected) => {
-        setSelectedItems(prev => isSelected ? prev + 1 : prev - 1);
+    const handleItemSelect = (id, isSelected) => {
+        if (isSelected) {
+            setSelectedItems(prev => [...prev, id]);
+        } else {
+            setSelectedItems(prev => prev.filter(itemId => itemId !== id));
+        }
     };
 
 
     const handleEditEnd = () => {
         setIsEditing(false);
         setSelectAll(false);
-        setSelectedItems(0);
+        setSelectedItems([]);
     };
 
     const handleDeleteClick = () => {
-        if (selectedItems > 0) {
+        if (selectedItems.length > 0) {
             setIsDeleteModalOpen(true);
         }
     };
@@ -115,6 +131,26 @@ const DetailCourse = () => {
         const displayHours = hours > 12 ? hours - 12 : hours;
         
         return `${period} ${displayHours}시 ${minutes}분`;
+    };
+
+    const deletePlaces = async (placeIds) => {
+        try {
+            // 선택된 모든 장소에 대해 삭제 요청 보내기
+            const deletePromises = placeIds.map(id => deletePlace(id));
+            
+            await Promise.all(deletePromises);
+            
+            // 삭제 후 코스 상세 정보 다시 불러오기
+            const response = await getCourseDetail(accessToken, scheduleId);
+            setCourseDetail(response);
+            
+            // 선택 상태 초기화
+            setSelectedItems([]);
+            setSelectAll(false);
+            setIsEditing(false);
+        } catch (error) {
+            console.error('Error deleting places:', error);
+        }
     };
 
     return (
@@ -198,7 +234,6 @@ const DetailCourse = () => {
                     address={courseDetail?.course.meet_address}
                     isEditing={isEditing} 
                     selectAll={selectAll}
-                    onSelect={handleItemSelect}
                 />
                 ) : (
                     <MeetingPlace 
@@ -207,18 +242,24 @@ const DetailCourse = () => {
                     address={null}
                     isEditing={isEditing} 
                     selectAll={selectAll}
-                    onSelect={handleItemSelect}
                 />
                 )}
 
                 {courseDetail?.entry.map((place) => (
-                    <PlaceGroup place_pk = {place.pk} place_number = {place.num} place_name ={place.entry_name} isEditing={isEditing} selectAll={selectAll} onSelect={handleItemSelect} />
+                    <PlaceGroup place_pk = {place.pk} 
+                    place_number = {place.num} 
+                    place_name ={place.entry_name} 
+                    isEditing={isEditing} 
+                    selectAll={selectAll} 
+                    onSelect={(isSelected) => handleItemSelect(place.pk, isSelected)}
+                    isSelected={selectedItems.includes(place.pk)}
+                    />
                 ))}
                 
                 {!isEditing && <AddPlaceGuide />}
                 {isEditing && (
                     <div 
-                        className={`edit-delete ${selectedItems > 0 ? 'active' : ''}`}
+                        className={`edit-delete ${selectedItems.length > 0 ? 'active' : ''}`}
                         onClick={handleDeleteClick}
                     >
                         <p>삭제하기</p>
@@ -272,7 +313,7 @@ const DetailCourse = () => {
                             <button 
                                 className="delete-modal-button delete"
                                 onClick={() => {
-                                    // 여기에 삭제 로직 추가
+                                    deletePlaces(selectedItems);
                                     handleCloseDeleteModal();
                                 }}
                             >

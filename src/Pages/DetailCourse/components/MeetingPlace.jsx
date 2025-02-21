@@ -18,13 +18,13 @@ const MeetingPlace = ({ time, title, address, isEditing, selectAll, onSelect }) 
         }
     }, [isEditing]);
 
-    const handleClick = () => {
-        if (isEditing) {
-            const newSelected = !isSelected;
-            setIsSelected(newSelected);
-            onSelect(newSelected); // 클릭할 때만 onSelect 호출
-        }
-    };
+    // const handleClick = () => {
+    //     if (isEditing) {
+    //         const newSelected = !isSelected;
+    //         setIsSelected(newSelected);
+    //         onSelect(newSelected); // 클릭할 때만 onSelect 호출
+    //     }
+    // };
 
     const clickToFstPlace = () => {
         navigate(`/setfirst/save`, {
@@ -49,7 +49,7 @@ const MeetingPlace = ({ time, title, address, isEditing, selectAll, onSelect }) 
     return (
         <div 
             className={`info-detail-container ${isEditing && isSelected ? 'selected' : ''}`} 
-            onClick={handleClick}
+            // onClick={handleClick}
         >
             <div className="meeting-pin">
                 <div className="pin-circle-meeting">
