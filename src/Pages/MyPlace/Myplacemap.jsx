@@ -189,8 +189,8 @@ const Myplacemap = () => {
   const [selectedLocation, setSelectedLocation] = useState({
     latitude: state?.latitude || 37.557527,
     longitude: state?.longitude || 126.925595,
-    place_name: state?.name || null,
-    address: state?.address || null,
+    place_name: String(state?.name || ""),
+    address: String(state?.address || ""),
   });
 
   const [currentState, setCurrentState] = useState(1);
@@ -208,31 +208,52 @@ const Myplacemap = () => {
   const [searchTimeout, setSearchTimeout] = useState(null);
 
   useEffect(() => {
-    const mapOptions = {
-      center: new naver.maps.LatLng(selectedLocation.latitude, selectedLocation.longitude),
-      zoom: 15,
+    const initializeMap = async () => {
+      const mapOptions = {
+        center: new naver.maps.LatLng(selectedLocation.latitude, selectedLocation.longitude),
+        zoom: 15,
+      };
+  
+      const newMap = new naver.maps.Map("naver-map", mapOptions);
+      setMap(newMap);
+  
+      const newMarker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(selectedLocation.latitude, selectedLocation.longitude),
+        map: newMap,
+      });
+      setMarker(newMarker);
+  
+      naver.maps.Event.addListener(newMap, "click", async (e) => { 
+        const clickedLatitude = e.coord.lat();
+        const clickedLongitude = e.coord.lng();
+  
+        console.log("마커 위치 변경:", { latitude: clickedLatitude, longitude: clickedLongitude });
+  
+        newMarker.setPosition(new naver.maps.LatLng(clickedLatitude, clickedLongitude));
+  
+        try {
+          // Reverse Geocoding 호출 (place_name과 address를 구분해서 받아오기)
+          const { place_name, address } = await getAddressFromCoords(clickedLatitude, clickedLongitude);
+  
+          setSelectedLocation((prev) => ({
+            ...prev, // 이전 상태를 가져옴
+            latitude: clickedLatitude,
+            longitude: clickedLongitude,
+            place_name: place_name || "알 수 없는 위치",
+            address: address || "주소 정보 없음",
+          }));
+  
+          setNewPlaceName(place_name || "이름 없음");
+        } catch (error) {
+          console.error("주소 정보를 가져오는 중 오류 발생:", error);
+        }
+      });
     };
-
-    const newMap = new naver.maps.Map("naver-map", mapOptions);
-    setMap(newMap);
-
-    const newMarker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(selectedLocation.latitude, selectedLocation.longitude),
-      map: newMap,
-    });
-    setMarker(newMarker);
-
-    naver.maps.Event.addListener(newMap, "click", (e) => {
-      const clickedLatitude = e.coord.lat();
-      const clickedLongitude = e.coord.lng();
-
-      console.log("마커 위치 변경:", { latitude: clickedLatitude, longitude: clickedLongitude });
-
-
-      newMarker.setPosition(new naver.maps.LatLng(clickedLatitude, clickedLongitude));
-      setSelectedLocation({ latitude: clickedLatitude, longitude: clickedLongitude, name: null, address: null });
-    });
-  }, [selectedLocation.latitude, selectedLocation.longitude]);
+  
+    initializeMap();
+  }, []); 
+  
+  
 
   useEffect(() => {
     if (searchQuery) {
@@ -281,8 +302,8 @@ const Myplacemap = () => {
     setSelectedLocation({ 
       latitude, 
       longitude, 
-      place_name: name,
-      address: address 
+      place_name: String(name),
+      address: String(address) 
     });
     setNewPlaceName(name);
     console.log("선택된 위치_myplacemap:", { latitude, longitude, name, address });
@@ -295,6 +316,14 @@ const Myplacemap = () => {
 
   const navigate = useNavigate();
 
+  const handleSaveError = () => {
+    if (newPlaceName.length > 10) {
+      alert("장소 이름은 10자 이하로 입력해주세요.");
+      return true; // 오류가 있으면 true를 반환
+    }
+    return false; // 오류가 없으면 false 반환
+  };
+
   const handleAddPlace = async() => {
     const newPlace = {
       place_name: newPlaceName || selectedLocation.place_name, 
@@ -303,6 +332,8 @@ const Myplacemap = () => {
       longitude: selectedLocation.longitude,
     };
     console.log("저장할 장소_myplacemap:", newPlace); // 디버깅용
+
+    if (handleSaveError()) return;
 
     try {
       // 백엔드에 데이터 저장 요청
@@ -317,7 +348,7 @@ const Myplacemap = () => {
       navigate('/myplace', { state: { newPlace: response } });
   
     } catch (error) {
-      console.error("장소 저장 중 오류 발생:", error);
+      console.error("장소 저장 중 오류 발생:", error.response?.data || error);
       alert("장소를 저장하는 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
@@ -359,6 +390,7 @@ const Myplacemap = () => {
   // 2. 2초간 검색어 입력이 없으면 검색으로 인식한다
   // 3. 검색 api를 호출하여 검색결과를 받는다.
   // 4. 검색결과를 리스트로 보여준다.
+
 
   return (
     <Container>
