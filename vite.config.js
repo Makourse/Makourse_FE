@@ -8,12 +8,19 @@ export default defineConfig({
     },
     server: {
         proxy: {
-          '/v1': {
-            target: 'https://openapi.naver.com',
-            changeOrigin: true,
-            secure: false,
-            rewrite: (path) => path
-          }
+            '/v1': {
+                target: 'https://openapi.naver.com',
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path
+            },
+            '/naver-api': {
+                target: 'https://naveropenapi.apigw.ntruss.com',
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/naver-api/, '')
+            }
         }
-      }
+    }
 });
+
