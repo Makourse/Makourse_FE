@@ -1,19 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PlaceItem from './PlaceItem';
 import PlaceReplace from './PlaceReplace';
+import { getPlaceDetail, getAlternativePlaces } from '../../../api';
 import '../styles/PlaceGroup.css';
 
-const PlaceGroup = ({ mainPlace, alternativePlaces = [], isEditing, selectAll, onSelect }) => {
+const PlaceGroup = ({ place_pk, place_number, isEditing, selectAll, onSelect }) => {
     const [showAlternatives, setShowAlternatives] = useState(false);
-
+    const [placeDetail, setPlaceDetail] = useState(null);
+    const [alternativePlaces, setAlternativePlaces] = useState([]);
     const handleToggleAlternatives = () => {
         setShowAlternatives(!showAlternatives);
     };
 
+    useEffect(() => {
+        const fetchPlaceDetail = async () => {
+            const placeDetail = await getPlaceDetail(place_pk);
+            setPlaceDetail(placeDetail);
+        };
+        fetchPlaceDetail();
+    }, [place_pk]);
+
+    useEffect(() => {
+        const fetchAlternativePlaces = async () => {
+            const alternativePlaces = await getAlternativePlaces(place_pk);
+            setAlternativePlaces(alternativePlaces);
+        };
+        fetchAlternativePlaces();
+    }, [place_pk]);
+
     return (
         <div className="place-group">
             <PlaceItem 
-                {...mainPlace}
+                number={place_number}
+                name={placeDetail?.entry_name}
+                time={placeDetail?.time}
+                category={placeDetail?.category}
+                address={placeDetail?.address}
                 showAlternatives={showAlternatives}
                 isEditing={isEditing}
                 selectAll={selectAll}
@@ -33,7 +55,7 @@ const PlaceGroup = ({ mainPlace, alternativePlaces = [], isEditing, selectAll, o
                                 {alternativePlaces.map((place, index) => (
                                     <div className="alternative-places" key={index}>
                                         <div className="alternative-place">
-                                            <span>{place.title}</span>
+                                            <span>{place.name}</span>
                                             <div className="tag-selected">{place.category}</div>
                                         </div>
                                         <button className="alternative-change-button">이 장소로 변경</button>

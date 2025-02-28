@@ -1,18 +1,36 @@
 import './DetailCourse.css';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MeetingPlace from './components/MeetingPlace';
 import PlaceGroup from './components/PlaceGroup';
 import AddPlaceGuide from './components/AddPlaceGuide';
+import { getCourseDetail,updateCourse } from '../../api';
+import { getAccessToken, deletePlace } from '../../api';
 
 const DetailCourse = () => {
+    const { scheduleId } = useParams();
+    const [courseDetail, setCourseDetail] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [courseName, setCourseName] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
-    const [selectedItems, setSelectedItems] = useState(0);
+    const [selectedItems, setSelectedItems] = useState([]);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const navigate = useNavigate();
+    const accessToken = getAccessToken();
+
+    useEffect(() => {
+        const fetchCourseDetail = async () => {
+            try {
+                const response = await getCourseDetail(accessToken, scheduleId);
+                setCourseDetail(response);
+                console.log('courseDetail response:', response);
+            } catch (error) {
+                console.error('Error fetching course detail:', error);
+            }
+        };
+        fetchCourseDetail();
+    }, [accessToken, scheduleId]);
 
     useEffect(() => {
         const mapOptions = {
@@ -46,70 +64,66 @@ const DetailCourse = () => {
         setIsEditing(!isEditing);
     };
 
+    const handleSaveCourseName = async () => {
+        try {
+            await updateCourse(scheduleId, { course_name: courseName });
+            
+            // 코스 이름 변경 후 상태 업데이트
+            if (courseDetail) {
+                setCourseDetail({
+                    ...courseDetail,
+                    course: {
+                        ...courseDetail.course,
+                        course_name: courseName
+                    }
+                });
+            }
+            
+            setIsModalOpen(false);
+            setCourseName(''); // 입력 필드 초기화
+        } catch (error) {
+            console.error('Error saving course name:', error);  
+        }
+    };
+
     const handleSelectAll = () => {
         const newSelectAll = !selectAll;
         setSelectAll(newSelectAll);
         
-        // 전체 선택 시 모든 아이템 개수만큼 설정, 전체 해제 시 0으로 설정
-        // mainPlace만 선택 가능하므로 총 3개 (meetingPlace + place1 + place2)
-        setSelectedItems(newSelectAll ? 3 : 0);
-    };
-
-    const handleItemSelect = (isSelected) => {
-        setSelectedItems(prev => isSelected ? prev + 1 : prev - 1);
-    };
-
-    const place1 = {
-        mainPlace: {
-            number: "1",
-            time: "PM 12시 30분",
-            title: "홍대 카페",
-            category: "카페",
-            operatingHours: "11:30~21:00"
-        },
-        alternativePlaces: [
-            {
-                number: "1",
-                time: "PM 12시 30분",
-                title: "다른 홍대 카페",
-                category: "카페",
-                operatingHours: "10:00~22:00"
-            },
-            {
-                number: "1",
-                time: "PM 12시 30분",
-                title: "다른 홍대 카페",
-                category: "카페",
-                operatingHours: "10:00~22:00"
-            },            {
-                number: "1",
-                time: "PM 12시 30분",
-                title: "다른 홍대 카페",
-                category: "카페",
-                operatingHours: "10:00~22:00"
+        // 전체 선택 시 모든 항목의 ID 배열 설정, 해제 시 빈 배열로 설정
+        if (newSelectAll) {
+            const allIds = [];
+            if (courseDetail?.course.meet_place) {
+                allIds.push('meeting');
             }
-
-        ]
+            if (courseDetail?.entry) {
+                courseDetail.entry.forEach(place => {
+                    allIds.push(place.pk);
+                });
+            }
+            setSelectedItems(allIds);
+        } else {
+            setSelectedItems([]);
+        }
     };
 
-    const place2 = {
-        mainPlace: {
-            number: "2",
-            title: "연남동 식당",
-            category: "식당",
-            operatingHours: "11:00~21:00"
-        },
-        alternativePlaces: []
+    const handleItemSelect = (id, isSelected) => {
+        if (isSelected) {
+            setSelectedItems(prev => [...prev, id]);
+        } else {
+            setSelectedItems(prev => prev.filter(itemId => itemId !== id));
+        }
     };
+
 
     const handleEditEnd = () => {
         setIsEditing(false);
         setSelectAll(false);
-        setSelectedItems(0);
+        setSelectedItems([]);
     };
 
     const handleDeleteClick = () => {
-        if (selectedItems > 0) {
+        if (selectedItems.length > 0) {
             setIsDeleteModalOpen(true);
         }
     };
@@ -118,19 +132,64 @@ const DetailCourse = () => {
         setIsDeleteModalOpen(false);
     };
 
+    // 날짜 형식 변환 함수 추가
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}.${month}.${day}`;
+    };
+
+    // 시간 형식 변환 함수 추가
+    const formatTime = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const displayHours = hours > 12 ? hours - 12 : hours;
+        
+        return `${period} ${displayHours}시 ${minutes}분`;
+    };
+
+    const deletePlaces = async (placeIds) => {
+        try {
+            // 선택된 모든 장소에 대해 삭제 요청 보내기
+            const deletePromises = placeIds.map(id => deletePlace(id));
+            
+            await Promise.all(deletePromises);
+            
+            // 삭제 후 코스 상세 정보 다시 불러오기
+            const response = await getCourseDetail(accessToken, scheduleId);
+            setCourseDetail(response);
+            
+            // 선택 상태 초기화
+            setSelectedItems([]);
+            setSelectAll(false);
+            setIsEditing(false);
+        } catch (error) {
+            console.error('Error deleting places:', error);
+        }
+    };
+
     return (
         <div className="detail-course">
             <header className="detail-course-header">
                 <div className="back-button">
-                    <img src='/header-goback.svg' alt="back" />
+                    <img src='/header-goback.svg' alt="back" 
+                        onClick={() => navigate(-1)}
+                    />
                 </div>
-                <h1>코스 등록하기</h1>
+                <h1 className='detail-course-header-title'>코스</h1>
             </header>
 
             <section className="title-section">
                 <h2>약속 제목</h2>
                 <div className="title-content">
-                    <h3>홍대 놀러가기</h3>
+                    <h3>{courseDetail?.course.course_name}</h3>
                     <div className="edit-button" onClick={handleEditClick}>
                         <img src='/detail-edit.svg' alt="edit" />
                     </div>
@@ -143,8 +202,16 @@ const DetailCourse = () => {
                         <img src='/detail-cal.svg' alt="cal" />
                     </div>
                     <div className="detail-content">
-                        <h3>일정 저장</h3>
-                        <p>날짜와 시간이 저장돼요</p>
+                        {courseDetail?.course.meet_date_first ? 
+                            <>
+                                <h3>{formatDate(courseDetail?.course.meet_date_first)}</h3>
+                                <p>{formatTime(courseDetail?.course.meet_date_first)}</p>
+                            </>
+                        : <>
+                                <h3>일정 저장</h3>
+                                <p>날짜와 시간이 저장돼요</p>
+                            </>
+                        }
                     </div>
                 </div>
                 
@@ -184,22 +251,39 @@ const DetailCourse = () => {
                         </div>
                     </div>
                 )}
+                {courseDetail?.course.address ? (
                 <MeetingPlace 
-                    time="PM 12시 30분"// props로 넘기기
-                    title="홍대입구역 2번 출구" //title
-                    address="서울시 마포구 양화로 100 홍대입구역" //meet_place
+                    time={courseDetail?.course.meet_date_first ? formatTime(courseDetail?.course.meet_date_first) : ''}
+                    title={courseDetail?.course.meet_place}
+                    address={courseDetail?.course.meet_address}
                     isEditing={isEditing} 
                     selectAll={selectAll}
-                    onSelect={handleItemSelect}
                 />
-                
-                <PlaceGroup {...place1} isEditing={isEditing} selectAll={selectAll} onSelect={handleItemSelect} />
-                <PlaceGroup {...place2} isEditing={isEditing} selectAll={selectAll} onSelect={handleItemSelect} />
+                ) : (
+                    <MeetingPlace 
+                    time={null}
+                    title={null}
+                    address={null}
+                    isEditing={isEditing} 
+                    selectAll={selectAll}
+                />
+                )}
+
+                {courseDetail?.entry.map((place) => (
+                    <PlaceGroup place_pk = {place.pk} 
+                    place_number = {place.num} 
+                    place_name ={place.entry_name} 
+                    isEditing={isEditing} 
+                    selectAll={selectAll} 
+                    onSelect={(isSelected) => handleItemSelect(place.pk, isSelected)}
+                    isSelected={selectedItems.includes(place.pk)}
+                    />
+                ))}
                 
                 {!isEditing && <AddPlaceGuide />}
                 {isEditing && (
                     <div 
-                        className={`edit-delete ${selectedItems > 0 ? 'active' : ''}`}
+                        className={`edit-delete ${selectedItems.length > 0 ? 'active' : ''}`}
                         onClick={handleDeleteClick}
                     >
                         <p>삭제하기</p>
@@ -228,6 +312,7 @@ const DetailCourse = () => {
                             </button>
                             <button 
                                 className={`modal-button save ${courseName ? 'active' : ''}`}
+                                onClick={handleSaveCourseName}
                             >
                                 저장하기
                             </button>
@@ -253,7 +338,7 @@ const DetailCourse = () => {
                             <button 
                                 className="delete-modal-button delete"
                                 onClick={() => {
-                                    // 여기에 삭제 로직 추가
+                                    deletePlaces(selectedItems);
                                     handleCloseDeleteModal();
                                 }}
                             >
