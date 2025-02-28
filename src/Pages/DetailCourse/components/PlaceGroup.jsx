@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import PlaceItem from './PlaceItem';
-import PlaceReplace from './PlaceReplace';
 import { getPlaceDetail, getAlternativePlaces } from '../../../api';
+import { useNavigate } from 'react-router-dom';
 import '../styles/PlaceGroup.css';
 
-const PlaceGroup = ({ place_pk, place_number, isEditing, selectAll, onSelect }) => {
+const PlaceGroup = ({ place_pk, place_number, place_name, isEditing, selectAll, onSelect }) => {
     const [showAlternatives, setShowAlternatives] = useState(false);
     const [placeDetail, setPlaceDetail] = useState(null);
     const [alternativePlaces, setAlternativePlaces] = useState([]);
+    const navigate = useNavigate();
     const handleToggleAlternatives = () => {
         setShowAlternatives(!showAlternatives);
     };
@@ -40,6 +41,7 @@ const PlaceGroup = ({ place_pk, place_number, isEditing, selectAll, onSelect }) 
                 isEditing={isEditing}
                 selectAll={selectAll}
                 onSelect={onSelect}
+                onClick={() => navigate(`/place-detail`, { state: placeDetail })}
             />
             
             {/* {alternativePlaces.length > 0 ? (

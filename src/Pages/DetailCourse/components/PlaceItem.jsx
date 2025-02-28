@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const PlaceItem = ({ number, name, time, category, address, showAlternatives, isEditing, selectAll, onSelect }) => {
+const PlaceItem = ({ number, name, time, category, address, showAlternatives, isEditing, selectAll, onSelect, onClick }) => {
     const [isSelected, setIsSelected] = useState(false);
 
     // selectAll이 변경될 때만 실행
@@ -22,6 +22,8 @@ const PlaceItem = ({ number, name, time, category, address, showAlternatives, is
             const newSelected = !isSelected;
             setIsSelected(newSelected);
             onSelect(newSelected); // 클릭할 때만 onSelect 호출
+        } else if (onClick) {
+            onClick(); // 편집 모드가 아닐 때는 onClick 함수 실행
         }
     };
 

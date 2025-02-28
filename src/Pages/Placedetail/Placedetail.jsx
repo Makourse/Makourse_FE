@@ -1,12 +1,13 @@
 import './Placedetail.css';
 import { useEffect, useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
-
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Placedetail = () => {
     const location = useLocation();
     const place = location.state; // 전달받은 place 데이터
+    const schedule = place?.schedule;
 
+    const navigate = useNavigate();
     console.log(place); // place 데이터 확인
 
     
@@ -158,7 +159,7 @@ const Placedetail = () => {
         <div className="place-detail">
             <header className="place-detail-header">
                 <div className="back-button">
-                    <img src='/header-goback.svg' alt="back" />
+                    <img src='/header-goback.svg' alt="back" onClick={() => navigate(`/detail-course/${schedule}`)} />
                 </div>
                 <h1>장소 상세히 보기</h1>
             </header>   
@@ -171,7 +172,7 @@ const Placedetail = () => {
                     <p>{place?.address || "주소 없음"}</p>
                 </div>
                 <div className='place-detail-place'>
-                    <p>{place?.place_name || "장소 이름 없음"}</p>
+                    <p>{place?.entry_name || "장소 이름 없음"}</p>
                 </div>
                 <div className='place-detail-options'>
                     <div className='place-detail-memo' onClick={handleMemo}>

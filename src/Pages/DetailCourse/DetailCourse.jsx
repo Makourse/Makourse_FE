@@ -277,6 +277,7 @@ const DetailCourse = () => {
                     selectAll={selectAll} 
                     onSelect={(isSelected) => handleItemSelect(place.pk, isSelected)}
                     isSelected={selectedItems.includes(place.pk)}
+                    onClick={() => navigate(`/place-detail`, { state: place })}
                     />
                 ))}
                 
