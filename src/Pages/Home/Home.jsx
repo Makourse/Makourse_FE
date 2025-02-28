@@ -27,7 +27,7 @@ const CourseBox = ({ schedule, userData }) => {
       <div className="dday-box">{calculateDday(schedule.meet_date_first)}</div>
       <div className="course-title">{schedule.course_name || '코스 이름 없음'}</div>
       <div className="course-people">
-        {userData?.name} 외 n명
+        {schedule.meet_place}
       </div>
     </div>
   );
