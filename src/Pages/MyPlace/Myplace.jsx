@@ -173,12 +173,12 @@ const Myplace = () => {
   };
 
   const handlePlaceClick = (place) => {
-    navigate('/place-detail', { state: place });
+    navigate('/myplace/detail', { state: place });
   };
 
   return (
     <Container>
-      <Header title="나만의 장소" />
+      <Header title="나만의 장소" backUrl="/home" />
         {places.length === 0 ? (
           <>
           <MyplaceContainer>

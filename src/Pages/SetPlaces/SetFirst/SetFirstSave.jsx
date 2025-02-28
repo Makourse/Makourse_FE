@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'; 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import Button from '../../component/Button';
-import Header from '../../component/Header';
+import Button from '../../../component/Button';
+import Header from '../../../component/Header';
 
-import getPlaceSearch from '../../components/Naverapi/PlaceSearch';
+import getPlaceSearch from '../../../components/Naverapi/PlaceSearch';
 
-import star from '../../assets/star.svg';
-import search from '../../assets/search.svg';
-import deletex from '../../assets/deletex.svg';
+import star from '../../../assets/star.svg';
+import search from '../../../assets/search.svg';
+import deletex from '../../../assets/deletex.svg';
 
-import "../../component/Fonts.css";
+import "../../../component/Fonts.css";
 
 const Container = styled.div`
   display: flex;
@@ -129,7 +129,9 @@ const FixedButtonContainer = styled.div`
   transform: translateX(-50%);
 `;
 
-const MyplaceSave = () => {
+const SetFirstSave = () => {
+  const location = useLocation();
+  const { state } = location;
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
@@ -147,10 +149,11 @@ const MyplaceSave = () => {
       address: suggestions.address,
       latitude: (suggestions.mapy / 1e7).toFixed(7), 
       longitude: (suggestions.mapx / 1e7).toFixed(7), 
-      searchQuery 
+      searchQuery,
+      scheduleId: state.scheduleId
     };
   
-    navigate('/myplace/map', { state: stateData });
+    navigate('/setfirst/map', { state: stateData });
   };
   
   useEffect(() => {
@@ -188,7 +191,7 @@ const MyplaceSave = () => {
 
   return (
     <Container>
-      <Header title="나만의 장소 저장하기" backUrl="/home" />
+      <Header title="만날 장소 등록하기" />
       <MyplaceSaveContainer>
         <SearchBoxContainer>
           {searchQuery.length > 0 && (
@@ -228,7 +231,7 @@ const MyplaceSave = () => {
   );
 };
 
-export default MyplaceSave;
+export default SetFirstSave;
 
 
 

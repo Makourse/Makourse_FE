@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const PlaceItem = ({ number, title, time, category, operatingHours, showAlternatives, isEditing, selectAll, onSelect }) => {
+const PlaceItem = ({ number, name, time, category, address, showAlternatives, isEditing, selectAll, onSelect }) => {
     const [isSelected, setIsSelected] = useState(false);
 
     // selectAll이 변경될 때만 실행
@@ -32,17 +32,17 @@ const PlaceItem = ({ number, title, time, category, operatingHours, showAlternat
         >
             <div className="meeting-pin">
                 <div className="pin-circle-place">
-                    <span>{number.padStart(2, '0')}</span>
+                    <span>{String(number).padStart(2, '0')}</span>
                 </div>
                 <div className={`pin-line ${showAlternatives ? 'extended' : ''}`}></div>
             </div>
             <div className="info-detail">
                 <div className="time-info">{`${time ? time : '시간을 설정해주세요'}`}</div>
                 <div className="place-info">
-                    <div className="place-title">{title}</div>
+                    <div className="place-title">{name}</div>
                     <div className="place-basic-info">
                         <div className='place-tag'>{category}</div>
-                        <div className='place-time'>{operatingHours}</div>
+                        <div className='place-time'>{address}</div>
                     </div>
                 </div>
             </div>

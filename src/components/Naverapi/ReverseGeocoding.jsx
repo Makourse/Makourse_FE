@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const BASE_URL = '/naver-api/map-reversegeocode/v2/gc';
-const CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID2;
-const CLIENT_SECRET = import.meta.env.VITE_NAVER_CLIENT_SECRET2;
+const CLIENT_ID = import.meta.env.VITE_NAVER_MAP_CLIENT_ID2;
+const CLIENT_SECRET = import.meta.env.VITE_NAVER_MAP_CLIENT_SECRET2;
 
 const getAddressFromCoords = async (latitude, longitude) => {
     try {

@@ -14,6 +14,11 @@ import IntroPage from './Login/IntroPage/IntroPage';
 import SignUpPage from './Login/SignUpPage/SignUpPage';
 import OAuthCallback from './Login/OAuth/OAuthCallback';
 import Setparticipant from './Pages/Setparticipant/Setparticipant'
+import SetPlaceMap from './Pages/SetPlaces/SetPlace/SetPlaceMap';
+import SetPlaceSave from './Pages/SetPlaces/SetPlace/SetPlaceSave';
+import SetFirstMap from './Pages/SetPlaces/SetFirst/SetFirstMap';
+import SetFirstSave from './Pages/SetPlaces/SetFirst/SetFirstSave';
+import MyplaceDetail from './Pages/MyPlace/MyplaceDetail';
 
 const App = () => {
   return (
@@ -26,7 +31,7 @@ const App = () => {
           <Route path="/myplace/save" element={<MyplaceSave />} />   
           <Route path="/meetingdate" element={<Meetingdate />} />  
           <Route path="/myplace/map" element={<Myplacemap/>} />
-          <Route path="/detail-course" element={<DetailCourse />} />
+          <Route path="/detail-course/:scheduleId" element={<DetailCourse />} />
           <Route path="/place-detail" element={<Placedetail />} />
          <Route path="/check-course" element={<CheckCourse />} />
          <Route path="/home" element={<Home />} />
@@ -34,6 +39,11 @@ const App = () => {
           <Route path="/alarm" element={<Alarm/>} />
           <Route path="/account/:provider/callback" element={<OAuthCallback />} />
           <Route path="/setparticipant" element={<Setparticipant />} />       
+          <Route path="/setplace/map" element={<SetPlaceMap />} />
+          <Route path="/setplace/save" element={<SetPlaceSave />} />
+          <Route path="/setfirst/map" element={<SetFirstMap />} />
+          <Route path="/setfirst/save" element={<SetFirstSave />} />
+          <Route path="/myplace/detail" element={<MyplaceDetail />} />
         </Routes>
     </Router>
     </>
