@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import MeetingPlace from './components/MeetingPlace';
 import PlaceGroup from './components/PlaceGroup';
 import AddPlaceGuide from './components/AddPlaceGuide';
-import { getCourseDetail } from '../../api';
+import { getCourseDetail,updateCourse } from '../../api';
 import { getAccessToken, deletePlace } from '../../api';
 
 const DetailCourse = () => {
@@ -62,6 +62,28 @@ const DetailCourse = () => {
 
     const handleEditCourse = () => {
         setIsEditing(!isEditing);
+    };
+
+    const handleSaveCourseName = async () => {
+        try {
+            await updateCourse(scheduleId, { course_name: courseName });
+            
+            // 코스 이름 변경 후 상태 업데이트
+            if (courseDetail) {
+                setCourseDetail({
+                    ...courseDetail,
+                    course: {
+                        ...courseDetail.course,
+                        course_name: courseName
+                    }
+                });
+            }
+            
+            setIsModalOpen(false);
+            setCourseName(''); // 입력 필드 초기화
+        } catch (error) {
+            console.error('Error saving course name:', error);  
+        }
     };
 
     const handleSelectAll = () => {
@@ -157,9 +179,11 @@ const DetailCourse = () => {
         <div className="detail-course">
             <header className="detail-course-header">
                 <div className="back-button">
-                    <img src='/header-goback.svg' alt="back" />
+                    <img src='/header-goback.svg' alt="back" 
+                        onClick={() => navigate(-1)}
+                    />
                 </div>
-                <h1>코스 등록하기</h1>
+                <h1 className='detail-course-header-title'>코스</h1>
             </header>
 
             <section className="title-section">
@@ -288,6 +312,7 @@ const DetailCourse = () => {
                             </button>
                             <button 
                                 className={`modal-button save ${courseName ? 'active' : ''}`}
+                                onClick={handleSaveCourseName}
                             >
                                 저장하기
                             </button>
