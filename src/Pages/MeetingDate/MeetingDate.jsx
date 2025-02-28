@@ -448,7 +448,7 @@ const handleBack = () => {
           <Container>
                 {viewState === 'initial' && (
                     <>
-                    <Header title="코스 등록하기" />
+                    <Header title="코스 등록하기" backUrl="/home" />
                     <MeetingDateContainer>
                     <MeetingDateContainer2>
                         <DescriptionContainer>

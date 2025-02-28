@@ -32,11 +32,11 @@ const HeaderTitle = styled.h1`
     color: #000;
 `;
 
-const Header = ({ title }) => {
+const Header = ({ title, backUrl }) => {
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate(-1);
+      navigate(backUrl);
   };
 
   return (
