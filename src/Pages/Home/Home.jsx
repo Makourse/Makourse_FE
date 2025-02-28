@@ -84,7 +84,7 @@ const Home = () => {
     <div className="home-container">
       <header className="home-header">
         <h1 className="app-name">makourse</h1>
-        <img src={alarmIcon} alt="Alarm" className="alarm-icon" onClick={() => navigate('/alarm')} />
+        {/* <img src={alarmIcon} alt="Alarm" className="alarm-icon" onClick={() => navigate('/alarm')} /> */}
       </header>
 
       <div className="scrollable-section">

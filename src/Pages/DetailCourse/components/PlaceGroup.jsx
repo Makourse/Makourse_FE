@@ -42,7 +42,7 @@ const PlaceGroup = ({ place_pk, place_number, isEditing, selectAll, onSelect }) 
                 onSelect={onSelect}
             />
             
-            {alternativePlaces.length > 0 ? (
+            {/* {alternativePlaces.length > 0 ? (
                 <>
                     <PlaceReplace 
                         alternativeCount={alternativePlaces.length} 
@@ -71,7 +71,7 @@ const PlaceGroup = ({ place_pk, place_number, isEditing, selectAll, onSelect }) 
                 </>
             ) : (
                 <PlaceReplace isAdd={true} />
-            )}
+            )} */}
         </div>
     );
 };
