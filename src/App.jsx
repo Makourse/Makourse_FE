@@ -18,6 +18,7 @@ import SetPlaceMap from './Pages/SetPlaces/SetPlace/SetPlaceMap';
 import SetPlaceSave from './Pages/SetPlaces/SetPlace/SetPlaceSave';
 import SetFirstMap from './Pages/SetPlaces/SetFirst/SetFirstMap';
 import SetFirstSave from './Pages/SetPlaces/SetFirst/SetFirstSave';
+import MyplaceDetail from './Pages/MyPlace/MyplaceDetail';
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
           <Route path="/setplace/save" element={<SetPlaceSave />} />
           <Route path="/setfirst/map" element={<SetFirstMap />} />
           <Route path="/setfirst/save" element={<SetFirstSave />} />
+          <Route path="/myplace/detail" element={<MyplaceDetail />} />
         </Routes>
     </Router>
     </>

@@ -394,7 +394,7 @@ const Myplacemap = () => {
 
   return (
     <Container>
-      <Header title="나만의 장소 저장하기" />
+      <Header title="나만의 장소 저장하기" backUrl="/myplace/save" />
       <MapBox id="naver-map" style={currentState === 3 ? { height: '100%' } : {}} />
   
       {currentState === 1 && (

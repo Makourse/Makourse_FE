@@ -188,7 +188,7 @@ const MyplaceSave = () => {
 
   return (
     <Container>
-      <Header title="나만의 장소 저장하기" />
+      <Header title="나만의 장소 저장하기" backUrl="/home" />
       <MyplaceSaveContainer>
         <SearchBoxContainer>
           {searchQuery.length > 0 && (
