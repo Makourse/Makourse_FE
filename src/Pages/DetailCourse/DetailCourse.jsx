@@ -180,7 +180,7 @@ const DetailCourse = () => {
             <header className="detail-course-header">
                 <div className="back-button">
                     <img src='/header-goback.svg' alt="back" 
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate(`/home`)}
                     />
                 </div>
                 <h1 className='detail-course-header-title'>코스</h1>
@@ -215,7 +215,7 @@ const DetailCourse = () => {
                     </div>
                 </div>
                 
-                <div className="option-card" onClick={() => navigate('/setparticipant')} style={{ cursor: 'pointer' }}>
+                {/* <div className="option-card" onClick={() => navigate('/setparticipant')} style={{ cursor: 'pointer' }}>
                     <div className="detail-icon">
                         <img src='/detail-member.svg' alt="people" />
                     </div>
@@ -223,7 +223,7 @@ const DetailCourse = () => {
                         <h3>같이 코스 짜기</h3>
                         <p>같이 갈 사람과 공유해요</p>
                     </div>
-                </div>
+                </div> */}
             </section>
             <div className='detail-map-box'>
                 <div id='naver-map' style={{ width: '100%', height: '180px' }}/>
