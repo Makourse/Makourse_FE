@@ -533,10 +533,6 @@ const handleBack = () => {
                         <Button 
                             text="저장하기" 
                             onClick={handleSaveDate}
-                            /*bgColor={isDateSelected ? "#D6EBFF" : "#F1F1F1"} 
-                            textColor={isDateSelected ? "#376FA3" : "#666666"} 
-                            onClick={isDateSelected ? handleDateSelection : null} 
-                            disabled={!isDateSelected}*/
                         />
                         </ButtonContainer>
                     </MeetingDateContainer>
