@@ -1,31 +1,40 @@
 import { useState, useEffect } from 'react';
 import PlaceItem from './PlaceItem';
-import PlaceReplace from './PlaceReplace';
-import { getPlaceDetail, getAlternativePlaces } from '../../../api';
+import { getPlaceDetail } from '../../../api';
+import { useNavigate } from 'react-router-dom';
 import '../styles/PlaceGroup.css';
 
-const PlaceGroup = ({ place_pk, place_number, isEditing, selectAll, onSelect }) => {
+const PlaceGroup = ({ place_pk, place_number, place_name, isEditing, selectAll, onSelect }) => {
     const [showAlternatives, setShowAlternatives] = useState(false);
     const [placeDetail, setPlaceDetail] = useState(null);
-    const [alternativePlaces, setAlternativePlaces] = useState([]);
-    const handleToggleAlternatives = () => {
-        setShowAlternatives(!showAlternatives);
-    };
+    const [formattedTime, setFormattedTime] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPlaceDetail = async () => {
             const placeDetail = await getPlaceDetail(place_pk);
             setPlaceDetail(placeDetail);
+            
+            // time 값이 있으면 AM/PM 형식으로 변환
+            if (placeDetail?.time) {
+                const [hours, minutes] = placeDetail.time.split(':');
+                const hour = parseInt(hours);
+                let period = 'AM';
+                let hour12 = hour;
+                
+                if (hour >= 12) {
+                    period = 'PM';
+                    hour12 = hour === 12 ? 12 : hour - 12;
+                }
+                if (hour === 0) {
+                    hour12 = 12;
+                }
+                
+                const timeString = `${period} ${String(hour12).padStart(2, '0')}시 ${minutes}분`;
+                setFormattedTime(timeString);
+            }
         };
         fetchPlaceDetail();
-    }, [place_pk]);
-
-    useEffect(() => {
-        const fetchAlternativePlaces = async () => {
-            const alternativePlaces = await getAlternativePlaces(place_pk);
-            setAlternativePlaces(alternativePlaces);
-        };
-        fetchAlternativePlaces();
     }, [place_pk]);
 
     return (
@@ -33,16 +42,17 @@ const PlaceGroup = ({ place_pk, place_number, isEditing, selectAll, onSelect }) 
             <PlaceItem 
                 number={place_number}
                 name={placeDetail?.entry_name}
-                time={placeDetail?.time}
+                time={formattedTime}
                 category={placeDetail?.category}
                 address={placeDetail?.address}
                 showAlternatives={showAlternatives}
                 isEditing={isEditing}
                 selectAll={selectAll}
                 onSelect={onSelect}
+                onClick={() => navigate(`/place-detail`, { state: placeDetail })}
             />
             
-            {alternativePlaces.length > 0 ? (
+            {/* {alternativePlaces.length > 0 ? (
                 <>
                     <PlaceReplace 
                         alternativeCount={alternativePlaces.length} 
@@ -71,7 +81,7 @@ const PlaceGroup = ({ place_pk, place_number, isEditing, selectAll, onSelect }) 
                 </>
             ) : (
                 <PlaceReplace isAdd={true} />
-            )}
+            )} */}
         </div>
     );
 };
