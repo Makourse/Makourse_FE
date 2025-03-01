@@ -287,6 +287,27 @@ export const saveMyPlace = async (placeData) => {
     }
   };
 
+  // 나만의 장소 삭제 API 호출 함수
+export const deleteMyPlace = async (myplace_id) => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      throw new Error("Access token is missing.");
+    }
+  
+    try {
+      const response = await axios.delete(`${BASE_URL}/course/myplace/${myplace_id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.error("나만의 장소 삭제에 실패했습니다.", error);
+      throw error;
+    }
+  };
+  
+
   // 프로필 이미지 업데이트 API
     export const updateProfileImage = async (file) => {
         const accessToken = getAccessToken();
