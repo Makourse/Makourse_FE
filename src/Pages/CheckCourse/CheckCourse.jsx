@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserId, deleteCourse, getUserData } from '../../api'; // Import from api.js
+import { getUserId, deleteCourse, getUserData, getAccessToken } from '../../api'; // Import from api.js
 import './CheckCourse.css';
 import backIcon from '../../assets/home/back.svg';
 import Button from '../../component/Button';
@@ -65,7 +65,10 @@ function CheckCourse() {
   const deleteSelectedCourses = async () => {
     try {
       const accessToken = getAccessToken();
+      console.log('Access Token:', accessToken);
+
       for (const courseId of selectedCourses) {
+        console.log('Deleting course with ID:', courseId); 
         await deleteCourse(accessToken, courseId);
       }
       setCourses(courses.filter(course => !selectedCourses.has(course.id)));
@@ -73,6 +76,12 @@ function CheckCourse() {
       setIsSelecting(false);
     } catch (error) {
       console.error('Error deleting courses:', error);
+    }
+  };
+
+  const handleClick = (id) => {
+    if (!isSelecting) {
+      navigate(`/detail-course/${id}`);
     }
   };
 
@@ -92,11 +101,11 @@ function CheckCourse() {
       
       <div className="content">
         {(activeTab === 'upcoming' ? upcomingCourses : completedCourses).map((course) => (
-          <div 
-            className={`course-item ${selectedCourses.has(course.id) ? 'selected' : ''}`} 
-            key={course.id} 
-            onClick={isSelecting ? () => toggleCourseSelection(course.id) : null}
-          >
+        <div 
+          className={`course-item ${selectedCourses.has(course.id) ? 'selected' : ''}`} 
+          key={course.id} 
+          onClick={isSelecting ? () => toggleCourseSelection(course.id) : () => handleClick(course.id)}
+        >
             <div className="course-info">
               <div className="course-title">{course.title}</div>
               <div className="course-details">
