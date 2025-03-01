@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from 'styled-components';
 import Button from '../../component/Button';
@@ -257,6 +258,7 @@ const DateDisplay = styled.div`
 
 
 const Meetingdate = () => {
+    const navigate = useNavigate();
     const [viewState, setViewState] = useState('initial'); // initial, selectDate, selectTime 상태를 관리
     const [selectedDateId, setSelectedDateId] = useState(null); // 현재 선택된 ID
     const [currentDate, setCurrentDate] = useState(null); // 캘린더에서 선택된 날짜
@@ -355,9 +357,17 @@ const handleSaveInitialState = async () => {
       meetDateThird: formattedDates[2],
     };
 
-    await schedulePost(requestData.meetDateFirst, requestData.meetDateSecond, requestData.meetDateThird);
+    const response = await schedulePost(requestData.meetDateFirst, requestData.meetDateSecond, requestData.meetDateThird);
 
-    alert('일정이 저장되었습니다!');
+    // 생성된 scheduleId 가져오기
+    const scheduleId = response?.id;
+
+    if (scheduleId) {
+      alert('일정이 저장되었습니다!');
+      navigate(`/detail-course/${scheduleId}`); // 페이지 이동
+    } else {
+      throw new Error('scheduleId가 반환되지 않았습니다.');
+    }
   } catch (error) {
     console.error('일정 저장 실패:', error);
   }
