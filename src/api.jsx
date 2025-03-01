@@ -171,9 +171,13 @@ export const getUserId = async () => {
 };
 
 //코스-세부 장소 수정 API 호출 함수
-export const updateEntries = async (accessToken, courseId, entries) => {
+export const updateEntries = async (courseId, entries) => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+        throw new Error("Access token is missing.");
+    }
     try {
-        const response = await axios.patch(`${BASE_URL}/course/schedule-entries/${courseId}/`, entries, {
+        const response = await axios.patch(`${BASE_URL}/course/schedule-entries/${courseId}`, entries, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

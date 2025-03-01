@@ -1,16 +1,16 @@
 import './Placedetail.css';
 import { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { updateEntries,getPlaceDetail } from '../../api';
 
 const Placedetail = () => {
     const location = useLocation();
-    const place = location.state; // 전달받은 place 데이터
-    const schedule = place?.schedule;
+    const placeId = location.state?.id; // 전달받은 place의 id만 가져오기
+    const schedule = location.state?.schedule;
 
     const navigate = useNavigate();
-    console.log(place); // place 데이터 확인
-
     
+    const [placeDetails, setPlaceDetails] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
     const [placeMemo, setPlaceMemo] = useState('');
@@ -27,10 +27,57 @@ const Placedetail = () => {
     const [displayTime, setDisplayTime] = useState('');
 
     useEffect(() => {
-        if (!place) return; // place가 없으면 실행 안 함
+        const fetchPlaceDetails = async () => {
+            if (!placeId) return;
+            
+            try {
+                const details = await getPlaceDetail(placeId);
+                setPlaceDetails(details);
+                console.log('장소 세부 정보:', details);
+                
+                // content가 null이 아니면 메모로 설정
+                if (details.content) {
+                    setPlaceMemo(details.content);
+                }
+                
+                // time 값이 있으면 AM/PM 형식으로 변환하여 displayTime에 설정
+                if (details.time) {
+                    const [hours, minutes] = details.time.split(':');
+                    const hour = parseInt(hours);
+                    let period = 'AM';
+                    let hour12 = hour;
+                    
+                    if (hour >= 12) {
+                        period = 'PM';
+                        hour12 = hour === 12 ? 12 : hour - 12;
+                    }
+                    if (hour === 0) {
+                        hour12 = 12;
+                    }
+                    
+                    const formattedTime = `${period} ${String(hour12).padStart(2, '0')}:${minutes}`;
+                    setDisplayTime(formattedTime);
+                    
+                    // selectedTime도 함께 업데이트
+                    setSelectedTime({
+                        period: period,
+                        hour: String(hour12).padStart(2, '0'),
+                        minute: minutes
+                    });
+                }
+            } catch (error) {
+                console.error('장소 세부 정보 가져오기 실패:', error);
+            }
+        };
+        
+        fetchPlaceDetails();
+    }, [placeId]);
+
+    useEffect(() => {
+        if (!placeDetails) return; // placeDetails가 없으면 실행 안 함
     
         const mapOptions = {
-            center: new naver.maps.LatLng(place.latitude, place.longitude),
+            center: new naver.maps.LatLng(placeDetails.latitude, placeDetails.longitude),
             zoom: 15
         };
         
@@ -38,10 +85,10 @@ const Placedetail = () => {
         
         // 마커를 place 위치에 설정
         new naver.maps.Marker({
-            position: new naver.maps.LatLng(place.latitude, place.longitude),
+            position: new naver.maps.LatLng(placeDetails.latitude, placeDetails.longitude),
             map: map
         });
-    }, [place]);
+    }, [placeDetails]);
 
     const handleMemo = () => {
         setIsModalOpen(true);
@@ -51,21 +98,45 @@ const Placedetail = () => {
         setIsTimeModalOpen(true);
     };
 
-    const handleTimeChange = (type, value) => {
-        setSelectedTime(prev => ({
-            ...prev,
-            [type]: value
-        }));
-    };
+    // const handleTimeChange = (type, value) => {
+    //     setSelectedTime(prev => ({
+    //         ...prev,
+    //         [type]: value
+    //     }));
+    // };
 
     const handleCloseTimeModal = () => {
         setIsTimeModalOpen(false);
     };
 
-    const handleSaveTime = () => {
+    const handleSaveTime = async () => {
         const formattedTime = `${selectedTime.period} ${selectedTime.hour}:${selectedTime.minute}`;
+        
+        // 24시간 형식으로 변환
+        let hour24 = parseInt(selectedTime.hour);
+        if (selectedTime.period === 'PM' && hour24 !== 12) {
+            hour24 += 12;
+        } else if (selectedTime.period === 'AM' && hour24 === 12) {
+            hour24 = 0;
+        }
+        
+        const formattedTime2 = `${String(hour24).padStart(2, '0')}:${selectedTime.minute}:00`;
+        
         setDisplayTime(formattedTime);
         setIsTimeModalOpen(false);
+        
+        try {
+            // placeId를 사용하여 해당 장소 항목 업데이트
+            const entryData = {
+                time: formattedTime2
+            };
+            
+            await updateEntries(placeId, entryData);
+            console.log('시간이 성공적으로 저장되었습니다.');
+        } catch (error) {
+            console.error('시간 저장 중 오류 발생:', error);
+            // 오류 처리 로직 추가 가능
+        }
     };
 
     const handleInputChange = (e) => {
@@ -75,9 +146,20 @@ const Placedetail = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-    const handleSaveMemo = () => {
-        setPlaceMemo(placeMemo);
-        setIsModalOpen(false);
+    const handleSaveMemo = async () => {
+        try {
+            // placeId를 사용하여 해당 장소 항목 업데이트
+            const entryData = {
+                content: placeMemo
+            };
+            
+            await updateEntries(placeId, entryData);
+            console.log('메모가 성공적으로 저장되었습니다.');
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error('메모 저장 중 오류 발생:', error);
+            // 오류 처리 로직 추가 가능
+        }
     };
 
     const handleTouchStart = (e, type) => {
@@ -169,28 +251,28 @@ const Placedetail = () => {
             <div className='place-detail-info-box'>
                 <div className='place-detail-address-box'>
                     <img src='/placedetail-locate.svg' alt="address" />
-                    <p>{place?.address || "주소 없음"}</p>
+                    <p>{placeDetails?.address || "주소 없음"}</p>
                 </div>
                 <div className='place-detail-place'>
-                    <p>{place?.entry_name || "장소 이름 없음"}</p>
+                    <p>{placeDetails?.entry_name || "장소 이름 없음"}</p>
                 </div>
                 <div className='place-detail-options'>
                     <div className='place-detail-memo' onClick={handleMemo}>
                         {placeMemo ? <p className='place-detail-memo-text'>메모 |</p> : <img src='/detail-plus.svg' alt="plus" />}     
-                        <p className='place-detail-time-text2'>{placeMemo ? `${placeMemo}` : '메모를 작성할 수 있어요.'}</p>
+                        <p className='place-detail-time-text_2'>{placeMemo ? `${placeMemo}` : '메모를 작성할 수 있어요.'}</p>
                         {placeMemo ? <img src='/detail-edit.svg' alt="edit" /> : null}
                     </div>
                     <div className='place-detail-time' onClick={handleTime}>
                         {displayTime ? (
                             <>
                                 <p className='place-detail-time-text'>시간 |</p>
-                                <p className='place-detail-time-text2'>{displayTime}</p>
+                                <p className='place-detail-time-text_2'>{displayTime}</p>
                                 <img src='/detail-edit.svg' alt="edit" />
                             </>
                         ) : (
                             <>
                                 <img src='/detail-plus.svg' alt="plus" />
-                                <p>시간을 설정할 수 있어요.</p>
+                                <p className='place-detail-time-text_2'>시간을 설정할 수 있어요.</p>
                             </>
                         )}
                     </div>
