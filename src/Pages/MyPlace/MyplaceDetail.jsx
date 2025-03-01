@@ -1,6 +1,7 @@
 import './MyplaceDetail.css';
 import { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { deleteMyPlace } from "../../api";
 
 
 const MyplaceDetail = () => {
@@ -42,6 +43,22 @@ const MyplaceDetail = () => {
             map: map
         });
     }, [place]);
+
+    const handleDeletePlace = async () => {
+        if (!place?.id) {
+            console.error("삭제할 장소 ID가 없습니다.");
+            return;
+        }
+    
+        try {
+            await deleteMyPlace(place.id);
+            alert("장소가 삭제되었습니다.");
+            navigate("/myplace");
+        } catch (error) {
+            console.error("장소 삭제 실패:", error);
+            alert("장소 삭제에 실패했습니다.");
+        }
+    };
 
     const handleMemo = () => {
         setIsModalOpen(true);
@@ -197,12 +214,12 @@ const MyplaceDetail = () => {
                 </div>
             </div>
         </div>
-        {/* <div className="course-edit">
-            <div className="course-edit-button">
+        <div className="course-edit">
+            <div className="course-edit-button" onClick={handleDeletePlace}>
                     <img src='/detail-edit2.svg' alt="edit" />
-                    <span className="course-edit-button-text">장소 수정하기</span>
+                    <span className="course-edit-button-text">장소 삭제하기</span>
             </div>
-        </div> */}
+        </div> 
         
         {isModalOpen && (
             <div className="modal-overlay">

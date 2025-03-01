@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import styled from 'styled-components';
 import Button from '../../component/Button';
@@ -8,7 +9,7 @@ import Calendar from './Calendar';
 import Time from './Time';
 import { createGlobalStyle } from 'styled-components';
 
-import { schedulePost, getUserId } from "../../api";
+import { schedulePost } from "../../api";
 
 import meetingdate from '../../assets/meetingdate.svg';
 import backgroundblue from '../../assets/bg_mypage3_bggra1_blue.svg';
@@ -257,11 +258,11 @@ const DateDisplay = styled.div`
 
 
 const Meetingdate = () => {
+    const navigate = useNavigate();
     const [viewState, setViewState] = useState('initial'); // initial, selectDate, selectTime 상태를 관리
     const [selectedDateId, setSelectedDateId] = useState(null); // 현재 선택된 ID
     const [currentDate, setCurrentDate] = useState(null); // 캘린더에서 선택된 날짜
     const [currentTime, setCurrentTime] = useState(null); // 타임피커에서 선택된 시간
-    const [userId, setUserId] = useState(null);
     const [dates, setDates] = useState([
         { id: 1, title: '첫 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
         { id: 2, title: '두 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
@@ -356,9 +357,17 @@ const handleSaveInitialState = async () => {
       meetDateThird: formattedDates[2],
     };
 
-    await schedulePost(requestData.meetDateFirst, requestData.meetDateSecond, requestData.meetDateThird);
+    const response = await schedulePost(requestData.meetDateFirst, requestData.meetDateSecond, requestData.meetDateThird);
 
-    alert('일정이 저장되었습니다!');
+    // 생성된 scheduleId 가져오기
+    const scheduleId = response?.id;
+
+    if (scheduleId) {
+      alert('일정이 저장되었습니다!');
+      navigate(`/detail-course/${scheduleId}`); // 페이지 이동
+    } else {
+      throw new Error('scheduleId가 반환되지 않았습니다.');
+    }
   } catch (error) {
     console.error('일정 저장 실패:', error);
   }
@@ -426,21 +435,25 @@ const handleBack = () => {
   
   const formatDateTitle = (dateString) => {
     if (!dateString) return '';
+    if (['첫 번째 날짜', '두 번째 날짜', '세 번째 날짜'].includes(dateString)) return dateString;
+    
     const [year, month, day] = dateString.split('-');
     return `${year}년 ${parseInt(month, 10)}월 ${parseInt(day, 10)}일`;
-  };
+};
 
-  const formatTimeDescription = (dateTimeString) => {
-    if (!dateTimeString || !dateTimeString.includes('T')) return '';
-    const [date, time] = dateTimeString.split('T');
-    let [hour, minute] = time.split(':');
-    
-    hour = parseInt(hour, 10);
-    const ampm = hour < 12 ? 'AM' : 'PM';
-    const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
-  
-    return `${ampm} ${formattedHour}시 ${parseInt(minute, 10)}분`;
-  };
+const formatTimeDescription = (dateTimeString) => {
+  if (!dateTimeString || !dateTimeString.includes('T')) return dateTimeString;
+
+  const [date, time] = dateTimeString.split('T');
+  let [hour, minute] = time.split(':');
+
+  hour = parseInt(hour, 10);
+  const ampm = hour < 12 ? 'AM' : 'PM';
+  const formattedHour = String(hour % 12 === 0 ? 12 : hour % 12).padStart(2, '0');
+  const formattedMinute = String(parseInt(minute, 10)).padStart(2, '0');
+
+  return `${ampm} ${formattedHour}시 ${formattedMinute}분`;
+};
   
     return (
         <>
@@ -486,8 +499,8 @@ const handleBack = () => {
                             />
                             <TextWrapper>
                               <Text>
-                                <Datetext>{date.title}</Datetext>
-                                <Descriptiontext>{date.description}</Descriptiontext>
+                                <Datetext>{formatDateTitle(date.title)}</Datetext>
+                                <Descriptiontext>{formatTimeDescription(date.description)}</Descriptiontext>
                               </Text>
                               <Ic_move
                                 src={ic_move}
@@ -533,10 +546,6 @@ const handleBack = () => {
                         <Button 
                             text="저장하기" 
                             onClick={handleSaveDate}
-                            /*bgColor={isDateSelected ? "#D6EBFF" : "#F1F1F1"} 
-                            textColor={isDateSelected ? "#376FA3" : "#666666"} 
-                            onClick={isDateSelected ? handleDateSelection : null} 
-                            disabled={!isDateSelected}*/
                         />
                         </ButtonContainer>
                     </MeetingDateContainer>
@@ -562,7 +571,7 @@ const handleBack = () => {
                             <TimeBackground>
                             <DateContainer2>
                                <Description>선택된 날짜</Description>
-                               <DateDisplay>{selectedDate || '날짜를 선택하세요'}</DateDisplay>
+                               <DateDisplay>{formatDateTitle(selectedDate) || '날짜를 선택하세요'}</DateDisplay>
                             </DateContainer2>
                                 <Time
                                     onTimeChange={handleTimeChange}
