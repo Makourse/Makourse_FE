@@ -138,6 +138,7 @@ const ButtonRow = styled.div`
   justify-content: center;
   gap: 8px;
   margin-top: 16px;
+  margin-right: 45px;
 `;
 
 const InviteModal = ({ onClose, groupId }) => {
