@@ -27,7 +27,7 @@ const CourseBox = ({ schedule, userData }) => {
       <div className="dday-box">{calculateDday(schedule.meet_date_first)}</div>
       <div className="course-title">{schedule.course_name || '코스 이름 없음'}</div>
       <div className="course-people">
-        {userData?.name} 외 n명
+        {schedule.meet_place}
       </div>
     </div>
   );
@@ -84,7 +84,7 @@ const Home = () => {
     <div className="home-container">
       <header className="home-header">
         <h1 className="app-name">makourse</h1>
-        <img src={alarmIcon} alt="Alarm" className="alarm-icon" onClick={() => navigate('/alarm')} />
+        {/* <img src={alarmIcon} alt="Alarm" className="alarm-icon" onClick={() => navigate('/alarm')} /> */}
       </header>
 
       <div className="scrollable-section">

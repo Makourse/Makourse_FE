@@ -136,6 +136,7 @@ const SetFirstSave = () => {
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
   let searchTimeout = null;
+  const scheduleId = state?.scheduleId;
 
   const handleClearSearch = () => {
     setSearchQuery('');
@@ -150,7 +151,7 @@ const SetFirstSave = () => {
       latitude: (suggestions.mapy / 1e7).toFixed(7), 
       longitude: (suggestions.mapx / 1e7).toFixed(7), 
       searchQuery,
-      scheduleId: state.scheduleId
+      scheduleId
     };
   
     navigate('/setfirst/map', { state: stateData });
@@ -191,7 +192,7 @@ const SetFirstSave = () => {
 
   return (
     <Container>
-      <Header title="만날 장소 등록하기" />
+      <Header title="만날 장소 등록하기" backUrl={scheduleId ? `/detail-course/${scheduleId}` : "/home"} />
       <MyplaceSaveContainer>
         <SearchBoxContainer>
           {searchQuery.length > 0 && (

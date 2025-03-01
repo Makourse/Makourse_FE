@@ -8,7 +8,7 @@ import deletex from "../../../assets/deletex.svg";
 import ping from "../../../assets/ping.svg";
 import getPlaceSearch from '../../../components/Naverapi/PlaceSearch';
 import getAddressFromCoords from '../../../components/Naverapi/ReverseGeocoding';
-import { postPlaceDetail } from "../../../api";
+import { postPlaceDetail, getPlaceDetail, updateEntries } from "../../../api";
 
 import "../../../component/Fonts.css";
 
@@ -211,34 +211,66 @@ const simplifyCategory = (category) => {
   return '기타';
 };
 
-const SetPlaceMap = () => {
+const PlaceEdit = () => {
   const location = useLocation();
   const { state } = location;
-  const scheduleId = state?.scheduleId;
+  const placeId = state?.id;
+  
+  const [placeDetails, setPlaceDetails] = useState(null);
+  const [scheduleId, setScheduleId] = useState(null);
 
   const [selectedLocation, setSelectedLocation] = useState({
-    latitude: state?.latitude || 37.557527,
-    longitude: state?.longitude || 126.925595,
-    place_name: state?.name || null,
-    address: state?.address || null,
-    category: state?.category || null,
+    latitude: 37.557527,
+    longitude: 126.925595,
+    place_name: null,
+    address: null,
+    category: null,
   });
 
   const [currentState, setCurrentState] = useState(1);
-  const [searchQuery, setSearchQuery] = useState(state?.searchQuery || "");
+  const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
-  const [newPlaceName, setNewPlaceName] = useState(
-    (selectedLocation.place_name || '').replace(/<[^>]*>/g, '')
-  );
+  const [newPlaceName, setNewPlaceName] = useState("");
   
   const [allSuggestions, setAllSuggestions] = useState([]);
 
   // debounce를 위한 새로운 state와 useEffect 추가
   const [searchTimeout, setSearchTimeout] = useState(null);
 
+  // 장소 상세 정보 가져오기
   useEffect(() => {
+    const fetchPlaceDetails = async () => {
+      if (!placeId) return;
+      
+      try {
+        const details = await getPlaceDetail(placeId);
+        setPlaceDetails(details);
+        setScheduleId(details.schedule);
+        
+        // 기존 위치 정보로 초기화
+        setSelectedLocation({
+          latitude: details.latitude,
+          longitude: details.longitude,
+          place_name: details.entry_name,
+          address: details.address,
+          category: details.category
+        });
+        
+        setNewPlaceName(details.entry_name);
+        
+      } catch (error) {
+        console.error('장소 세부 정보 가져오기 실패:', error);
+      }
+    };
+    
+    fetchPlaceDetails();
+  }, [placeId]);
+
+  useEffect(() => {
+    if (!selectedLocation.latitude || !selectedLocation.longitude) return;
+    
     const mapOptions = {
       center: new naver.maps.LatLng(selectedLocation.latitude, selectedLocation.longitude),
       zoom: 15,
@@ -253,15 +285,34 @@ const SetPlaceMap = () => {
     });
     setMarker(newMarker);
 
-    naver.maps.Event.addListener(newMap, "click", (e) => {
+    naver.maps.Event.addListener(newMap, "click", async (e) => {
       const clickedLatitude = e.coord.lat();
       const clickedLongitude = e.coord.lng();
 
       console.log("마커 위치 변경:", { latitude: clickedLatitude, longitude: clickedLongitude });
 
-
       newMarker.setPosition(new naver.maps.LatLng(clickedLatitude, clickedLongitude));
-      setSelectedLocation({ latitude: clickedLatitude, longitude: clickedLongitude, name: null, address: null });
+      
+      // 클릭한 위치의 주소 가져오기
+      try {
+        const address = await getAddressFromCoords(clickedLatitude, clickedLongitude);
+        setSelectedLocation({ 
+          latitude: clickedLatitude, 
+          longitude: clickedLongitude, 
+          place_name: null, 
+          address: address,
+          category: "기타"
+        });
+      } catch (error) {
+        console.error("주소 가져오기 실패:", error);
+        setSelectedLocation({ 
+          latitude: clickedLatitude, 
+          longitude: clickedLongitude, 
+          place_name: null, 
+          address: null,
+          category: "기타"
+        });
+      }
     });
   }, [selectedLocation.latitude, selectedLocation.longitude]);
 
@@ -327,27 +378,27 @@ const SetPlaceMap = () => {
 
   const navigate = useNavigate();
 
-  const handleAddPlace = async() => {
-    const newPlace = {
+  const handleUpdatePlace = async() => {
+    const updatedPlace = {
       entry_name: newPlaceName || selectedLocation.place_name, 
       address: selectedLocation.address || "주소 없음",
       latitude: selectedLocation.latitude,
       longitude: selectedLocation.longitude,
-      category: simplifyCategory(selectedLocation.category)
+      category: simplifyCategory(selectedLocation.category),
+      content: null,  // 내용 초기화
+      time: null      // 시간 초기화
     };
-    console.log("저장할 장소:", newPlace);
+    console.log("수정할 장소:", updatedPlace);
 
     try {
-      const response = await postPlaceDetail(scheduleId, newPlace);
-      console.log("저장된 장소 응답:", response);
+      const response = await updateEntries(placeId, updatedPlace);
+      console.log("수정된 장소 응답:", response);
 
-      setAllSuggestions((prev) => [...prev, response]);
-      setNewPlaceName("");
-      navigate(`/detail-course/${scheduleId}`);
+      navigate(`/place-detail`, { state: { id: placeId, schedule: scheduleId } });
 
     } catch (error) {
-      console.error("장소 저장 중 오류 발생:", error);
-      alert("장소를 저장하는 중 오류가 발생했습니다. 다시 시도해주세요.");
+      console.error("장소 수정 중 오류 발생:", error);
+      alert("장소를 수정하는 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -390,7 +441,7 @@ const SetPlaceMap = () => {
 
   return (
     <Container>
-      <Header title="장소 등록하기" backUrl={scheduleId ? `/detail-course/${scheduleId}` : "/home"} />
+      <Header title="장소 수정하기" backUrl={`/place-detail`} state={{ id: placeId, schedule: scheduleId }} />
       <MapBox id="naver-map" style={currentState === 3 ? { height: '100%' } : {}} />
   
       {currentState === 1 && (
@@ -452,7 +503,7 @@ const SetPlaceMap = () => {
             <FixedButtonContainer>
               <ButtonBox>
                 <Button text="닫기" width="93%" bgColor="#F1F1F1" textColor="#666666" onClick={() => setCurrentState(3)} />
-                <Button text="저장하기" width="93%" bgColor="#D6EBFF" onClick={handleAddPlace} />
+                <Button text="수정하기" width="93%" bgColor="#D6EBFF" onClick={handleUpdatePlace} />
               </ButtonBox>
             </FixedButtonContainer>
           </BottomTextContainer>
@@ -464,4 +515,4 @@ const SetPlaceMap = () => {
   );  
 };  
 
-export default SetPlaceMap;
+export default PlaceEdit;

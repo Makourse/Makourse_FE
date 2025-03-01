@@ -185,7 +185,7 @@ const PlaceTextAddr = styled.div`
 const SetFirstMap = () => {
   const location = useLocation();
   const { state } = location;
-  const { scheduleId } = state;
+  const scheduleId = state?.scheduleId;
 
   const [selectedLocation, setSelectedLocation] = useState({
     latitude: state?.latitude || 37.557527,
@@ -363,7 +363,7 @@ const SetFirstMap = () => {
 
   return (
     <Container>
-      <Header title="만날 장소 등록하기" />
+      <Header title="만날 장소 등록하기" backUrl={scheduleId ? `/detail-course/${scheduleId}` : "/home"} />
       <MapBox id="naver-map" style={currentState === 3 ? { height: '100%' } : {}} />
   
       {currentState === 1 && (

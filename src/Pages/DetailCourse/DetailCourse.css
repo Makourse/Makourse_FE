@@ -615,4 +615,265 @@
     font-size: 14px;
     color: #376FA3;
 }
-    
+
+/* 날짜 모달 스타일 */
+.date-modal {
+    width: 90%;
+    max-width: 400px;
+}
+
+.calendar-container {
+    margin: 20px 0;
+}
+
+.custom-calendar {
+    width: 100%;
+    border: none;
+    font-family: 'Pretendard';
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #666;
+}
+
+.current-month {
+    font-size: 16px;
+    font-weight: 500;
+    color: #376FA3;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.weekday {
+    font-size: 14px;
+    color: #666;
+    padding: 5px 0;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.calendar-day.current-month {
+    color: #000;
+}
+
+.calendar-day.other-month {
+    color: #ccc;
+    cursor: default;
+}
+
+.calendar-day.today {
+    font-weight: 600;
+}
+
+.calendar-day.selected {
+    background-color: #D6EBFF;
+    color: #376FA3;
+    font-weight: 600;
+}
+
+/* 시간 모달 스타일 */
+.time-modal {
+    width: 300px;
+}
+
+.selected-date-display {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.selected-date-display p {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 5px 0;
+}
+
+.selected-date-display h3 {
+    font-size: 18px;
+    color: #376FA3;
+    margin: 0;
+    font-weight: 600;
+}
+
+.time-picker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    gap: 20px;
+}
+
+.time-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    min-width: 60px;
+    position: relative;
+}
+
+.time-option {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.2);
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+.time-option.selected {
+    color: #000;
+    font-weight: 500;
+    font-size: 18px;
+    position: relative;
+}
+
+/* 빠른 스크롤 중일 때는 transition 비활성화 */
+.quick-scrolling .time-option {
+    transition: none;
+}
+
+.sliding-up {
+    transform: translateY(-40px);
+    opacity: 0;
+}
+
+.sliding-down {
+    transform: translateY(40px);
+    opacity: 0;
+}
+
+/* 경계선 스타일 통일 */
+.time-option.selected::before,
+.time-option.selected::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    height: 1px;
+    background-color: #E8E8E8;
+}
+
+.time-option.selected::before {
+    top: -5px;  /* 상단 간격 조정 */
+}
+
+.time-option.selected::after {
+    bottom: -5px;  /* 하단 간격 조정 */
+}
+
+.time-separator {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 5px;
+    width: 20px;
+    text-align: center;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+/* AM/PM 컬럼에만 적용되는 스타일 */
+.time-column:first-child {
+    margin-right: 10px;
+}
+
+.time-column:first-child .time-option {
+    font-weight: 500;
+}
+
+/* AM/PM 컬럼 특정 스타일 */
+.period-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    height: 120px; /* 세 개의 옵션이 모두 보이도록 높이 증가 */
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.period-column .time-option {
+    position: absolute;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: rgba(0, 0, 0, 0.2); /* 기본적으로 흐리게 */
+}
+
+/* AM이 선택되었을 때 */
+.period-column[data-selected="AM"] .time-option.am {
+    transform: translateY(0px); /* 중앙에 위치 */
+    color: #000; /* 선택된 항목은 진하게 */
+    font-weight: 500;
+}
+
+.period-column[data-selected="AM"] .time-option.pm {
+    transform: translateY(40px); /* 하단에 위치 */
+}
+
+/* PM이 선택되었을 때 */
+.period-column[data-selected="PM"] .time-option.pm {
+    transform: translateY(0px); /* 중앙에 위치 */
+    color: #000; /* 선택된 항목은 진하게 */
+    font-weight: 500;
+}
+
+.period-column[data-selected="PM"] .time-option.am {
+    transform: translateY(-40px); /* 상단에 위치 */
+}
+
+/* 선택된 옵션의 구분선 */
+.period-column .time-option.selected::before,
+.period-column .time-option.selected::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    height: 1px;
+    background-color: #E8E8E8;
+}
+
+.period-column .time-option.selected::before {
+    top: -5px;
+}
+
+.period-column .time-option.selected::after {
+    bottom: -5px;
+}

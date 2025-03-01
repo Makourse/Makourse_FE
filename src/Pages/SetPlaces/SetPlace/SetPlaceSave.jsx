@@ -136,6 +136,7 @@ const SetPlaceSave = () => {
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
   let searchTimeout = null;
+  const scheduleId = state?.scheduleId;
 
   const handleClearSearch = () => {
     setSearchQuery('');
@@ -151,7 +152,7 @@ const SetPlaceSave = () => {
       longitude: (suggestions.mapx / 1e7).toFixed(7), 
       category: suggestions.category,
       searchQuery,
-      scheduleId: state.scheduleId
+      scheduleId
     };
   
     navigate('/setplace/map', { state: stateData });
@@ -193,7 +194,7 @@ const SetPlaceSave = () => {
 
   return (
     <Container>
-      <Header title="장소 등록하기" />
+      <Header title="장소 등록하기" backUrl={scheduleId ? `/detail-course/${scheduleId}` : "/home"} />
       <MyplaceSaveContainer>
         <SearchBoxContainer>
           {searchQuery.length > 0 && (

@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 const MeetingPlace = ({ time, title, address, isEditing, selectAll, onSelect }) => {
-    const [isSelected, setIsSelected] = useState(false);
+    // const [isSelected, setIsSelected] = useState(false);
     const { scheduleId } = useParams();
     const navigate = useNavigate();
-    // selectAll이 변경될 때만 실행
-    useEffect(() => {
-        if (isEditing) {
-            setIsSelected(selectAll);
-        }
-    }, [selectAll, isEditing]);
+    // // selectAll이 변경될 때만 실행
+    // useEffect(() => {
+    //     if (isEditing) {
+    //         setIsSelected(selectAll);
+    //     }
+    // }, [selectAll, isEditing]);
 
-    // 편집 모드가 끝날 때 선택 상태 초기화
-    useEffect(() => {
-        if (!isEditing) {
-            setIsSelected(false);
-        }
-    }, [isEditing]);
+    // // 편집 모드가 끝날 때 선택 상태 초기화
+    // useEffect(() => {
+    //     if (!isEditing) {
+    //         setIsSelected(false);
+    //     }
+    // }, [isEditing]);
 
     // const handleClick = () => {
     //     if (isEditing) {
@@ -48,7 +48,7 @@ const MeetingPlace = ({ time, title, address, isEditing, selectAll, onSelect }) 
 
     return (
         <div 
-            className={`info-detail-container ${isEditing && isSelected ? 'selected' : ''}`} 
+            className={`info-detail-container`} 
             // onClick={handleClick}
         >
             <div className="meeting-pin">
