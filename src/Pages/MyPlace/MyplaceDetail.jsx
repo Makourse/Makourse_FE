@@ -197,12 +197,12 @@ const MyplaceDetail = () => {
                 </div>
             </div>
         </div>
-        {/* <div className="course-edit">
+        <div className="course-edit">
             <div className="course-edit-button">
                     <img src='/detail-edit2.svg' alt="edit" />
-                    <span className="course-edit-button-text">장소 수정하기</span>
+                    <span className="course-edit-button-text">장소 삭제하기</span>
             </div>
-        </div> */}
+        </div> 
         
         {isModalOpen && (
             <div className="modal-overlay">
