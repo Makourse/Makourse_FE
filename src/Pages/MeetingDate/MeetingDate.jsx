@@ -20,7 +20,7 @@ import first from '../../assets/first.svg';
 import second from '../../assets/second.svg';
 import third from '../../assets/third.svg';
 import ic_move from '../../assets/ic_move.svg';
-
+import { toast, ToastContainer } from 'react-toastify';
 const GlobalStyle = createGlobalStyle`
   .no-scroll {
     overflow: hidden;
@@ -93,8 +93,9 @@ const DescriptionTitle = styled.div`
 const DescriptionContent = styled.div`
     width: 90%;
     margin-top: 1rem;
-    font-size: 0.875rem;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 500;
+    color: #666666;
 `;
 
 const DateContainer = styled.div`
@@ -280,7 +281,7 @@ const Meetingdate = () => {
       if (currentDate) {
           setViewState('selectTime');
       } else {
-          alert('날짜를 선택해주세요');
+            toast.error('날짜를 선택해주세요');
       }
     };
     
@@ -303,7 +304,6 @@ const Meetingdate = () => {
             const scheduleId = response?.id;
 
             if (scheduleId) {
-              alert('일정이 저장되었습니다!');
               navigate(`/detail-course/${scheduleId}`); // 페이지 이동
             } else {
               throw new Error('scheduleId가 반환되지 않았습니다.');
@@ -312,7 +312,7 @@ const Meetingdate = () => {
             console.error('일정 저장 실패:', error);
           }
       } else {
-          alert('시간을 선택해주세요');
+          toast.error('시간을 선택해주세요');
       }
     };
 
@@ -326,7 +326,6 @@ const Meetingdate = () => {
         const scheduleId = response?.id;
 
         if (scheduleId) {
-          alert('코스가 저장되었습니다. 나중에 날짜를 정할 수 있습니다.');
           navigate(`/detail-course/${scheduleId}`); // 페이지 이동
         } else {
           throw new Error('scheduleId가 반환되지 않았습니다.');
@@ -376,6 +375,7 @@ const Meetingdate = () => {
                     <Bgblue src={backgroundblue} alt="bluecircle" />
                         <DescriptionTitle>만날 날짜를</DescriptionTitle>
                         <DescriptionTitle>선택해주세요.</DescriptionTitle>
+                        <DescriptionContent>일정의 날짜와 시간은 언제든지 수정할 수 있어요.</DescriptionContent>
                     </DescriptionContainer2>
                     <CalendarContainer>
                         <CalendarBackground>
@@ -403,10 +403,11 @@ const Meetingdate = () => {
                         <DescriptionContainer2>
                             <Bgpurple src={backgroundpurple} alt="purlplecircle" />
                             <Bgblue src={backgroundblue} alt="bluecircle" />
-                            <Blurstar src={blurstar} alt="blurstar"/>
-                            <Heart src={heart} alt="heart"/>
+                            {/* <Blurstar src={blurstar} alt="blurstar"/> */}
+                            {/* <Heart src={heart} alt="heart"/> */}
                             <DescriptionTitle>시간을</DescriptionTitle>
                             <DescriptionTitle>선택해주세요.</DescriptionTitle>
+                            <DescriptionContent>일정의 날짜와 시간은 언제든지 수정할 수 있어요.</DescriptionContent>
                         </DescriptionContainer2>
                         <TimeContainer>
                             <TimeBackground>
@@ -427,6 +428,12 @@ const Meetingdate = () => {
                     </MeetingDateContainer>
                     </>
                 )}
+                <ToastContainer
+                  position="bottom-center"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  closeOnClick
+                />
         </Container>
         </>
     );
