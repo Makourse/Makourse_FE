@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import PlaceItem from './PlaceItem';
-import { getPlaceDetail, getAlternativePlaces } from '../../../api';
+import { getPlaceDetail } from '../../../api';
 import { useNavigate } from 'react-router-dom';
 import '../styles/PlaceGroup.css';
 
@@ -8,11 +8,7 @@ const PlaceGroup = ({ place_pk, place_number, place_name, isEditing, selectAll, 
     const [showAlternatives, setShowAlternatives] = useState(false);
     const [placeDetail, setPlaceDetail] = useState(null);
     const [formattedTime, setFormattedTime] = useState('');
-    const [alternativePlaces, setAlternativePlaces] = useState([]);
     const navigate = useNavigate();
-    const handleToggleAlternatives = () => {
-        setShowAlternatives(!showAlternatives);
-    };
 
     useEffect(() => {
         const fetchPlaceDetail = async () => {
@@ -40,14 +36,6 @@ const PlaceGroup = ({ place_pk, place_number, place_name, isEditing, selectAll, 
         };
         fetchPlaceDetail();
     }, [place_pk]);
-
-    // useEffect(() => {
-    //     const fetchAlternativePlaces = async () => {
-    //         const alternativePlaces = await getAlternativePlaces(place_pk);
-    //         setAlternativePlaces(alternativePlaces);
-    //     };
-    //     fetchAlternativePlaces();
-    // }, [place_pk]);
 
     return (
         <div className="place-group">
