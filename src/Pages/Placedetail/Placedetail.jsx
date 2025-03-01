@@ -280,7 +280,7 @@ const Placedetail = () => {
             </div>
         </div>
         <div className="course-edit">
-            <div className="course-edit-button">
+            <div className="course-edit-button" onClick={() => navigate(`/place-edit`, { state: { id: placeId, schedule: schedule } })}>
                     <img src='/detail-edit2.svg' alt="edit" />
                     <span className="course-edit-button-text">장소 수정하기</span>
                 </div>
