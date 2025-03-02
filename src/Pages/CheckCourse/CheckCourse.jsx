@@ -122,7 +122,7 @@ function CheckCourse() {
         {isSelecting ? (
           <Button text="삭제하기" bgColor={selectedCourses.size > 0 ? "#376FA3" : "#F1F1F1"} textColor={selectedCourses.size > 0 ? "#FFFFFF" : "#666666"} onClick={deleteSelectedCourses} disabled={selectedCourses.size === 0} />
         ) : (
-          <Button text="코스 등록하기" bgColor="#D6EBFF" textColor="#376FA3" onClick={() => navigate('/detail-course')} />
+          <Button text="코스 등록하기" bgColor="#D6EBFF" textColor="#376FA3" onClick={() => navigate('/meetingdate')} />
         )}
       </div>
     </div>
