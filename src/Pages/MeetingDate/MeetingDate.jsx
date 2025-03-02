@@ -20,7 +20,7 @@ import first from '../../assets/first.svg';
 import second from '../../assets/second.svg';
 import third from '../../assets/third.svg';
 import ic_move from '../../assets/ic_move.svg';
-
+import { toast, ToastContainer } from 'react-toastify';
 const GlobalStyle = createGlobalStyle`
   .no-scroll {
     overflow: hidden;
@@ -93,8 +93,9 @@ const DescriptionTitle = styled.div`
 const DescriptionContent = styled.div`
     width: 90%;
     margin-top: 1rem;
-    font-size: 0.875rem;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 500;
+    color: #666666;
 `;
 
 const DateContainer = styled.div`
@@ -259,34 +260,10 @@ const DateDisplay = styled.div`
 
 const Meetingdate = () => {
     const navigate = useNavigate();
-    const [viewState, setViewState] = useState('initial'); // initial, selectDate, selectTime 상태를 관리
-    const [selectedDateId, setSelectedDateId] = useState(null); // 현재 선택된 ID
+    const [viewState, setViewState] = useState('selectDate'); // 바로 날짜 선택 화면으로 시작
     const [currentDate, setCurrentDate] = useState(null); // 캘린더에서 선택된 날짜
     const [currentTime, setCurrentTime] = useState(null); // 타임피커에서 선택된 시간
-    const [dates, setDates] = useState([
-        { id: 1, title: '첫 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
-        { id: 2, title: '두 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
-        { id: 3, title: '세 번째 날짜', description: '날짜와 시간을 입력할 수 있어요' },
-      ]);
-
-
-      const handleDateClick = (id) => {
-        console.log(`Date ${id} clicked`);
-        const selectedDate = dates.find(date => date.id === id);
-    
-        if (selectedDate.description === '날짜와 시간을 입력할 수 있어요') {
-            // 비어있는 날짜를 선택한 경우
-            const firstEmptyIndex = dates.findIndex(date => date.description === '날짜와 시간을 입력할 수 있어요');
-            if (firstEmptyIndex !== -1) {
-                setSelectedDateId(dates[firstEmptyIndex].id);
-                setViewState('selectDate'); // 날짜 선택 화면으로 전환
-            }
-        } else {
-            // 기존 값이 있는 날짜를 선택한 경우
-            setSelectedDateId(id);
-            setViewState('selectDate'); // 시간 선택 화면으로 전환
-        }
-    };
+    const [selectedDateTime, setSelectedDateTime] = useState(null); // 최종 선택된 날짜와 시간
 
     // 날짜 선택
     const handleCalendarDateClick = (date) => {
@@ -299,243 +276,106 @@ const Meetingdate = () => {
       setCurrentDate(formattedDate);
     };
     
-
-
     // 날짜 저장
     const handleSaveDate = () => {
       if (currentDate) {
-          const updatedDates = [...dates];
-          const targetIndex = selectedDateId
-              ? updatedDates.findIndex(date => date.id === selectedDateId)
-              : updatedDates.findIndex(date => date.description === '날짜와 시간을 입력할 수 있어요');
-
-          if (targetIndex !== -1) {
-              updatedDates[targetIndex] = { 
-                  ...updatedDates[targetIndex], 
-                  title: currentDate, 
-                  description: '' 
-              };
-              setDates(updatedDates);
-              setSelectedDateId(updatedDates[targetIndex].id);
-              setViewState('selectTime');
-          }
+          setViewState('selectTime');
+      } else {
+            toast.error('날짜를 선택해주세요');
       }
-  };
+    };
     
     // 시간 선택
     const handleTimeChange = (newTimeData) => {
       setCurrentTime(newTimeData);
-  };
+    };
       
-// 시간 저장 및 일정 저장 API 호출
-const handleSaveTime = async () => {
-  if (selectedDateId && currentTime) {
-      const formattedTime = `${String(currentTime.hour).padStart(2, '0')}:${String(currentTime.minute).padStart(2, '0')}:00`;
-      const dateIndex = dates.findIndex(date => date.id === selectedDateId);
+    // 시간 저장 및 일정 저장 API 호출
+    const handleSaveTime = async () => {
+      if (currentDate && currentTime) {
+          const formattedTime = `${String(currentTime.hour).padStart(2, '0')}:${String(currentTime.minute).padStart(2, '0')}:00`;
+          const dateTime = `${currentDate}T${formattedTime}`;
+          setSelectedDateTime(dateTime);
+          
+          try {
+            const response = await schedulePost(dateTime, null, null);
+            
+            // 생성된 scheduleId 가져오기
+            const scheduleId = response?.id;
 
-      if (dateIndex !== -1) {
-          const dateTime = `${dates[dateIndex].title}T${formattedTime}`;
-          const updatedDates = dates.map((date, index) =>
-              index === dateIndex ? { ...date, description: dateTime } : date
-          );
-
-          setDates(updatedDates);
-          setViewState('initial');
+            if (scheduleId) {
+              navigate(`/detail-course/${scheduleId}`); // 페이지 이동
+            } else {
+              throw new Error('scheduleId가 반환되지 않았습니다.');
+            }
+          } catch (error) {
+            console.error('일정 저장 실패:', error);
+          }
+      } else {
+          toast.error('시간을 선택해주세요');
       }
-  }
-};
-
-// initial 상태에서 일정 저장 버튼 클릭 시 API 호출
-const handleSaveInitialState = async () => {
-  try {
-    // 날짜와 시간이 입력되지 않은 경우 null 처리
-    const formattedDates = dates.map(date => date.description !== '날짜와 시간을 입력할 수 있어요' ? date.description : null);
-
-    const requestData = {
-      meetDateFirst: formattedDates[0],
-      meetDateSecond: formattedDates[1],
-      meetDateThird: formattedDates[2],
     };
 
-    const response = await schedulePost(requestData.meetDateFirst, requestData.meetDateSecond, requestData.meetDateThird);
+    // 나중에 정할게요 버튼 클릭 시 처리
+    const handleDecideLater = async () => {
+      try {
+        // 모든 날짜를 null로 전송
+        const response = await schedulePost(null, null, null);
+        
+        // 생성된 scheduleId 가져오기
+        const scheduleId = response?.id;
 
-    // 생성된 scheduleId 가져오기
-    const scheduleId = response?.id;
-
-    if (scheduleId) {
-      alert('일정이 저장되었습니다!');
-      navigate(`/detail-course/${scheduleId}`); // 페이지 이동
-    } else {
-      throw new Error('scheduleId가 반환되지 않았습니다.');
-    }
-  } catch (error) {
-    console.error('일정 저장 실패:', error);
-  }
-};
-
-
-    const getDateMeetingSrc = (description, index) => {
-        if (description === '날짜와 시간을 입력할 수 있어요') return meetingdate;
-        const srcMapping = [first, second, third];
-        return srcMapping[index] || meetingdate;
-    };   
-
-    const isDraggable = dates.some(date => date.description !== '날짜와 시간을 입력할 수 있어요');
-
-    const onDragEnd = (result) => {
-        if (!isDraggable) {
-            console.warn("드래그가 비활성화되었습니다.");
-            return;
+        if (scheduleId) {
+          navigate(`/detail-course/${scheduleId}`); // 페이지 이동
+        } else {
+          throw new Error('scheduleId가 반환되지 않았습니다.');
         }
-    
-        if (!result.destination) {
-            console.warn("No destination provided. Drag canceled.");
-            return;
-        }
-    
-    
-        const updatedDates = Array.from(dates);
-        const [removed] = updatedDates.splice(result.source.index, 1);
-        updatedDates.splice(result.destination.index, 0, removed);
-
-        setDates(updatedDates);
+      } catch (error) {
+        console.error('코스 저장 실패:', error);
+      }
     };
 
-      useEffect(() => {
-        console.log("초기 dates 상태:", dates);
-        console.log("초기 draggableId 목록:", dates.map(date => date.id));
-      }, []);
-
-      
-  // 현재 선택된 날짜 가져오기
-  const selectedDate = selectedDateId
-  ? dates.find((date) => date.id === selectedDateId)?.title
-  : null;
-
-  const getButtonText = () => {
-    const hasSavedDate = dates.some(date => date.description !== '날짜와 시간을 입력할 수 있어요');
-    return hasSavedDate ? "저장하기" : "나중에 정할게요";
-};
-
-const handleBack = () => {
-    switch (viewState) {
-      case 'selectTime':
+    const handleBack = () => {
+      if (viewState === 'selectTime') {
         setViewState('selectDate');
-        break;
-      case 'selectDate':
-        setViewState('initial');
-        break;
-      default:
-        break;
-    }
-  };
-
-
+      }
+    };
   
-  
-  const formatDateTitle = (dateString) => {
-    if (!dateString) return '';
-    if (['첫 번째 날짜', '두 번째 날짜', '세 번째 날짜'].includes(dateString)) return dateString;
-    
-    const [year, month, day] = dateString.split('-');
-    return `${year}년 ${parseInt(month, 10)}월 ${parseInt(day, 10)}일`;
-};
+    const formatDateTitle = (dateString) => {
+      if (!dateString) return '';
+      
+      const [year, month, day] = dateString.split('-');
+      return `${year}년 ${parseInt(month, 10)}월 ${parseInt(day, 10)}일`;
+    };
 
-const formatTimeDescription = (dateTimeString) => {
-  if (!dateTimeString || !dateTimeString.includes('T')) return dateTimeString;
+    const formatTimeDescription = (dateTimeString) => {
+      if (!dateTimeString || !dateTimeString.includes('T')) return dateTimeString;
 
-  const [date, time] = dateTimeString.split('T');
-  let [hour, minute] = time.split(':');
+      const [date, time] = dateTimeString.split('T');
+      let [hour, minute] = time.split(':');
 
-  hour = parseInt(hour, 10);
-  const ampm = hour < 12 ? 'AM' : 'PM';
-  const formattedHour = String(hour % 12 === 0 ? 12 : hour % 12).padStart(2, '0');
-  const formattedMinute = String(parseInt(minute, 10)).padStart(2, '0');
+      hour = parseInt(hour, 10);
+      const ampm = hour < 12 ? 'AM' : 'PM';
+      const formattedHour = String(hour % 12 === 0 ? 12 : hour % 12).padStart(2, '0');
+      const formattedMinute = String(parseInt(minute, 10)).padStart(2, '0');
 
-  return `${ampm} ${formattedHour}시 ${formattedMinute}분`;
-};
+      return `${ampm} ${formattedHour}시 ${formattedMinute}분`;
+    };
   
     return (
         <>
           <GlobalStyle />
           <Container>
-                {viewState === 'initial' && (
-                    <>
-                    <Header title="코스 등록하기" backUrl="/home" />
-                    <MeetingDateContainer>
-                    <MeetingDateContainer2>
-                        <DescriptionContainer>
-                            <DescriptionTitle>만날 날짜를</DescriptionTitle>
-                            <DescriptionTitle>선택해주세요.</DescriptionTitle>
-                            <DescriptionContent>
-                                만날 날짜가 확정되지 않았을 경우를 고려하여 날짜는 최대 3개까지 등록 가능합니다.
-                            </DescriptionContent>
-                        </DescriptionContainer>
-                        <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId="dates">
-                {(provided) => (
-                  <DateContainer
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                  >
-                    {dates.map((date, index) => (
-                         <Draggable
-                        key={String(date.id)} 
-                        draggableId={String(date.id)} 
-                        index={index}
-                        isDragDisabled={!isDraggable}
-                         >
-                        {(provided) => (
-                          <Date
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            selected={date.id === selectedDateId}
-                            onClick={() => handleDateClick(date.id)}
-                          >
-                            <DateMeeting
-                              src={getDateMeetingSrc(date.description, index)}
-                              alt="meetingdate"
-                            />
-                            <TextWrapper>
-                              <Text>
-                                <Datetext>{formatDateTitle(date.title)}</Datetext>
-                                <Descriptiontext>{formatTimeDescription(date.description)}</Descriptiontext>
-                              </Text>
-                              <Ic_move
-                                src={ic_move}
-                                alt="ic_move"
-                              />
-                            </TextWrapper>
-                          </Date>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </DateContainer>
-                )}
-              </Droppable>
-            </DragDropContext>
-          </MeetingDateContainer2>
-                <ButtonContainer>
-                    <Button text={getButtonText()} onClick={handleSaveInitialState} />
-                </ButtonContainer>
-                </MeetingDateContainer>
-                    </>
-                )}
-
                 {viewState === 'selectDate' && (
                     <>
-                    <StateHeader
-                    title='코스 등록하기'
-                    onBack={handleBack}
-                  />
+                    <Header title="코스 등록하기" backUrl="/home" />
                     <MeetingDateContainer>
                     <DescriptionContainer2>
                     <Bgpurple src={backgroundpurple} alt="purlplecircle" />
                     <Bgblue src={backgroundblue} alt="bluecircle" />
-                        <DescriptionTitle>날짜를</DescriptionTitle>
+                        <DescriptionTitle>만날 날짜를</DescriptionTitle>
                         <DescriptionTitle>선택해주세요.</DescriptionTitle>
+                        <DescriptionContent>일정의 날짜와 시간은 언제든지 수정할 수 있어요.</DescriptionContent>
                     </DescriptionContainer2>
                     <CalendarContainer>
                         <CalendarBackground>
@@ -543,8 +383,9 @@ const formatTimeDescription = (dateTimeString) => {
                         </CalendarBackground>
                     </CalendarContainer>
                     <ButtonContainer>
+                        <Button2 onClick={handleDecideLater}>나중에 정할게요</Button2>
                         <Button 
-                            text="저장하기" 
+                            text="다음" 
                             onClick={handleSaveDate}
                         />
                         </ButtonContainer>
@@ -562,20 +403,21 @@ const formatTimeDescription = (dateTimeString) => {
                         <DescriptionContainer2>
                             <Bgpurple src={backgroundpurple} alt="purlplecircle" />
                             <Bgblue src={backgroundblue} alt="bluecircle" />
-                            <Blurstar src={blurstar} alt="blurstar"/>
-                            <Heart src={heart} alt="heart"/>
+                            {/* <Blurstar src={blurstar} alt="blurstar"/> */}
+                            {/* <Heart src={heart} alt="heart"/> */}
                             <DescriptionTitle>시간을</DescriptionTitle>
                             <DescriptionTitle>선택해주세요.</DescriptionTitle>
+                            <DescriptionContent>일정의 날짜와 시간은 언제든지 수정할 수 있어요.</DescriptionContent>
                         </DescriptionContainer2>
                         <TimeContainer>
                             <TimeBackground>
                             <DateContainer2>
                                <Description>선택된 날짜</Description>
-                               <DateDisplay>{formatDateTitle(selectedDate) || '날짜를 선택하세요'}</DateDisplay>
+                               <DateDisplay>{formatDateTitle(currentDate) || '날짜를 선택하세요'}</DateDisplay>
                             </DateContainer2>
                                 <Time
                                     onTimeChange={handleTimeChange}
-                                    selectedDate={selectedDate} // 여기서 선택된 날짜 전달
+                                    selectedDate={currentDate}
                                 />
                             </TimeBackground>
                         </TimeContainer>
@@ -586,6 +428,12 @@ const formatTimeDescription = (dateTimeString) => {
                     </MeetingDateContainer>
                     </>
                 )}
+                <ToastContainer
+                  position="bottom-center"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  closeOnClick
+                />
         </Container>
         </>
     );

@@ -184,9 +184,9 @@ const DetailCourse = () => {
                     if (newValue < 1) newValue = 12;
                     return { ...prev, hour: String(newValue).padStart(2, '0') };
                 case 'minute':
-                    newValue = parseInt(prev.minute) + (increment ? 5 : -5); // 5분 단위로 변경
-                    if (newValue > 55) newValue = 0;
-                    if (newValue < 0) newValue = 55;
+                    newValue = parseInt(prev.minute) + (increment ? 1 : -1); // 1분 단위로 변경
+                    if (newValue > 59) newValue = 0;
+                    if (newValue < 0) newValue = 59;
                     return { ...prev, minute: String(newValue).padStart(2, '0') };
                 default:
                     return prev;
@@ -677,11 +677,11 @@ const DetailCourse = () => {
                                  data-type="minute"
                                  onTouchStart={(e) => handleTouchStart(e, 'minute')}>
                                 <div className="time-option">
-                                    {String(parseInt(selectedTime.minute) === 0 ? 55 : parseInt(selectedTime.minute) - 5).padStart(2, '0')}
+                                    {String(parseInt(selectedTime.minute) === 0 ? 59 : parseInt(selectedTime.minute) - 1).padStart(2, '0')}
                                 </div>
                                 <div className="time-option selected">{selectedTime.minute}</div>
                                 <div className="time-option">
-                                    {String(parseInt(selectedTime.minute) === 55 ? 0 : parseInt(selectedTime.minute) + 5).padStart(2, '0')}
+                                    {String(parseInt(selectedTime.minute) === 59 ? 0 : parseInt(selectedTime.minute) + 1).padStart(2, '0')}
                                 </div>
                             </div>
                         </div>
