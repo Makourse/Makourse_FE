@@ -5,7 +5,7 @@ import backIcon from '../../assets/home/back.svg';
 import profilePic from '../../assets/home/profile1.svg';
 import profileEditIcon from '../../assets/home/profile_edit.svg';
 import cancelIcon from '../../assets/home/cancel.svg';
-import { getUserProfile, updateProfileImage } from '../../api';
+import { getUserProfile, updateProfileImage, updateName } from '../../api';
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ const EditProfile = () => {
     const fetchProfile = async () => {
       try {
         const userProfile = await getUserProfile();
+        console.log("가져온 유저 프로필:", userProfile);
         setName(userProfile.name || '');
         
         if (userProfile.profile_image) {
@@ -36,19 +37,26 @@ const EditProfile = () => {
 
   const handleNext = async () => {
     try {
+      if (name) {
+        await updateName(name);
+        console.log("이름 업데이트 성공:", name);
+      }
       if (imageFile) {
         await updateProfileImage(imageFile);
       }
-
+      
+      const updatedProfile = await getUserProfile();
+      setName(updatedProfile.name || '');
+      setProfileImage(updatedProfile.profile_image ? `https://api-makourse.kro.kr${updatedProfile.profile_image}` : profilePic);
+      
       navigate('/home', { 
         state: { 
-          userName: name, 
-          profileImage: imageFile ? URL.createObjectURL(imageFile) : profileImage 
+          userName: updatedProfile.name, 
+          profileImage: updatedProfile.profile_image ? `https://api-makourse.kro.kr${updatedProfile.profile_image}` : profilePic
         } 
       });
-
     } catch (error) {
-      console.error("프로필 이미지 업데이트 중 오류 발생:", error);
+      console.error("프로필 업데이트 중 오류 발생:", error);
     }
   };
 
@@ -84,7 +92,7 @@ const EditProfile = () => {
             src={profileImage}
             alt="Profile"
             className="profile-picture"
-            onError={() => setProfileImage(profilePic)} // 이미지 깨지면 기본 이미지로 변경
+            onError={() => setProfileImage(profilePic)}
           />
           <label htmlFor="file-upload" className="profile-edit-icon">
             <img
