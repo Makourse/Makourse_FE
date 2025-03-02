@@ -5,9 +5,7 @@ import './HomeCard.css';
 const HomeCard3 = ({ userData }) => {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log('userData:', userData);
-    }, [userData]);
+    useEffect(() => {}, [userData]);
 
     const profileImage = userData?.profile_image
         ? userData.profile_image

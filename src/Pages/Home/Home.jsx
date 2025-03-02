@@ -44,25 +44,20 @@ const Home = () => {
       try {
         const response = await getUserData();
         if (response) {
-          console.log('사용자 데이터 응답:', response);
           setUserData(response.user);
           setSchedules(response.schedules || []);
         }
 
         const profileResponse = await getUserProfile();
-        console.log('프로필 이미지 응답:', profileResponse);
 
         if (profileResponse?.profile_image) {
           setUserData(prev => ({
             ...prev,
             profile_image: profileResponse.profile_image
           }));
-          console.log('프로필 이미지 상태 업데이트:', profileResponse.profile_image);
-        } else {
-          console.warn('⚠️ 프로필 이미지 값이 null이거나 없음');
-        }
+        } 
       } catch (error) {
-        console.error('❌ 사용자 데이터 가져오기 실패:', error);
+        console.error('사용자 데이터 가져오기 실패:', error);
       }
     };
 
@@ -72,7 +67,6 @@ const Home = () => {
   // 프로필 수정 후 Home으로 돌아왔을 때 반영
   useEffect(() => {
     if (location.state?.profileImage) {
-      console.log('✅ 프로필 수정 후 새로운 이미지 적용:', location.state.profileImage);
       setUserData(prev => ({
         ...prev,
         profile_image: location.state.profileImage
