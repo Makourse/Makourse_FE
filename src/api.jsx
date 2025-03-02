@@ -117,9 +117,13 @@ export const getCourseDetail = async (accessToken, courseId) => {
 };
 
 //코스 삭제 API 호출 함수   
-export const deleteCourse = async (accessToken, courseId) => {
+export const deleteCourse = async (courseId) => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+        throw new Error("Access token is missing.");
+    }
     try {
-        const response = await axios.delete(`${BASE_URL}/course/schedule/${courseId}/`, {
+        const response = await axios.delete(`${BASE_URL}/course/schedule/${courseId}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
