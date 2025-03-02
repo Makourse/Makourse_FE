@@ -340,7 +340,7 @@ export const deleteMyPlace = async (myplace_id) => {
         }
     };
 
-    // 유저 정보 가져오기 (account/profile)
+    // 유저 정보 가져오기
     export const getUserProfile = async () => {
         const accessToken = getAccessToken();
         if (!accessToken) {
@@ -356,6 +356,29 @@ export const deleteMyPlace = async (myplace_id) => {
             return response.data;
         } catch (error) {
             console.error("Error fetching user profile:", error);
+            throw error;
+        }
+    };
+
+    // 유저 이름 수정
+    export const updateName = async (newName) => {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            throw new Error("Access token is missing.");
+        }
+
+        try {
+            const response = await axios.patch(`${BASE_URL}/account/profile`,{ name: newName },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error updating name:", error);
             throw error;
         }
     };
