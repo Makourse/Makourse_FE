@@ -32,7 +32,8 @@ const EditProfile = () => {
   }, []);
 
   const handleChange = (e) => {
-    setName(e.target.value);
+    // 이름 수정 보류류
+    // setName(e.target.value);
   };
 
   const handleNext = async () => {
@@ -61,7 +62,8 @@ const EditProfile = () => {
   };
 
   const handleCancel = () => {
-    setName('');
+    // 이름 변경 기능 보류
+    // setName('');
   };
 
   const handleProfileImageChange = (e) => {
@@ -117,15 +119,17 @@ const EditProfile = () => {
             onChange={handleChange}
             className="name-input"
             autoFocus
+            readOnly 
           />
-          {name && (
+          {/* x 아이콘을 주석 처리 */}
+          {/* {name && (
             <img
               src={cancelIcon}
               alt="Cancel"
               className="cancel-button"
               onClick={handleCancel}
             />
-          )}
+          )} */}
         </div>
       </div>
 
