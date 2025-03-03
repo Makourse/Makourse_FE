@@ -272,6 +272,33 @@ export const saveMyPlace = async (placeData) => {
     }
   };
 
+  // 나만의 장소 메모 추가(수정) API 호출 함수
+  export const updateMyPlaceContent = async (myplace_id, content) => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+        console.error("Access token is missing.");
+        throw new Error("Access token is missing.");
+    }
+
+    console.log("API 요청 전송", { myplace_id, content });
+
+    try {
+        const response = await axios.patch(`${BASE_URL}/course/myplace/${myplace_id}`, 
+            { content },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+        console.log("API 응답 수신", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("API 요청 실패:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
 
 // 나만의 장소 보기 API 호출 함수
   export const getMyPlaces = async () => {
