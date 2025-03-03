@@ -1,7 +1,7 @@
 import './MyplaceDetail.css';
 import { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { deleteMyPlace } from "../../api";
+import { deleteMyPlace, updateMyPlaceContent, getMyPlaces } from "../../api";
 
 
 const MyplaceDetail = () => {
@@ -42,6 +42,25 @@ const MyplaceDetail = () => {
             position: new naver.maps.LatLng(place.latitude, place.longitude),
             map: map
         });
+    }, [place]);
+
+    useEffect(() => {
+        const fetchPlaceMemo = async () => {
+            if (!place?.id) return;
+            
+            try {
+                const response = await getMyPlaces(); 
+                const placeData = response.data.find(p => p.id === place.id);
+                
+                if (placeData && placeData.content) {
+                    setPlaceMemo(placeData.content); 
+                }
+            } catch (error) {
+                console.error("메모 데이터를 불러오는 데 실패했습니다.", error);
+            }
+        };
+    
+        fetchPlaceMemo();
     }, [place]);
 
     const handleDeletePlace = async () => {
@@ -92,11 +111,28 @@ const MyplaceDetail = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
-    const handleSaveMemo = () => {
-        setPlaceMemo(placeMemo);
-        setIsModalOpen(false);
-    };
 
+const handleSaveMemo = async () => {
+    if (!place?.id) {
+        console.error("장소 ID가 없습니다.");
+        return;
+    }
+
+    try {
+        const updatedPlace = await updateMyPlaceContent(place.id, placeMemo);
+        console.log("메모 저장 완료", updatedPlace);
+
+        // API 응답이 성공하면 상태 업데이트
+        setPlaceMemo(updatedPlace.content);
+        setIsModalOpen(false);
+    } catch (error) {
+        console.error("메모 저장 실패:", error);
+        alert("메모 저장에 실패했습니다.");
+    }
+};
+
+
+    
     const handleTouchStart = (e, type) => {
         setStartY(e.touches[0].clientY);
         setIsDragging(true);
