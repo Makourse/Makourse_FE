@@ -31,7 +31,7 @@ const OAuthCallback = () => {
             "address":0 //로컬에서 할 경우 1 배포 환경에서 할 경우 0
           }
         );
-
+        console.log(response.data);
         // 서버로부터 받은 토큰 예시
         const { access, refresh, is_new } = response.data;
 
