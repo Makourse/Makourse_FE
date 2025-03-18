@@ -28,7 +28,7 @@ const OAuthCallback = () => {
           apiUrl,
           {
             "code": code,
-            "address":1 //로컬에서 할 경우 1 배포 환경에서 할 경우 0
+            "address":0 //로컬에서 할 경우 1 배포 환경에서 할 경우 0
           }
         );
 

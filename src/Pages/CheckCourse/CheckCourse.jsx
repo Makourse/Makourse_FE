@@ -64,12 +64,9 @@ function CheckCourse() {
 
   const deleteSelectedCourses = async () => {
     try {
-      const accessToken = getAccessToken();
-      console.log('Access Token:', accessToken);
-
       for (const courseId of selectedCourses) {
         console.log('Deleting course with ID:', courseId); 
-        await deleteCourse(accessToken, courseId);
+        await deleteCourse(courseId);
       }
       setCourses(courses.filter(course => !selectedCourses.has(course.id)));
       setSelectedCourses(new Set());
